@@ -403,7 +403,6 @@ function! s:LoadPlugins(timer)
     Plug 'easymotion/vim-easymotion'
     Plug 'github/copilot.vim'
     Plug 'jeetsukumaran/vim-buffergator'
-    Plug 'jiangmiao/auto-pairs'
     Plug 'junegunn/vim-peekaboo'
     Plug 'mbbill/undotree'
     Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -436,8 +435,10 @@ function! s:LoadPlugins(timer)
       Plug 'madox2/vim-ai'
     endif
 
-    Plug 'vim-airline/vim-airline'
-    Plug 'ryanoasis/vim-devicons'
+    if !has('win32')
+      Plug 'vim-airline/vim-airline'
+      Plug 'ryanoasis/vim-devicons'
+    endif
 
     call plug#end()
 
