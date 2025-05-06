@@ -34,7 +34,6 @@ postgresql@17
 redis
 ripgrep
 sheldon
-starship
 svg2png
 tig
 tmux
@@ -46,4 +45,3 @@ w3m
 watchman
 wget
 xz
-zoxide

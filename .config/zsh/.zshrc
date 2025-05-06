@@ -1,9 +1,3 @@
-plugins=(
-  starship
-  vi-mode
-  zoxide
-  )
-
 typeset -U fpath FPATH
 
 fpath=(

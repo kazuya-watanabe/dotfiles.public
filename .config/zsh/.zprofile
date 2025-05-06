@@ -11,14 +11,14 @@ export PATH="${HOME}/.local/bin":"/opt/homebrew/bin":"/opt/homebrew/sbin":${PATH
 umask 0022
 
 # bat
-type bat >/dev/null 2>&1 && export MANPAGER='sh -c "col -bx | bat -l man -p"'
+type bat >/dev/null 2>&1 && export MANPAGER="sh -c 'sed -u -e \"s/\\x1B\[[0-9;]*m//g; s/.\\x08//g\" | bat -p -lman'" && export MANROFFOPT='-c'
 
 # fnm
 type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
 
 # fzf
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --type f'
-export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --preview "bat --color=always {}"'
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --preview "bat --color=always --style-numbers --line-range=:500 {}"'
 export FZF_CTRL_T_COMMAND='fd --hidden --follow --type f'
 export FZF_CTRL_T_OPTS='--height 40% --layout=reverse --preview "bat --color=always {}"'
 
