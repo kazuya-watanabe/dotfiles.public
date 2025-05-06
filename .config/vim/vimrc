@@ -125,13 +125,18 @@ augroup vimrc
   autocmd FileType,BufRead aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
 augroup END
 
-command! -nargs=* Grep grep <args> | cwindow
-command! Note call mkdir(expand(strftime('~/Documents/Notes/%Y-%m')), 'p') | execute 'edit ' .. expand(strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md'))
+command! -nargs=* Grep silent grep <args> | cwindow
+
+command! Note execute 'edit ' .. expand(strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md'))
+
 command! -nargs=* Vterminal vertical terminal ++close <args>
 
+if executable('sudo') && executable('tee')
+  command! -nargs=0 SudoWrite execute 'write !sudo tee % >/dev/null' | edit!
+endif
+
 if executable('lazygit')
-  command! -nargs=* Vgit vertical terminal ++close lazygit <args>
-  command! -nargs=* Hgit terminal ++close lazygit <args>
+  command! -nargs=* Lazygit silent !lazygit <args>
 endif
 
 let g:mapleader = ','
