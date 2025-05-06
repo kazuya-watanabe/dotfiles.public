@@ -129,8 +129,9 @@ command! -nargs=* Grep grep <args> | cwindow
 command! Note call mkdir(expand(strftime('~/Documents/Notes/%Y-%m')), 'p') | execute 'edit ' .. expand(strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md'))
 command! -nargs=* Vterminal vertical terminal ++close <args>
 
-if executable('tig')
-  command! -nargs=* Tig terminal ++close tig <f-args>
+if executable('lazygit')
+  command! -nargs=* Vgit vertical terminal ++close lazygit <args>
+  command! -nargs=* Hgit terminal ++close lazygit <args>
 endif
 
 let g:mapleader = ','
@@ -279,7 +280,6 @@ function! s:LoadPlugins(timer)
     let g:NERDTreeWinSize = 30
 
     " tagbar
-    let g:tagbar_autofocus = 1
     let g:tagbar_width = 30
 
     " translate-shell.vim
@@ -405,7 +405,10 @@ function! s:LoadPlugins(timer)
     Plug 'jeetsukumaran/vim-buffergator'
     Plug 'junegunn/vim-peekaboo'
     Plug 'mbbill/undotree'
-    Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' |
+          \ if !has('win32') |
+          \   Plug 'tiagofumo/vim-nerdtree-syntax-highlight' |
+          \   endif
     Plug 'joshdick/onedark.vim'
     Plug 'sheerun/vim-polyglot'
     Plug 'tpope/vim-dadbod' | Plug 'kristijanhusak/vim-dadbod-ui' | Plug 'kristijanhusak/vim-dadbod-completion'
@@ -586,7 +589,7 @@ function! s:LoadPlugins(timer)
       catch
       endtry
 
-      TagbarOpen
+      TagbarOpen fj
     endfunction
 
     nnoremap <silent> <Leader>t :<C-u>call <SID>TagbarOpen()<CR>
@@ -651,6 +654,12 @@ function! s:LoadPlugins(timer)
     endfunction
 
     nnoremap <silent> <Leader>b :<C-u>call <SID>BuffergatorOpen()<CR>
+  endif
+
+
+  " vim-devicons
+  if !exists('*WebDevIconsGetFileTypeSymbol')
+    let g:NERDTreeGitStatusConcealBrackets = 1
   endif
 endfunction
 

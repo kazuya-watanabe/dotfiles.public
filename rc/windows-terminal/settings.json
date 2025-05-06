@@ -31,7 +31,9 @@
       "colorScheme": "One Half Dark",
       "cursorShape": "filledBox",
       "font": {
-        "face": "Hack Nerd Font Mono"
+        "cellHeight": "1",
+        "face": "Hack Nerd Font Mono",
+        "size": 9
       }
     },
     "list": [
