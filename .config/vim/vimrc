@@ -55,7 +55,7 @@ set spelllang=en,cjk
 set spelloptions=camel
 set splitbelow
 set splitright
-set statusline=%<%f\ %m%r%=%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%y\ %p\ %l:%v
+set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [Ln:%l/%L\ Cl:%v]
 set noswapfile
 set ttimeout
 set ttimeoutlen=100
@@ -647,6 +647,29 @@ function! s:LoadPlugins(timer)
     call s:DefineAICommand('AITranslateJapanese', 'AIChat', 'translate-japanese')
   endif
 
+  " vim-airline
+  if !exists(':AirlineRefresh')
+    let l:statusline = ''
+
+    if exists(':CocInfo')
+      let l:statusline ..= '[%{coc#status()}]'
+    endif
+
+    if exists('*ObsessionStatus')
+      let l:statusline ..= '%{ObsessionStatus()}'
+    endif
+
+    if exists('*FugitiveStatusline')
+      let l:statusline ..= '%{FugitiveStatusline()}'
+    endif
+
+    if strlen(l:statusline) > 0
+      let &statusline ..= l:statusline
+    endif
+
+    unlet l:statusline
+  endif
+
   " vim-buffergator
   if exists(':BuffergatorOpen')
     function! s:BuffergatorOpen()
@@ -660,7 +683,6 @@ function! s:LoadPlugins(timer)
 
     nnoremap <silent> <Leader>b :<C-u>call <SID>BuffergatorOpen()<CR>
   endif
-
 
   " vim-devicons
   if !exists('*WebDevIconsGetFileTypeSymbol')

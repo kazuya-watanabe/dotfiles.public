@@ -12,38 +12,46 @@ fpath=(
 
 type sheldon >/dev/null 2>&1 && eval "$(sheldon source)"
 
+autoload -U compinit
+compinit
+
 test -r "${ZDOTDIR}/.aliases" >/dev/null 2>&1 && source "${ZDOTDIR}/.aliases"
 
+setopt auto_cd
 setopt auto_name_dirs
+setopt auto_pushd
 setopt bang_hist
 setopt correct
 setopt extended_history
+setopt hist_fcntl_lock
 setopt hist_find_no_dups
 setopt hist_ignore_all_dups
 setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt hist_no_store
 setopt hist_reduce_blanks
+setopt hist_save_no_dups
 setopt hist_verify
+setopt inc_append_history
 setopt magic_equal_subst
 setopt notify
+setopt pushd_ignore_dups
 setopt share_history
-unsetopt auto_remove_slash
-unsetopt case_glob
 
 zstyle ':completion:*' menu true select list-colors
 
-autoload history-search-end
+autoload -U history-search-end
 
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
-HISTFILE="${HOME}/.zsh/.zsh_history"
+HISTFILE="${HOME}/.config/zsh/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-beginning-search-forward-end history-beginning-search-backward-end)
 
-bindkey -M vicmd 'j'  history-substring-search-down
-bindkey -M vicmd 'k'  history-substring-search-up
+bindkey -M vicmd 'j'  history-beginning-search-forward-end
+bindkey -M vicmd 'k'  history-beginning-search-backward-end
 bindkey -M viins '^?' backward-delete-char
 bindkey -M viins '^A' beginning-of-line
 bindkey -M viins '^B' backward-char
@@ -53,9 +61,10 @@ bindkey -M viins '^F' forward-char
 bindkey -M viins '^G' send-break
 bindkey -M viins '^H' backward-delete-char
 bindkey -M viins '^K' kill-line
-bindkey -M viins '^N' history-substring-search-down
-bindkey -M viins '^P' history-substring-search-up
-bindkey -M viins '^R' history-incremental-pattern-search-backward
+bindkey -M viins '^N' history-beginning-search-forward-end
+bindkey -M viins '^P' history-beginning-search-backward-end
+bindkey -M viins '^R' history-incremental-search-backward
+bindkey -M viins '^S' history-incremental-search-forward
 bindkey -M viins '^U' backward-kill-line
 bindkey -M viins '^W' backward-kill-word
 bindkey -M viins '^Y' yank
