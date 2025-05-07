@@ -10,7 +10,11 @@ fpath=(
   ${fpath}
   )
 
-if [ -r "${ZPLUG_HOME:=~/.local/zplug}/init.zsh" ]; then
+if [ -z "$ZPLUG_HOME" ]; then
+  export ZPLUG_HOME=~/.local/zplug
+fi
+
+if [ -r "${ZPLUG_HOME}/init.zsh" ]; then
   source "${ZPLUG_HOME}/init.zsh"
 else
   echo 'zplug not found. Installing...'
