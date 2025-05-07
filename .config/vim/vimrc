@@ -279,6 +279,7 @@ function! s:LoadPlugins(timer)
     let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
     " nerdtree
+    let g:NERDTreeBookmarksFile = $MYVIMDIR .. '/NERDTreeBookmarks'
     let g:NERDTreeGitStatusUseNerdFonts = 1
     let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
     let g:NERDTreeShowHidden = 1
