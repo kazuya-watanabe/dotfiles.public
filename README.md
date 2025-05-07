@@ -43,8 +43,8 @@ $CurrentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.Envi
 - Homebrew [^1]
 
 ```sh
-cat rc/mac-brew-cask.list | xargs brew install --cask
-cat rc/mac-brew-formula.list | xargs brew install --formula
+cat rc/mac/brew-cask.list | xargs brew install --cask
+cat rc/mac/brew-formula.list | xargs brew install --formula
 ```
 
 ### Windows
@@ -52,14 +52,14 @@ cat rc/mac-brew-formula.list | xargs brew install --formula
 - Scoop [^2]
 
 ```powershell
-Get-Content .\rc\windows-scoop-buckets.list | %{ scoop bucket add $_ }
-Get-Content .\rc\windows-scoop-apps.list | %{ scoop install $_ }
+Get-Content .\rc\windows\scoop-buckets.list | %{ scoop bucket add $_ }
+Get-Content .\rc\windows\scoop-apps.list | %{ scoop install $_ }
 ```
 
 ### Fedora
 
 ```sh
-cat rc/fedora-dnf.list | xargs sudo dnf install --allowerasing -y
+cat rc/fedora/dnf.list | xargs sudo dnf install --allowerasing -y
 ```
 
 ### Node.js
@@ -77,7 +77,7 @@ pip install --user --requirement rc/pip-requirements.txt
 ### PowerShell
 
 ```powershell
-Get-Content .\rc\powershell-modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
+Get-Content .\rc\powershell\modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
 ```
 
 [^1]: [Homebrew](https://brew.sh/)
