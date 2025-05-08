@@ -1,3 +1,34 @@
+export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/zplug}
+
+if [ ! -r "${ZPLUG_HOME}/init.zsh" ]; then
+  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+
+  if [ $? -ne 0 ]; then
+    echo 'Failed to install zplug. Please install it manually.' >&2
+  else
+    echo 'zplug installed successfully. Please restart your shell.' >&2
+  fi
+
+  read
+fi
+
+if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
+  zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
+  zplug 'zsh-users/zsh-autosuggestions'
+  zplug 'zsh-users/zsh-completions'
+  zplug 'zsh-users/zsh-history-substring-search'
+  zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+
+  if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+      echo; zplug install
+    fi
+  fi
+
+  zplug load
+fi
+
 typeset -U fpath FPATH
 
 fpath=(
@@ -10,47 +41,12 @@ fpath=(
   ${fpath}
   )
 
-if [ -z "$ZPLUG_HOME" ]; then
-  export ZPLUG_HOME=~/.local/zplug
-fi
-
-if [ -r "${ZPLUG_HOME}/init.zsh" ]; then
-  source "${ZPLUG_HOME}/init.zsh"
-else
-  echo 'zplug not found. Installing...'
-  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-
-  if [ $? -ne 0 ]; then
-    echo 'Failed to install zplug. Please install it manually.' >&2
-  else
-    echo 'zplug installed successfully. Please restart your shell.'
-    read
-    exit 1
-  fi
-fi
-
-zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
-zplug 'zsh-users/zsh-autosuggestions'
-zplug 'zsh-users/zsh-completions'
-zplug 'zsh-users/zsh-history-substring-search'
-zplug 'zsh-users/zsh-syntax-highlighting', defer:2
-
-if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-    echo; zplug install
-  fi
-fi
-
-zplug load
-
 setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
 
 setopt auto_list
 setopt auto_menu
-setopt auto_remove_slash
 setopt list_types
 setopt hash_list_all
 
