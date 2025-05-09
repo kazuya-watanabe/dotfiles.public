@@ -1,45 +1,45 @@
 export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/zplug}
 
 if [ ! -r "${ZPLUG_HOME}/init.zsh" ]; then
-  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 
-  if [ $? -ne 0 ]; then
-    echo 'Failed to install zplug. Please install it manually.' >&2
-  else
-    echo 'zplug installed successfully. Please restart your shell.' >&2
-  fi
+    if [ $? -ne 0 ]; then
+        echo 'Failed to install zplug. Please install it manually.' >&2
+    else
+        echo 'zplug installed successfully. Please restart your shell.' >&2
+    fi
 
-  read
+    read
 fi
 
 if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
-  zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
-  zplug 'zsh-users/zsh-autosuggestions'
-  zplug 'zsh-users/zsh-completions'
-  zplug 'zsh-users/zsh-history-substring-search'
-  zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+    zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
+    zplug 'zsh-users/zsh-autosuggestions'
+    zplug 'zsh-users/zsh-completions'
+    zplug 'zsh-users/zsh-history-substring-search'
+    zplug 'zsh-users/zsh-syntax-highlighting', defer:2
 
-  if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-      echo; zplug install
+    if ! zplug check --verbose; then
+        printf "Install? [y/N]: "
+        if read -q; then
+            echo; zplug install
+        fi
     fi
-  fi
 
-  zplug load
+    zplug load
 fi
 
 typeset -U fpath FPATH
 
 fpath=(
-  '/opt/homebrew/share/zsh/site-functions'(N-/)
-  '/opt/homebrew/share/zsh/vendor-completions'(N-/)
-  '/usr/local/share/zsh/site-functions'(N-/)
-  '/usr/local/share/zsh/vendor-completions'(N-/)
-  '/usr/share/zsh/site-functions'(N-/)
-  '/usr/share/zsh/vendor-completions'(N-/)
-  ${fpath}
-  )
+    '/opt/homebrew/share/zsh/site-functions'(N-/)
+    '/opt/homebrew/share/zsh/vendor-completions'(N-/)
+    '/usr/local/share/zsh/site-functions'(N-/)
+    '/usr/local/share/zsh/vendor-completions'(N-/)
+    '/usr/share/zsh/site-functions'(N-/)
+    '/usr/share/zsh/vendor-completions'(N-/)
+    ${fpath}
+)
 
 setopt auto_cd
 setopt auto_pushd
@@ -47,8 +47,11 @@ setopt pushd_ignore_dups
 
 setopt auto_list
 setopt auto_menu
+setopt auto_param_keys
+setopt auto_param_slash
 setopt list_types
-setopt hash_list_all
+
+setopt glob_dots
 
 setopt extended_history
 setopt hist_fcntl_lock
@@ -93,11 +96,10 @@ bindkey -M viins '^W' backward-kill-word
 
 test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
 
-type fzf >/dev/null && source <(fzf --zsh)
-type zoxide >/dev/null && eval "$(zoxide init zsh)"
+type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
 
-if type gdircolors >/dev/null 2>&1; then
-  eval "$(gdircolors -b)"
-elif type dircolors >/dev/null 2>&1; then
-  eval "$(dircolors -b)"
-fi
+type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
+
+type fzf >/dev/null 2>&1 && source <(fzf --zsh)
+
+type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"

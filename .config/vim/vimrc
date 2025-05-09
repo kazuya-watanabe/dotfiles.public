@@ -33,7 +33,7 @@ set relativenumber
 set ruler
 set scrolloff=5
 set shiftwidth=4
-set shortmess+=aI
+set shortmess+=a
 set showcmd
 set showmatch
 set sidescrolloff=5
@@ -291,6 +291,7 @@ function! s:LoadPlugins(timer)
                     \ 'coc',
                     \ 'fugitiveline',
                     \ 'fzf',
+                    \ 'obsession',
                     \ 'quickfix',
                     \ 'scrollbar',
                     \ 'tabline',
@@ -324,6 +325,7 @@ function! s:LoadPlugins(timer)
         let g:airline#extensions#ale#warning_symbol = '󰈅 Warning:'
         let g:airline#extensions#coc#error_symbol = g:airline#extensions#ale#error_symbol
         let g:airline#extensions#coc#warning_symbol = g:airline#extensions#ale#warning_symbol
+        let g:airline#extensions#obsession#indicator_text = ' Session'
 
         " vim-devicons
         let g:webdevicons_enable_unite = 0
@@ -359,6 +361,7 @@ function! s:LoadPlugins(timer)
         Plug 'sheerun/vim-polyglot'
         Plug 'tpope/vim-endwise'
         Plug 'tpope/vim-fugitive'
+        Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-repeat'
         Plug 'tpope/vim-surround'
 
@@ -375,8 +378,9 @@ function! s:LoadPlugins(timer)
             Plug 'madox2/vim-ai'
         endif
 
+        Plug 'vim-airline/vim-airline'
+
         if !has('win32')
-            Plug 'vim-airline/vim-airline'
             Plug 'ryanoasis/vim-devicons'
         endif
 
