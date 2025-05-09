@@ -23,14 +23,12 @@ Set-PSReadLineKeyHandler -Key Ctrl+[ -Function ViCommandMode
 Import-Module posh-git
 
 Import-Module PSFzf
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
+Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
 
 Remove-Item alias:curl
-
 Remove-Item alias:diff -Force
-
 Remove-Item alias:tee -Force
-
 Remove-Item alias:wget
 
 if (Get-Command -Name bat.exe -ErrorAction SilentlyContinue) {

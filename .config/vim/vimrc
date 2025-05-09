@@ -11,7 +11,7 @@ set belloff=all
 set clipboard=unnamed
 set cmdheight=2
 set completeopt=menuone,longest,preview
-set diffopt^=vertical
+set diffopt+=vertical
 set directory=$MYVIMDIR/swap
 set display=lastline
 set expandtab
@@ -66,7 +66,7 @@ let &showbreak = '󱞪   '
 
 if executable('rg')
     set grepformat=%f:%l:%c:%m
-    set grepprg=rg\ --vimgrep
+    set grepprg=rg\ --vimgrep\ --follow\ --hidden
 endif
 
 if exists('+termguicolors')
@@ -459,20 +459,16 @@ function! s:LoadPlugins(timer)
 
     " fzf
     if exists(':Files')
-        if !exists('$FZF_DEFAULT_COMMAND')
-            if executable('fd')
-                let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-            elseif executable('rg')
-                let $FZF_DEFAULT_COMMAND = 'rg --hidden --follow --files'
-            endif
-
-            let $FZF_DEFAULT_OPTS = '--height 40% --layout=reverse --preview "bat --color=always {}"'
-        endif
+        command! -bang -nargs=* Grep
+                    \ call fzf#vim#grep(
+                    \   'rg --vimgrep --follow --hidden --color=always ' .. <q-args>,
+                    \   fzf#vim#with_preview(),
+                    \   <bang>0
+                    \   )
 
         nmap <silent> <Leader>f :<C-u>Files<CR>
         nmap <silent> <Leader>g :<C-u>GFiles<CR>
         nmap <silent> <Leader>b :<C-u>Buffers<CR>
-        nmap <silent> <Leader>w :<C-u>Windows<CR>
     endif
 
     " nerdtree
