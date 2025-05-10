@@ -253,6 +253,8 @@ function! s:LoadPlugins(timer)
         " nerdtree
         let g:NERDTreeBookmarksFile = $MYVIMDIR .. '/NERDTreeBookmarks'
         let g:NERDTreeGitStatusUseNerdFonts = 1
+        let g:NERDTreeGitStatusShowIgnored = 1
+        let g:NERDTreeGitStatusUntrackedFilesMode = 'all'
         let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
         let g:NERDTreeShowHidden = 1
         let g:NERDTreeWinSize = 30
