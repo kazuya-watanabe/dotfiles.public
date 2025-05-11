@@ -55,6 +55,8 @@ if (Get-Command fd.exe -ErrorAction SilentlyContinue) {
 }
 
 if (Get-Command git.exe -ErrorAction SilentlyContinue) {
+    Set-Alias g git.exe
+
     function gf {
         &git.exe flow @args
     }

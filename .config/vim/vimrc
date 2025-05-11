@@ -75,13 +75,13 @@ let &backupdir = s:data_dir .. '/backup'
 let &directory = s:data_dir .. '/swap'
 let &undodir = s:data_dir .. '/undo'
 let &viewdir = s:data_dir .. '/view'
-let &showbreak = '󱞪   '
 
-if exists('+shadafile')
-    let &shadafile = s:data_dir .. '/shada'
-else
-    let &viminfofile = s:data_dir .. '/viminfo'
-endif
+call mkdir(&backupdir, 'p')
+call mkdir(&directory, 'p')
+call mkdir(&undodir, 'p')
+call mkdir(&viewdir, 'p')
+
+let &showbreak = '󱞪   '
 
 if executable('rg')
     set grepformat=%f:%l:%c:%m
@@ -90,6 +90,10 @@ endif
 
 if exists('+termguicolors')
     set termguicolors
+endif
+
+if !has('nvim')
+    let &viminfofile = s:data_dir .. '/viminfo'
 endif
 
 if has('vim_starting')
@@ -187,7 +191,16 @@ function! s:LoadPlugins(timer)
         endif
     endif
 
-    if executable('git') && plug#begin(s:data_dir .. '/plugged')
+    if has('win32')
+        let s:vimplug_data_dir = "$LOCALAPPDATA/vim-plug"
+    elseif has('$XDG_DATA_HOME')
+        let s:vimplug_data_dir = "$XDG_DATA_HOME/vim-plug"
+    else
+        let s:vimplug_data_dir = '~/.local/share/vim-plug'
+    endif
+
+
+    if executable('git') && plug#begin(s:vimplug_data_dir)
         " ale
         let g:ale_completion_enabled = 1
         let g:ale_linters = {
@@ -196,7 +209,6 @@ function! s:LoadPlugins(timer)
                     \ }
 
         " coc.nvim
-        let g:coc_data_home = s:data_dir .. '/coc'
         let g:coc_global_extensions = [
                     \ 'coc-snippets',
                     \ 'coc-markdown-preview-enhanced', 'coc-webview',

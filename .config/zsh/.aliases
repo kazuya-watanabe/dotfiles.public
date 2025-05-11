@@ -4,6 +4,8 @@ alias diff='diff -u'
 
 alias fd='fd --follow --hidden'
 
+alias g='git'
+
 alias gf='git flow'
 
 alias sudo='sudo '
