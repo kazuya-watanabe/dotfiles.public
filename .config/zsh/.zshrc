@@ -1,15 +1,12 @@
-export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/zplug}
+export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/share/zplug}
 
 if [ ! -r "${ZPLUG_HOME}/init.zsh" ]; then
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 
     if [ $? -ne 0 ]; then
         echo 'Failed to install zplug. Please install it manually.' >&2
-    else
-        echo 'zplug installed successfully. Please restart your shell.' >&2
+        read
     fi
-
-    read
 fi
 
 if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then

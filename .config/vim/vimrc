@@ -1,18 +1,30 @@
 " initialization
-scriptversion 4
+if has('vimscript-4')
+    scriptversion 4
+endif
+
 syntax enable
 filetype plugin indent on
+
+if exists('*stdpath')
+    let s:conf_dir = stdpath('config')
+    let s:data_dir = stdpath('data')
+elseif has('win32')
+    let s:conf_dir = expand('~/vimfiles')
+    let s:data_dir = expand('$LOCALAPPDATA/vim')
+else
+    let s:conf_dir = expand('~/.config/vim')
+    let s:data_dir = expand('~/.local/share/vim')
+endif
 
 " options
 set autoindent
 set autoread
-set backupdir=$MYVIMDIR/backup
 set belloff=all
 set clipboard=unnamed
 set cmdheight=2
 set completeopt=menuone,longest,preview
 set diffopt+=vertical
-set directory=$MYVIMDIR/swap
 set display=lastline
 set expandtab
 set fileformats=unix,dos
@@ -50,11 +62,8 @@ set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encodin
 set noswapfile
 set ttimeout
 set ttimeoutlen=100
-set undodir=$MYVIMDIR/undo
 set undofile
 set updatetime=300
-set viewdir=$MYVIMDIR/view
-set viminfofile=$MYVIMDIR/viminfo
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
@@ -62,7 +71,17 @@ set wildmode=longest:full,full
 set wildoptions=fuzzy,pum,tagfile
 set nowritebackup
 
+let &backupdir = s:data_dir .. '/backup'
+let &directory = s:data_dir .. '/swap'
+let &undodir = s:data_dir .. '/undo'
+let &viewdir = s:data_dir .. '/view'
 let &showbreak = '󱞪   '
+
+if exists('+shadafile')
+    let &shadafile = s:data_dir .. '/shada'
+else
+    let &viminfofile = s:data_dir .. '/viminfo'
+endif
 
 if executable('rg')
     set grepformat=%f:%l:%c:%m
@@ -96,12 +115,20 @@ augroup vimrc
     autocmd FileType,BufRead dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType,BufRead html,markdown,txt setlocal spell
     autocmd FileType,BufRead aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
+    autocmd CursorHold * call s:Nohlsearch()
+    autocmd InsertEnter * call s:Nohlsearch()
 augroup END
+
+func! s:Nohlsearch()
+    if v:hlsearch
+        call feedkeys("\<cmd>nohlsearch\<cr>", 'm')
+    endif
+endfunc
 
 " commands
 command! -nargs=* Grep silent grep <args> | cwindow
 
-command! Note silent execute 'edit ' .. expand(strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md'))
+command! Note silent execute 'edit ' .. strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md')
 
 " keymaps
 let g:mapleader = ','
@@ -121,19 +148,14 @@ map! <C-p> <Up>
 
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
 
-nmap <silent> b$ :<C-u>blast<CR>
-nmap <silent> b0 :<C-u>bfirst<CR>
-nmap <silent> bd :<C-u>bdelete<CR>
-nmap <silent> bn :<C-u>bnext<CR>
-nmap <silent> bp :<C-u>bprevious<CR>
-
-nmap <silent> t$ :<C-u>tablast<CR>
-nmap <silent> t0 :<C-u>tabfirst<CR>
-nmap <silent> td :<C-u>tabclose<CR>
-nmap <silent> th :<C-u>tabmove -<CR>
-nmap <silent> tl :<C-u>tabmove +<CR>
-nmap <silent> tn :<C-u>tabnext<CR>
-nmap <silent> tp :<C-u>tabprevious<CR>
+nmap <silent> t$ :<C-u>blast<CR>
+nmap <silent> t0 :<C-u>brewind<CR>
+nmap <silent> tc :<C-u>bdelete<CR>
+nmap <silent> td :<C-u>bdelete<CR>
+nmap <silent> tf :<C-u>brewind<CR>
+nmap <silent> tl :<C-u>blast<CR>
+nmap <silent> tn :<C-u>bnext<CR>
+nmap <silent> tp :<C-u>bprevious<CR>
 
 if has('win32') && executable('powershell')
     nmap <silent> <Leader>sh :<C-u>vertical terminal powershell<CR>
@@ -151,27 +173,21 @@ let g:loaded_tutor_mode_plugin = 1
 let g:loaded_vimballPlugin = 1
 
 function! s:LoadPlugins(timer)
-    packadd comment
-    packadd hlyank
-    packadd nohlsearch
-    packadd! editorconfig
-    packadd! matchit
+    let l:vimplug_path = s:conf_dir .. '/autoload/plug.vim'
 
-    let l:vimplug = expand($MYVIMDIR .. '/autoload/plug.vim')
-
-    if !filereadable(l:vimplug)
+    if !filereadable(l:vimplug_path)
         if executable('curl')
-            call system('curl -fLo ' .. shellescape(l:vimplug) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
+            call system('curl -fLo ' .. shellescape(l:vimplug_path) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
         endif
 
-        if !filereadable(l:vimplug)
-            echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. l:vimplug
+        if !filereadable(l:vimplug_path)
+            echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. l:vimplug_path
 
             finish
         endif
     endif
 
-    if executable('git') && plug#begin('~/.local/vim/plugin')
+    if executable('git') && plug#begin(s:data_dir .. '/plugged')
         " ale
         let g:ale_completion_enabled = 1
         let g:ale_linters = {
@@ -180,7 +196,7 @@ function! s:LoadPlugins(timer)
                     \ }
 
         " coc.nvim
-        let g:coc_data_home = '~/.local/vim/coc'
+        let g:coc_data_home = s:data_dir .. '/coc'
         let g:coc_global_extensions = [
                     \ 'coc-snippets',
                     \ 'coc-markdown-preview-enhanced', 'coc-webview',
@@ -251,7 +267,7 @@ function! s:LoadPlugins(timer)
         let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
         " nerdtree
-        let g:NERDTreeBookmarksFile = $MYVIMDIR .. '/NERDTreeBookmarks'
+        let g:NERDTreeBookmarksFile = s:data_dir .. '/NERDTreeBookmarks'
         let g:NERDTreeGitStatusUseNerdFonts = 1
         let g:NERDTreeGitStatusShowIgnored = 1
         let g:NERDTreeGitStatusUntrackedFilesMode = 'all'
@@ -277,14 +293,8 @@ function! s:LoadPlugins(timer)
                     \   },
                     \ }
         let g:vim_ai_chat_markdown = 1
-        let g:vim_ai_token_file_path = expand('~/.config/openai.token')
-        let l:vim_ai_roles_config_file = expand($MYVIMDIR .. '/roles.ini')
-
-        if filereadable(expand($MYVIMDIR .. '/roles.ini'))
-            let g:vim_ai_roles_config_file = expand($MYVIMDIR .. '/roles.ini')
-        endif
-
-        unlet l:vim_ai_roles_config_file
+        let g:vim_ai_token_file_path = '~/.config/openai.token'
+        let g:vim_ai_roles_config_file = s:conf_dir .. '/roles.ini'
 
         " vim-airline
         let g:airline_extensions = [
@@ -352,7 +362,9 @@ function! s:LoadPlugins(timer)
 
         " Plugs
         Plug 'airblade/vim-gitgutter'
+        Plug 'chrisbra/matchit'
         Plug 'easymotion/vim-easymotion'
+        Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
         Plug 'jiangmiao/auto-pairs'
         Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' |
@@ -360,7 +372,9 @@ function! s:LoadPlugins(timer)
                     \   Plug 'tiagofumo/vim-nerdtree-syntax-highlight' |
                     \   endif
         Plug 'joshdick/onedark.vim'
+        Plug 'markonm/hlyank.vim'
         Plug 'sheerun/vim-polyglot'
+        Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-endwise'
         Plug 'tpope/vim-fugitive'
         Plug 'tpope/vim-obsession'
@@ -388,15 +402,10 @@ function! s:LoadPlugins(timer)
 
         call plug#end()
 
-        for l:key in keys(g:plugs)
-            if !isdirectory(expand(g:plugs[ l:key ].dir .. '/.git'))
-                echomsg 'Please wait for a while to complete the installation.'
-
-                PlugInstall --sync
-
-                break
-            endif
-        endfor
+        if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+            echomsg 'Please wait for a while to complete the installation.'
+            PlugInstall --sync
+        endif
     endif
 
     " coc.nvim
