@@ -353,6 +353,10 @@ function! s:LoadPlugins(timer)
 
         let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols[ 'vue' ] = '󰡄'
 
+        " vim-table-mode
+        let g:table_mode_disable_mappings = 1
+        let g:table_mode_disable_tableize_mappings = 1
+
         " vim-polyglot
         let g:polyglot_disabled = [
                     \ 'autoindent',
@@ -363,6 +367,7 @@ function! s:LoadPlugins(timer)
         " Plugs
         Plug 'airblade/vim-gitgutter'
         Plug 'chrisbra/matchit'
+        Plug 'dhruvasagar/vim-table-mode'
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'

@@ -6,6 +6,7 @@
 
 ```sh
 find $(pwd) -mindepth 1 -maxdepth 1 -name '.??*' | grep -v '.git*' | xargs -I % ln -fns % ~/
+ln -fns vimrc .config/vim/init.vim
 ```
 
 ### Windows
@@ -16,6 +17,7 @@ find $(pwd) -mindepth 1 -maxdepth 1 -name '.??*' | grep -v '.git*' | xargs -I % 
 (Get-Item -Path "$env:APPDATA\fd").Delete()
 (Get-Item -Path "$env:LOCALAPPDATA\lazygit").Delete()
 (Get-Item -Path "$env:LOCALAPPDATA\lf").Delete()
+(Get-Item -Path "$env:LOCALAPPDATA\nvim").Delete()
 (Get-Item -Path "$env:USERPROFILE\vimfiles").Delete()
 (Get-Item -Path "$env:USERPROFILE\Documents\WindowsPowerShell").Delete()
 (Get-Item -Path "$env:USERPROFILE\.textlintrc").Delete()
@@ -25,9 +27,11 @@ New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\bat" -Path "$
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\fd" -Path "$env:APPDATA\fd"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lazygit" -Path "$env:LOCALAPPDATA\lazygit"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lf" -Path "$env:LOCALAPPDATA\lf"
+New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\vim" -Path "$env:LOCALAPPDATA\nvim"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\vim" -Path "$env:USERPROFILE\vimfiles"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\windows\powershell" -Path "$env:USERPROFILE\Documents\WindowsPowerShell"
 New-Item -Force -ItemType HardLink -Value "$(Get-Location)\.textlintrc" -Path "$env:USERPROFILE\.textlintrc"
+New-Item -Force -ItemType HardLink -Value "$(Get-Location)\.config\vim\vimrc" -Path "$env:USERPROFILE\.config\vim\init.vim"
 
 [System.Environment]::SetEnvironmentVariable('RIPGREP_CONFIG_PATH', "$env:USERPROFILE\.config\rg\ripgreprc", [System.EnvironmentVariableTarget]::User)
 $CurrentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
