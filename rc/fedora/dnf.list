@@ -2,6 +2,7 @@ akmod-nvidia
 java-21-openjdk
 kitty
 python3-pip
+thunderbird
 xorg-x11-drv-nvidia-cuda
 xorg-x11-drv-nvidia-cuda-libs
 xorg-x11-drv-nvidia-power

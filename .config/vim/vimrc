@@ -123,11 +123,11 @@ augroup vimrc
     autocmd InsertEnter * call s:Nohlsearch()
 augroup END
 
-func! s:Nohlsearch()
+function! s:Nohlsearch()
     if v:hlsearch
         call feedkeys("\<cmd>nohlsearch\<cr>", 'm')
     endif
-endfunc
+endfunction
 
 " commands
 command! -nargs=* Grep silent grep <args> | cwindow
@@ -366,13 +366,6 @@ function! s:LoadPlugins(timer)
         " vim-table-mode
         let g:table_mode_disable_mappings = 1
         let g:table_mode_disable_tableize_mappings = 1
-
-        " vim-polyglot
-        let g:polyglot_disabled = [
-                    \ 'autoindent',
-                    \ 'sensible',
-                    \ 'ftdetect',
-                    \ ]
 
         " Plugs
         Plug 'airblade/vim-gitgutter'
