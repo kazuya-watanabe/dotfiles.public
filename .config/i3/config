@@ -203,7 +203,7 @@ mode "shutdown [c: reload i3 config, r: restart i3, e: exit i3, R:reboot compute
         bindsym r restart
         bindsym e exec "i3-msg exit"
         bindsym Shift+r exec "systemctl reboot"
-        bindsym Shift+s exec "systemctl shutdown"
+        bindsym Shift+p exec "systemctl poweroff"
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"

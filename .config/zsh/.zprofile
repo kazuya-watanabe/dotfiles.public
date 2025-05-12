@@ -1,7 +1,6 @@
 umask 0022
 
-export PATH="${HOME}/.local/bin":"/opt/homebrew/bin":"/opt/homebrew/sbin":${PATH}
-
+export PATH="${HOME}/.local/bin":${PATH}
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --type f'
 export FZF_DEFAULT_OPTS='--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
 

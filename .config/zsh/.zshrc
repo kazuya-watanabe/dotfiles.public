@@ -26,11 +26,14 @@ if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
     zplug load
 fi
 
+test -x /home/linuxbrew/.linuxbrew/bin/brew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+test -x /opt/homebrew/bin/brew && eval $(/opt/homebrew/bin/brew shellenv)
+
 typeset -U fpath FPATH
 
 fpath=(
     '/opt/homebrew/share/zsh/site-functions'(N-/)
-    '/opt/homebrew/share/zsh/vendor-completions'(N-/)
+    '/home/linux/.linux/share/zsh/site-functions'(N-/)
     '/usr/local/share/zsh/site-functions'(N-/)
     '/usr/local/share/zsh/vendor-completions'(N-/)
     '/usr/share/zsh/site-functions'(N-/)
