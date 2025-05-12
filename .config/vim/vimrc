@@ -388,7 +388,7 @@ function! s:LoadPlugins(timer)
         Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-fugitive'
-        Plug 'tpope/vim-obsession', { 'on': 'Obsession' }
+        Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-repeat'
         Plug 'tpope/vim-surround'
 
@@ -397,7 +397,7 @@ function! s:LoadPlugins(timer)
         endif
 
         if executable('node')
-            Plug 'dense-analysis/ale', { 'for': [ 'markdown', 'text' ] }
+            Plug 'dense-analysis/ale'
             Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'honza/vim-snippets'
         endif
 
