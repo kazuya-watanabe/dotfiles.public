@@ -1,5 +1,6 @@
 anthy/*
 btop/*
+coc/*
 dconf/*
 gh/*
 github-copilot/*
@@ -7,6 +8,7 @@ ibus-anthy/*
 ibus/*
 iterm2/*
 mume/*
+psysh/*
 pulse/*
 scoop/*
 volumeicon/*

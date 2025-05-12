@@ -281,8 +281,6 @@ function! s:LoadPlugins(timer)
         " nerdtree
         let g:NERDTreeBookmarksFile = s:data_dir .. '/NERDTreeBookmarks'
         let g:NERDTreeGitStatusUseNerdFonts = 1
-        let g:NERDTreeGitStatusShowIgnored = 1
-        let g:NERDTreeGitStatusUntrackedFilesMode = 'all'
         let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
         let g:NERDTreeShowHidden = 1
         let g:NERDTreeWinSize = 30
@@ -378,23 +376,19 @@ function! s:LoadPlugins(timer)
 
         " Plugs
         Plug 'airblade/vim-gitgutter'
-        Plug 'chrisbra/matchit'
         Plug 'dhruvasagar/vim-table-mode'
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'jiangmiao/auto-pairs'
         Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' |
                     \ if !has('win32') |
                     \   Plug 'tiagofumo/vim-nerdtree-syntax-highlight' |
                     \   endif
         Plug 'joshdick/onedark.vim'
         Plug 'markonm/hlyank.vim'
-        Plug 'sheerun/vim-polyglot'
         Plug 'tpope/vim-commentary'
-        Plug 'tpope/vim-endwise'
         Plug 'tpope/vim-fugitive'
-        Plug 'tpope/vim-obsession'
+        Plug 'tpope/vim-obsession', { 'on': 'Obsession' }
         Plug 'tpope/vim-repeat'
         Plug 'tpope/vim-surround'
 
@@ -403,7 +397,7 @@ function! s:LoadPlugins(timer)
         endif
 
         if executable('node')
-            Plug 'dense-analysis/ale'
+            Plug 'dense-analysis/ale', { 'for': [ 'markdown', 'text' ] }
             Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'honza/vim-snippets'
         endif
 
@@ -412,10 +406,7 @@ function! s:LoadPlugins(timer)
         endif
 
         Plug 'vim-airline/vim-airline'
-
-        if !has('win32')
-            Plug 'ryanoasis/vim-devicons'
-        endif
+        Plug 'ryanoasis/vim-devicons'
 
         call plug#end()
 
