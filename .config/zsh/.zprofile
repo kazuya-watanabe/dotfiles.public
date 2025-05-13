@@ -17,5 +17,6 @@ case $(uname) in
         export XMODIFIERS='@im=ibus'
         export GTK_IM_MODULE=ibus
         export QT_IM_MODULE=ibus
+        export GLFW_IM_MODULE=ibus
         ;;
 esac

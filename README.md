@@ -64,6 +64,8 @@ Get-Content .\rc\windows\scoop-apps.list | %{ scoop install $_ }
 
 ```sh
 cat rc/fedora/dnf.list | xargs sudo dnf install --allowerasing -y
+ulimit -n 10000
+cat rc/brew-formula.list | xargs brew install --formula
 ```
 
 ### Node.js
