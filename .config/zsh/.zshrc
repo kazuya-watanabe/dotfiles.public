@@ -1,13 +1,6 @@
 export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/share/zplug}
 
-if [ ! -r "${ZPLUG_HOME}/init.zsh" ]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-
-    if [ $? -ne 0 ]; then
-        echo 'Failed to install zplug. Please install it manually.' >&2
-        read
-    fi
-fi
+test ! -r "${ZPLUG_HOME}/init.zsh" && curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 
 if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
     zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
@@ -26,8 +19,14 @@ if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
     zplug load
 fi
 
+test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
 test -x /home/linuxbrew/.linuxbrew/bin/brew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 test -x /opt/homebrew/bin/brew && eval $(/opt/homebrew/bin/brew shellenv)
+
+type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
+type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
+type fzf >/dev/null 2>&1 && source <(fzf --zsh)
+type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
 typeset -U fpath FPATH
 
@@ -41,38 +40,45 @@ fpath=(
     ${fpath}
 )
 
-setopt auto_cd
-setopt auto_pushd
-setopt pushd_ignore_dups
-
-setopt auto_list
-setopt auto_menu
-setopt auto_param_keys
-setopt auto_param_slash
-setopt list_types
-
-setopt glob_dots
-
+setopt append_history
 setopt extended_history
-setopt hist_fcntl_lock
+setopt hist_expire_dups_first
 setopt hist_find_no_dups
 setopt hist_ignore_all_dups
 setopt hist_ignore_dups
 setopt hist_ignore_space
-setopt hist_no_functions
-setopt hist_no_store
 setopt hist_reduce_blanks
 setopt hist_save_no_dups
 setopt hist_verify
 setopt inc_append_history
 setopt share_history
 
-setopt correct
-setopt correct_all
-setopt hash_cmds
-setopt hash_dirs
+setopt auto_cd
+setopt auto_list
+setopt auto_pushd
+setopt bang_hist
+setopt interactive_comments
+setopt multios
+setopt no_beep
+setopt prompt_subst
+setopt pushd_ignore_dups
+setopt pushd_minus
 
-zstyle ':completion:*' menu true select list-colors
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' rehash true
 
 HISTFILE="${ZDOTDIR}/.zsh_history"
 HISTSIZE=10000
@@ -93,13 +99,3 @@ bindkey -M viins '^N' history-substring-search-down
 bindkey -M viins '^P' history-substring-search-up
 bindkey -M viins '^U' backward-kill-line
 bindkey -M viins '^W' backward-kill-word
-
-test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
-
-type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
-
-type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
-
-type fzf >/dev/null 2>&1 && source <(fzf --zsh)
-
-type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
