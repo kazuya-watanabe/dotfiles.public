@@ -14,8 +14,7 @@ set $altmod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-# font pango:monospace 8
-font pango:Cascadia Code NF 9
+font pango:Sans Bold 9
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -55,7 +54,7 @@ bindsym $mod+Return exec kitty
 bindsym $mod+w kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#BBBBBB' -nb '#222222' -sb '#005577' -sf '#EEEEEE' -fn 'monospace-10'"
+bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#BBBBBB' -nb '#222222' -sb '#005577' -sf '#EEEEEE' -fn 'Sans-12'"
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -63,39 +62,12 @@ bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#BBBBBB' -nb '#222222' -sb '
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-# bindsym $mod+j focus left
-# bindsym $mod+k focus down
-# bindsym $mod+l focus up
-# bindsym $mod+semicolon focus right
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
-# move focused window
-# bindsym $mod+Shift+j move left
-# bindsym $mod+Shift+k move down
-# bindsym $mod+Shift+l move up
-# bindsym $mod+Shift+semicolon move right
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
 # split in horizontal orientation
-# bindsym $mod+h split h
 bindsym $mod+o split h
 
 # split in vertical orientation
@@ -103,25 +75,6 @@ bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
-
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-# bindsym $mod+w layout tabbed
-bindsym $mod+t layout tabbed
-bindsym $mod+e layout toggle split
-
-# toggle tiling / floating
-# bindsym $mod+Shift+space floating toggle
-bindsym $mod+Shift+f floating toggle
-
-# change focus between tiling / floating windows
-# bindsym $mod+space focus mode_toggle
-
-# focus the parent container
-# bindsym $mod+a focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -160,35 +113,13 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# reload the configuration file
-# bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-# bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-
 # resize window (you can also use the mouse for that)
-mode "resize" {
+mode "h: shrink width | j: grow height | k: shrink height | l: grow width" {
         # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        # bindsym j resize shrink width 10 px or 10 ppt
-        # bindsym k resize grow height 10 px or 10 ppt
-        # bindsym l resize shrink height 10 px or 10 ppt
-        # bindsym semicolon resize grow width 10 px or 10 ppt
         bindsym h resize shrink width 10 px or 10 ppt
         bindsym j resize grow height 10 px or 10 ppt
         bindsym k resize shrink height 10 px or 10 ppt
         bindsym l resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
@@ -196,9 +127,29 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+r mode "resize"
+bindsym $mod+Shift+r mode "h: shrink width | j: grow height | k: shrink height | l: grow width"
 
-mode "shutdown [c: reload i3 config, r: restart i3, e: exit i3, R:reboot computer, P: poweroff computer]" {
+# change layout
+mode "s: stacking | t: tabbed | e: toggle split | f: floating | h: left | j: down | k: up | l: right" {
+    bindsym s layout stacking
+    bindsym t layout tabbed
+    bindsym e layout toggle split
+    bindsym f floating toggle
+    bindsym h move left
+    bindsym j move down
+    bindsym k move up
+    bindsym l move right
+
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+Shift+l mode "s: stacking | t: tabbed | e: toggle split | f: floating | h: left | j: down | k: up | l: right"
+
+# shutdown
+mode "c: reload i3 config | r: restart i3 | e: exit i3 | R:reboot computer | P: poweroff computer" {
         bindsym c reload
         bindsym r restart
         bindsym e exec "i3-msg exit"
@@ -211,7 +162,7 @@ mode "shutdown [c: reload i3 config, r: restart i3, e: exit i3, R:reboot compute
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+Shift+s mode "shutdown [c: reload i3 config, r: restart i3, e: exit i3, R:reboot computer, P: poweroff computer]"
+bindsym $mod+Shift+s mode "c: reload i3 config | r: restart i3 | e: exit i3 | R:reboot computer | P: poweroff computer"
 
 # class                 border  bground text    indicator child_border
 client.focused          #83CAFA #51A2DA #FFFFFF #83CAFA   #51A2DA
@@ -226,6 +177,7 @@ client.background       #FFFFFF
 # finds out, if available)
 bar {
   position top
+  font pango: monospace 12
   colors {
     background #000000
     statusline #FFFFFF

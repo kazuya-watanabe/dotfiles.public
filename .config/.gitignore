@@ -1,4 +1,5 @@
 anthy/*
+autostart/*
 btop/*
 coc/*
 dconf/*
@@ -15,5 +16,6 @@ volumeicon/*
 xfce4/*
 
 openai.token
+pavucontrol.ini
 sealert.conf
 user-dirs.*
