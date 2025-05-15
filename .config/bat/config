@@ -29,4 +29,5 @@
 --map-syntax '*rc:INI'
 --map-syntax 'vimrc:VimL'
 --map-syntax 'gvimrc:VimL'
---theme 'OneHalfDark'
+--theme OneHalfDark
+--style plain

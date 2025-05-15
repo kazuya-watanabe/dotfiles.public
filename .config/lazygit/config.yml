@@ -1,0 +1,13 @@
+gui:
+  timeFormat: 2006-01-02
+  shortTimeFormat: 15:04
+  nerdFontsVersion: "3"
+
+git:
+  paging:
+    pager: "delta --dark --paging=never"
+
+os:
+  editInTerminal: true
+  edit: "vim {{filename}}"
+  editAtLine: "vim +{{line}} {{filename}}"

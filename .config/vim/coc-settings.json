@@ -1,15 +1,15 @@
 {
   "coc.preferences.enableMessageDialog": true,
-  "coc.preferences.formatOnSave": true,
+  "coc.preferences.formatOnSave": false,
   "codeLens.enable": true,
   "colors.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": false
   },
-  "eslint.autoFixOnSave": true,
+  "eslint.autoFixOnSave": false,
   "extensions.updateCheck": "weekly",
   "intelephense.environment.documentRoot": "**/public/",
-  "intelephense.environment.phpVersion": "8.3.0",
+  "intelephense.environment.phpVersion": "8.2.0",
   "list.height": 18,
   "python.formatting.autopep8Args": ["--max-line-length", "120"],
   "snippets.snipmate.enable": true,

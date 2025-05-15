@@ -5,6 +5,7 @@
 	bd = branch -d
 	c = checkout
 	cb = checkout -b
+	co = checkout
 	cm = commit --verbose
 	cma = commit --ammend --verbose
 	cmr = revert
@@ -13,6 +14,8 @@
 	f = fetch
 	l = log --graph --oneline
 	ll = log --graph --abbrev-commit
+	ls = ls-files
+	lso = ls-files --others --exclude-standard
 	m = merge
 	pl = pull
 	ps = push
@@ -23,7 +26,7 @@
 	rsh = reset --hard
 	s = status --branch --short
 	sl = status --branch
-	st = stash
+	st = stash list
 	std = stash drop
 	stl = stash list
 	stp = stash pop
