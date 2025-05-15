@@ -202,7 +202,6 @@ function! s:LoadPlugins(timer)
 
     if executable('git') && plug#begin(s:vimplug_data_dir)
         " ale
-        let g:ale_completion_enabled = 1
         let g:ale_linters = {
                     \ 'markdown': [ 'textlint' ],
                     \ 'text': [ 'textlint' ],
@@ -363,6 +362,14 @@ function! s:LoadPlugins(timer)
 
         let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols[ 'vue' ] = '󰡄'
 
+        " vim-polyglot
+        let g:polyglot_disabled = [
+                    \ 'autoindent',
+                    \ 'ftdetect',
+                    \ 'sensible',
+                    \ 'markdown',
+                    \ ]
+
         " vim-table-mode
         let g:table_mode_disable_mappings = 1
         let g:table_mode_disable_tableize_mappings = 1
@@ -379,6 +386,7 @@ function! s:LoadPlugins(timer)
                     \   endif
         Plug 'joshdick/onedark.vim'
         Plug 'markonm/hlyank.vim'
+        Plug 'sheerun/vim-polyglot'
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-fugitive'
         Plug 'tpope/vim-obsession'
@@ -433,6 +441,9 @@ function! s:LoadPlugins(timer)
                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
         nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+
+        nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
+        nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
 
         nmap <silent><nowait> gd <Plug>(coc-definition)
         nmap <silent><nowait> gy <Plug>(coc-type-definition)

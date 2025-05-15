@@ -19,7 +19,6 @@ if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
     zplug load
 fi
 
-test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
 test -x /home/linuxbrew/.linuxbrew/bin/brew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 test -x /opt/homebrew/bin/brew && eval $(/opt/homebrew/bin/brew shellenv)
 
@@ -27,6 +26,8 @@ type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
 type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
 type fzf >/dev/null 2>&1 && source <(fzf --zsh)
 type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+
+test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
 
 typeset -U fpath FPATH
 

@@ -1,6 +1,6 @@
 umask 0022
 
-export PATH="${HOME}/.local/bin":${PATH}
+export PATH="${HOME}/.local/bin":"${XDG_CONFIG_HOME}/composer/vendor/bin":${PATH}
 export EDITOR=vim
 export VISUAL=vim
 export PAGER=less
