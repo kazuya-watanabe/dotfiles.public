@@ -41,7 +41,6 @@ set list
 set listchars=tab:󰅂─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰄾,precedes:󰄽,conceal:
 set nrformats-=octal
 set number
-set relativenumber
 set ruler
 set scrolloff=5
 set shiftwidth=4
@@ -60,9 +59,9 @@ set splitbelow
 set splitright
 set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [Ln:%l/%L\ Cl:%v]
 set noswapfile
+set tabstop=4
 set ttimeout
 set ttimeoutlen=100
-set undofile
 set updatetime=300
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
@@ -119,6 +118,7 @@ augroup vimrc
     autocmd FileType,BufRead dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType,BufRead html,markdown,txt setlocal spell
     autocmd FileType,BufRead aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
+    autocmd FileWritePre * silent call mkdir(expand('%:p:h'), 'p')
     autocmd CursorHold * call s:Nohlsearch()
     autocmd InsertEnter * call s:Nohlsearch()
 augroup END
@@ -186,7 +186,6 @@ function! s:LoadPlugins(timer)
 
         if !filereadable(l:vimplug_path)
             echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. l:vimplug_path
-
             finish
         endif
     endif
@@ -201,12 +200,6 @@ function! s:LoadPlugins(timer)
 
 
     if executable('git') && plug#begin(s:vimplug_data_dir)
-        " ale
-        let g:ale_linters = {
-                    \ 'markdown': [ 'textlint' ],
-                    \ 'text': [ 'textlint' ],
-                    \ }
-
         " coc.nvim
         let g:coc_global_extensions = [
                     \ 'coc-snippets',
@@ -307,19 +300,11 @@ function! s:LoadPlugins(timer)
 
         " vim-airline
         let g:airline_extensions = [
-                    \ 'ale',
                     \ 'branch',
-                    \ 'coc',
-                    \ 'fugitiveline',
-                    \ 'fzf',
-                    \ 'obsession',
-                    \ 'quickfix',
-                    \ 'scrollbar',
                     \ 'tabline',
-                    \ 'term',
-                    \ 'whitespace',
                     \ ]
         let g:airline_experimental = 1
+        let g:airline_highlighting_cache = 1
         let g:airline_powerline_fonts = 1
         let g:airline_left_sep = ''
         let g:airline_right_sep = ''
@@ -342,10 +327,8 @@ function! s:LoadPlugins(timer)
         let g:airline_symbols.notexists = ' 󱥸'
         let g:airline_symbols.whitespace = '󱗽󱞥'
 
-        let g:airline#extensions#ale#error_symbol = '󰅖 Error:'
-        let g:airline#extensions#ale#warning_symbol = '󰈅 Warning:'
-        let g:airline#extensions#coc#error_symbol = g:airline#extensions#ale#error_symbol
-        let g:airline#extensions#coc#warning_symbol = g:airline#extensions#ale#warning_symbol
+        let g:airline#extensions#coc#error_symbol = '󰅖 Error:'
+        let g:airline#extensions#coc#warning_symbol = '󰈅 Warning:'
         let g:airline#extensions#obsession#indicator_text = ' Session'
 
         " vim-devicons
@@ -380,10 +363,10 @@ function! s:LoadPlugins(timer)
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' |
-                    \ if !has('win32') |
-                    \   Plug 'tiagofumo/vim-nerdtree-syntax-highlight' |
-                    \   endif
+        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin'
+                    \ | if !has('win32')
+                    \ |   Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+                    \ | endif
         Plug 'joshdick/onedark.vim'
         Plug 'markonm/hlyank.vim'
         Plug 'sheerun/vim-polyglot'
@@ -398,7 +381,6 @@ function! s:LoadPlugins(timer)
         endif
 
         if executable('node')
-            Plug 'dense-analysis/ale'
             Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'honza/vim-snippets'
         endif
 
@@ -496,7 +478,7 @@ function! s:LoadPlugins(timer)
 
     " nerdtree
     if exists(':NERDTree')
-        nnoremap <silent> <Leader>e :<C-u>NERDTreeFocus<CR>
+        nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
     endif
 
     " onedark
