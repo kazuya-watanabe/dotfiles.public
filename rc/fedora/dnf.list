@@ -1,7 +1,11 @@
 akmod-nvidia
 cascadia-code-nf-fonts
 java-21-openjdk
+java-21-openjdk-devel
 kitty
+libreoffice
+libreoffice-help-ja
+libreoffice-langpack-ja
 python3-pip
 thunderbird
 xorg-x11-drv-nvidia-cuda

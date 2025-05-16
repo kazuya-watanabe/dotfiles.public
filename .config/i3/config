@@ -68,7 +68,7 @@ bindsym $mod+k focus up
 bindsym $mod+l focus right
 
 # split in horizontal orientation
-bindsym $mod+o split h
+bindsym $mod+p split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -114,7 +114,11 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # resize window (you can also use the mouse for that)
-mode "h: shrink width | j: grow height | k: shrink height | l: grow width" {
+set $mode_resize <b>Resize</b> : <u>h</u> / <u>j</u> / <u>k</u> / <u>l</u>
+
+bindsym $mod+Shift+r mode "$mode_resize"
+
+mode --pango_markup "$mode_resize" {
         # These bindings trigger as soon as you enter the resize mode
         bindsym h resize shrink width 10 px or 10 ppt
         bindsym j resize grow height 10 px or 10 ppt
@@ -127,13 +131,15 @@ mode "h: shrink width | j: grow height | k: shrink height | l: grow width" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+Shift+r mode "h: shrink width | j: grow height | k: shrink height | l: grow width"
-
 # change layout
-mode "s: stacking | t: tabbed | e: toggle split | f: floating | h: left | j: down | k: up | l: right" {
+set $mode_layout <b>Layout</b> : <u>s</u>tacking / <u>t</u>abbed / toggle s<u>p</u>lit / <u>f</u>loating / <u>h</u> / <u>j</u> / <u>k</u> / <u>l</u>
+
+bindsym $mod+Shift+l mode "$mode_layout"
+
+mode --pango_markup "$mode_layout" {
     bindsym s layout stacking
     bindsym t layout tabbed
-    bindsym e layout toggle split
+    bindsym p layout toggle split
     bindsym f floating toggle
     bindsym h move left
     bindsym j move down
@@ -146,10 +152,28 @@ mode "s: stacking | t: tabbed | e: toggle split | f: floating | h: left | j: dow
     bindsym $mod+r mode "default"
 }
 
-bindsym $mod+Shift+l mode "s: stacking | t: tabbed | e: toggle split | f: floating | h: left | j: down | k: up | l: right"
+# launcher
+set $mode_launcher <b>Launcher</b> : <u>f</u>irefox / <u>t</u>hunderbird / libre<u>o</u>ffice
 
-# shutdown
-mode "c: reload i3 config | r: restart i3 | e: exit i3 | R:reboot computer | P: poweroff computer" {
+bindsym $mod+o mode "$mode_launcher"
+
+mode --pango_markup "$mode_launcher" {
+    bindsym f exec firefox
+    bindsym t exec thunderbird
+    bindsym o exec libreoffice
+
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+# session
+set $mode_session <b>Session</b> : reload i3 <u>c</u>onfig / <u>r</u>estart i3 / <u>e</u>xit i3 / <u>R</u>eboot computer / <u>P</u>oweroff computer
+
+bindsym $mod+s mode "$mode_session"
+
+mode --pango_markup "$mode_session" {
         bindsym c reload
         bindsym r restart
         bindsym e exec "i3-msg exit"
@@ -161,8 +185,6 @@ mode "c: reload i3 config | r: restart i3 | e: exit i3 | R:reboot computer | P: 
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
-
-bindsym $mod+Shift+s mode "c: reload i3 config | r: restart i3 | e: exit i3 | R:reboot computer | P: poweroff computer"
 
 # class                 border  bground text    indicator child_border
 client.focused          #83CAFA #51A2DA #FFFFFF #83CAFA   #51A2DA
@@ -177,7 +199,7 @@ client.background       #FFFFFF
 # finds out, if available)
 bar {
   position top
-  font pango: monospace 12
+  font pango: Sans 12
   colors {
     background #000000
     statusline #FFFFFF
