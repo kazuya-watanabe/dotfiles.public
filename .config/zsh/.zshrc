@@ -100,3 +100,19 @@ bindkey -M viins '^N' history-substring-search-down
 bindkey -M viins '^P' history-substring-search-up
 bindkey -M viins '^U' backward-kill-line
 bindkey -M viins '^W' backward-kill-word
+
+if [[ "${ZDOTDIR}/.zshrc" -nt "${ZDOTDIR}/.zshrc.zwc" ]]; then
+    zcompile "${ZDOTDIR}/.zshrc"
+fi
+
+for i in $(fd --type=f --no-ignore \.zsh$ "${ZPLUG_HOME}"); do
+    if [[ "${i}" -nt "${i}.zwc" ]]; then
+        zcompile "${i}"
+    fi
+done
+
+if [[ ! -s "${ZDOTDIR}/.zcompdump" || "${ZDOTDIR}/.zshrc" -nt "${ZDOTDIR}/.zcompdump" ]]; then
+    compinit
+else
+    compinit -C
+fi

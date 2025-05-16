@@ -95,6 +95,10 @@ if !has('nvim')
     let &viminfofile = s:data_dir .. '/viminfo'
 endif
 
+if has('gui_running')
+    set guioptions+=chk guioptions-=T guioptions-=e guioptions-=m
+endif
+
 if has('vim_starting')
     let &t_SI ..= "\e[6 q"
     let &t_EI ..= "\e[2 q"
@@ -111,17 +115,25 @@ catch
 endtry
 
 " autocmds
-augroup vimrc
-    autocmd!
-    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
-    autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType,BufRead dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
-    autocmd FileType,BufRead html,markdown,txt setlocal spell
-    autocmd FileType,BufRead aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
-    autocmd FileWritePre * silent call mkdir(expand('%:p:h'), 'p')
-    autocmd CursorHold * call s:Nohlsearch()
-    autocmd InsertEnter * call s:Nohlsearch()
-augroup END
+function! s:ReadLargeFile()
+    if getfsize(expand('%')) > 2 * 1024 * 1024
+        setlocal nobackup
+        setlocal nocursorcolumn
+        setlocal nocursorline
+        setlocal lazyredraw
+        setlocal nolist
+        setlocal nonumber
+        setlocal norelativenumber
+        setlocal nospell
+        setlocal noswapfile
+        setlocal noundofile
+        setlocal nowrap
+
+        if stridx(&statusline, 'airline') >= 0
+            AirlineToggle
+        endif
+    endif
+endfunction
 
 function! s:Nohlsearch()
     if v:hlsearch
@@ -129,7 +141,37 @@ function! s:Nohlsearch()
     endif
 endfunction
 
+augroup vimrc
+    autocmd!
+    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
+    autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
+    autocmd BufReadPre * call s:ReadLargeFile()
+    autocmd CursorHold,InsertEnter * call s:Nohlsearch()
+    autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
+    autocmd FileType html,markdown,txt setlocal spell
+    autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
+    autocmd FileWritePre * silent call mkdir(expand('%:p:h'), 'p')
+augroup END
+
 " commands
+function! s:BufferList()
+    let l:list = []
+
+    for buf in getbufinfo({ 'buflisted': 1 })
+        call add(l:list, {
+                    \ 'bufnr': buf.bufnr,
+                    \ 'lnum': buf.lnum,
+                    \ 'text': buf.loaded ? getbufoneline(buf.bufnr, buf.lnum) : 'Not loaded',
+                    \ })
+    endfor
+
+    call setloclist(0, l:list, 'r')
+
+    lopen
+endfunction
+
+command! -nargs=0 BufferList silent call s:BufferList()
+
 command! -nargs=* Grep silent grep <args> | cwindow
 
 command! Note silent execute 'edit ' .. strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md')
@@ -197,7 +239,6 @@ function! s:LoadPlugins(timer)
     else
         let s:vimplug_data_dir = '~/.local/share/vim-plug'
     endif
-
 
     if executable('git') && plug#begin(s:vimplug_data_dir)
         " coc.nvim
@@ -306,6 +347,7 @@ function! s:LoadPlugins(timer)
         let g:airline_experimental = 1
         let g:airline_highlighting_cache = 1
         let g:airline_powerline_fonts = 1
+        let g:airline_skip_empty_sections = 1
         let g:airline_left_sep = ''
         let g:airline_right_sep = ''
         let g:airline_left_alt_sep = ''
@@ -471,9 +513,10 @@ function! s:LoadPlugins(timer)
                     \   <bang>0
                     \   )
 
+        nmap <silent> <Leader>b :<C-u>Buffers<CR>
         nmap <silent> <Leader>f :<C-u>Files<CR>
         nmap <silent> <Leader>g :<C-u>GFiles<CR>
-        nmap <silent> <Leader>b :<C-u>Buffers<CR>
+        nmap <silent> <Leader>l :<C-u>BLines<CR>
     endif
 
     " nerdtree
