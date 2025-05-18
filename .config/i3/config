@@ -114,7 +114,7 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # resize window (you can also use the mouse for that)
-set $mode_resize <b>Resize</b> : <u>h</u> / <u>j</u> / <u>k</u> / <u>l</u>
+set $mode_resize <b>Resize</b> : <b><u>h</u></b> / <b><u>j</u></b> / <b><u>k</u></b> / <b><u>l</u></b>
 
 bindsym $mod+Shift+r mode "$mode_resize"
 
@@ -132,7 +132,7 @@ mode --pango_markup "$mode_resize" {
 }
 
 # change layout
-set $mode_layout <b>Layout</b> : <u>s</u>tacking / <u>t</u>abbed / toggle s<u>p</u>lit / <u>f</u>loating / <u>h</u> / <u>j</u> / <u>k</u> / <u>l</u>
+set $mode_layout <b>Layout</b> : <b><u>s</u></b>tacking / <b><u>t</u></b>abbed / toggle s<b><u>p</u></b>lit / <b><u>f</u></b>loating / <b><u>h</u></b> / <b><u>j</u></b> / <b><u>k</u></b> / <b><u>l</u></b>
 
 bindsym $mod+Shift+l mode "$mode_layout"
 
@@ -153,9 +153,9 @@ mode --pango_markup "$mode_layout" {
 }
 
 # launcher
-set $mode_launcher <b>Launcher</b> : <u>f</u>irefox / <u>t</u>hunderbird / libre<u>o</u>ffice
+set $mode_launcher <b>Launcher</b> : <b><u>f</u></b>irefox / <b><u>t</u></b>hunderbird / libre<b><u>o</u></b>ffice
 
-bindsym $mod+o mode "$mode_launcher"
+bindsym $mod+Shift+o mode "$mode_launcher"
 
 mode --pango_markup "$mode_launcher" {
     bindsym f exec firefox
@@ -169,9 +169,9 @@ mode --pango_markup "$mode_launcher" {
 }
 
 # session
-set $mode_session <b>Session</b> : reload i3 <u>c</u>onfig / <u>r</u>estart i3 / <u>e</u>xit i3 / <u>R</u>eboot computer / <u>P</u>oweroff computer
+set $mode_session <b>Session</b> : reload i3 <b><u>c</u></b>onfig / <b><u>r</u></b>estart i3 / <b><u>e</u></b>xit i3 / <b><u>R</u></b>eboot computer / <b><u>P</u></b>oweroff computer
 
-bindsym $mod+s mode "$mode_session"
+bindsym $mod+Shift+s mode "$mode_session"
 
 mode --pango_markup "$mode_session" {
         bindsym c reload
