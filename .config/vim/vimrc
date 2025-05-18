@@ -40,7 +40,6 @@ set lazyredraw
 set list
 set listchars=tab:󰅂─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰄾,precedes:󰄽,conceal:
 set nrformats-=octal
-set number
 set ruler
 set scrolloff=5
 set shiftwidth=4
@@ -68,6 +67,7 @@ set whichwrap+=<,>,~,[,]
 set wildignorecase
 set wildmode=longest:full,full
 set wildoptions=fuzzy,pum,tagfile
+set nowrap
 set nowritebackup
 
 let &backupdir = s:data_dir .. '/backup'
@@ -158,11 +158,13 @@ function! s:BufferList()
     let l:list = []
 
     for buf in getbufinfo({ 'buflisted': 1 })
-        call add(l:list, {
-                    \ 'bufnr': buf.bufnr,
-                    \ 'lnum': buf.lnum,
-                    \ 'text': buf.loaded ? getbufoneline(buf.bufnr, buf.lnum) : 'Not loaded',
-                    \ })
+        if buf.name != ''
+            call add(l:list, {
+                        \ 'bufnr': buf.bufnr,
+                        \ 'lnum': buf.lnum,
+                        \ 'text': buf.loaded ? getbufoneline(buf.bufnr, buf.lnum) : 'Not loaded',
+                        \ })
+        endif
     endfor
 
     call setloclist(0, l:list, 'r')
@@ -534,8 +536,6 @@ function! s:LoadPlugins(timer)
 
         let g:airline_theme = l:colors_name
     endif
-
-    unlet l:colors_name
 
     " vim-ai
     if exists(':AINewChat')
