@@ -83,7 +83,7 @@ pip install --user --requirement rc/pip-requirements.txt
 ### PowerShell
 
 ```powershell
-Get-Content .\rc\windows\powershell\modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
+Get-Content .\rc\windows\powershell-modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
 ```
 
 [^1]: [Homebrew](https://brew.sh/)
