@@ -316,6 +316,10 @@ function! s:LoadPlugins(timer)
         " nerdtree
         let g:NERDTreeBookmarksFile = s:data_dir .. '/NERDTreeBookmarks'
         let g:NERDTreeGitStatusUseNerdFonts = 1
+        let g:NERDTreeGitStatusIndicatorMapCustom = {
+                    \ 'Renamed': '󰁕',
+                    \ 'Deleted': '󰆴',
+                    \ }
         let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
         let g:NERDTreeShowHidden = 1
         let g:NERDTreeWinSize = 30
@@ -344,16 +348,14 @@ function! s:LoadPlugins(timer)
         " vim-airline
         let g:airline_extensions = [
                     \ 'branch',
+                    \ 'coc',
+                    \ 'obsession',
                     \ 'tabline',
                     \ ]
         let g:airline_experimental = 1
         let g:airline_highlighting_cache = 1
         let g:airline_powerline_fonts = 1
         let g:airline_skip_empty_sections = 1
-        let g:airline_left_sep = ''
-        let g:airline_right_sep = ''
-        let g:airline_left_alt_sep = ''
-        let g:airline_right_alt_sep = ''
 
         if !exists('g:airline_symbols')
             let g:airline_symbols = {}
