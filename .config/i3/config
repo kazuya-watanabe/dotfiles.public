@@ -133,11 +133,12 @@ mode --pango_markup "$mode_layout" {
 }
 
 # launcher
-set $mode_launcher <b>Launcher</b> : <b><u>f</u></b>irefox / <b><u>g</u></b>imp / <b><u>i</u></b>nkscape / libre<b><u>o</u></b>ffice / <b><u>t</u></b>hunderbird / <b><u>v</u></b>lc \t\t <b>Back</b> : <b><u>Enter</u></b> / <b><u>Esc</u></b>
+set $mode_launcher <b>Launcher</b> : <b><u>d</u></b>ia / <b><u>f</u></b>irefox / <b><u>g</u></b>imp / <b><u>i</u></b>nkscape / libre<b><u>o</u></b>ffice / <b><u>t</u></b>hunderbird / <b><u>v</u></b>lc \t\t <b>Back</b> : <b><u>Enter</u></b> / <b><u>Esc</u></b>
 
 bindsym $mod+space mode "$mode_launcher"
 
 mode --pango_markup "$mode_launcher" {
+    bindsym d exec dia; mode "default"
     bindsym f exec firefox; mode "default"
     bindsym g exec gimp; mode "default"
     bindsym i exec inkscape; mode "default"
