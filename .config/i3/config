@@ -10,7 +10,6 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod1
-set $altmod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -46,20 +45,13 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-# bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Return exec kitty
 
 # kill focused window
-# bindsym $mod+Shift+q kill
 bindsym $mod+w kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#BBBBBB' -nb '#222222' -sb '#005577' -sf '#EEEEEE' -fn 'Sans-12'"
-# A more modern dmenu replacement is rofi:
-# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
-# There also is i3-dmenu-desktop which only displays applications shipping a
-# .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
 bindsym $mod+h focus left
@@ -113,26 +105,8 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# resize window (you can also use the mouse for that)
-set $mode_resize <b>Resize</b> : <b><u>h</u></b> / <b><u>j</u></b> / <b><u>k</u></b> / <b><u>l</u></b>
-
-bindsym $mod+Shift+r mode "$mode_resize"
-
-mode --pango_markup "$mode_resize" {
-        # These bindings trigger as soon as you enter the resize mode
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
-}
-
 # change layout
-set $mode_layout <b>Layout</b> : <b><u>s</u></b>tacking / <b><u>t</u></b>abbed / toggle s<b><u>p</u></b>lit / <b><u>f</u></b>loating / <b><u>h</u></b> / <b><u>j</u></b> / <b><u>k</u></b> / <b><u>l</u></b>
+set $mode_layout <b>Layout</b> : <b><u>s</u></b>tacking / <b><u>t</u></b>abbed / toggle s<b><u>p</u></b>lit / <b><u>f</u></b>loating \t\t <b>Move</b> : <b><u>h</u></b> / <b><u>j</u></b> / <b><u>k</u></b> / <b><u>l</u></b> \t\t <b>Resize</b> : <b><u>H</u></b> / <b><u>J</u></b> / <b><u>K</u></b> / <b><u>L</u></b> \t\t <b>Back</b> : <b><u>Enter</u></b> / <b><u>Esc</u></b>
 
 bindsym $mod+Shift+l mode "$mode_layout"
 
@@ -141,10 +115,16 @@ mode --pango_markup "$mode_layout" {
     bindsym t layout tabbed
     bindsym p layout toggle split
     bindsym f floating toggle
-    bindsym h move left
-    bindsym j move down
-    bindsym k move up
-    bindsym l move right
+
+    bindsym h move left 20 px
+    bindsym j move down 20 px
+    bindsym k move up 20 px
+    bindsym l move right 20 px
+
+    bindsym Shift+h resize shrink width 20 px or 20 ppt
+    bindsym Shift+j resize grow height 20 px or 20 ppt
+    bindsym Shift+k resize shrink height 20 px or 20 ppt
+    bindsym Shift+l resize grow width 20 px or 20 ppt
 
     # back to normal: Enter or Escape or $mod+r
     bindsym Return mode "default"
@@ -153,14 +133,17 @@ mode --pango_markup "$mode_layout" {
 }
 
 # launcher
-set $mode_launcher <b>Launcher</b> : <b><u>f</u></b>irefox / <b><u>t</u></b>hunderbird / libre<b><u>o</u></b>ffice
+set $mode_launcher <b>Launcher</b> : <b><u>f</u></b>irefox / <b><u>g</u></b>imp / <b><u>i</u></b>nkscape / libre<b><u>o</u></b>ffice / <b><u>t</u></b>hunderbird / <b><u>v</u></b>lc \t\t <b>Back</b> : <b><u>Enter</u></b> / <b><u>Esc</u></b>
 
-bindsym $mod+Shift+o mode "$mode_launcher"
+bindsym $mod+space mode "$mode_launcher"
 
 mode --pango_markup "$mode_launcher" {
-    bindsym f exec firefox
-    bindsym t exec thunderbird
-    bindsym o exec libreoffice
+    bindsym f exec firefox; mode "default"
+    bindsym g exec gimp; mode "default"
+    bindsym i exec inkscape; mode "default"
+    bindsym o exec libreoffice; mode "default"
+    bindsym t exec thunderbird; mode "default"
+    bindsym v exec vlc; mode "default"
 
     # back to normal: Enter or Escape or $mod+r
     bindsym Return mode "default"
@@ -169,21 +152,21 @@ mode --pango_markup "$mode_launcher" {
 }
 
 # session
-set $mode_session <b>Session</b> : reload i3 <b><u>c</u></b>onfig / <b><u>r</u></b>estart i3 / <b><u>e</u></b>xit i3 / <b><u>R</u></b>eboot computer / <b><u>P</u></b>oweroff computer
+set $mode_session <b>Session</b> : reload i3 <b><u>c</u></b>onfig / <b><u>r</u></b>estart i3 / <b><u>e</u></b>xit i3 / <b><u>R</u></b>eboot computer / <b><u>P</u></b>oweroff computer \t\t <b>Back</b> : <b><u>Enter</u></b> / <b><u>Esc</u></b>
 
 bindsym $mod+Shift+s mode "$mode_session"
 
 mode --pango_markup "$mode_session" {
-        bindsym c reload
-        bindsym r restart
-        bindsym e exec "i3-msg exit"
-        bindsym Shift+r exec "systemctl reboot"
-        bindsym Shift+p exec "systemctl poweroff"
+    bindsym c reload
+    bindsym r restart
+    bindsym e exec "i3-msg exit"
+    bindsym Shift+r exec "systemctl reboot"
+    bindsym Shift+p exec "systemctl poweroff"
 
-        # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
 
 # class                 border  bground text    indicator child_border

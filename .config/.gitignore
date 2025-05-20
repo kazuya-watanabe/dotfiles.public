@@ -1,3 +1,4 @@
+GIMP/*
 anthy/*
 autostart/*
 btop/*
@@ -8,15 +9,18 @@ gh/*
 github-copilot/*
 ibus-anthy/*
 ibus/*
+inkscape/*
 iterm2/*
 libreoffice/*
 mume/*
 psysh/*
 pulse/*
 scoop/*
+vlc/*
 volumeicon/*
 xfce4/*
 
+QtProject.conf
 openai.token
 pavucontrol.ini
 sealert.conf

@@ -520,7 +520,6 @@ function! s:LoadPlugins(timer)
         nmap <silent> <Leader>b :<C-u>Buffers<CR>
         nmap <silent> <Leader>f :<C-u>Files<CR>
         nmap <silent> <Leader>g :<C-u>GFiles<CR>
-        nmap <silent> <Leader>l :<C-u>BLines<CR>
     endif
 
     " nerdtree
