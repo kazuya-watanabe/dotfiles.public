@@ -1,5 +1,9 @@
 akmod-nvidia
 cascadia-mono-nf-fonts
+gimp
+gimp-help-ja
+inkscape
+inkscape-docs
 java-21-openjdk
 java-21-openjdk-devel
 kitty
@@ -8,6 +12,7 @@ libreoffice-help-ja
 libreoffice-langpack-ja
 python3-pip
 thunderbird
+vlc-gui-qt
 xorg-x11-drv-nvidia-cuda
 xorg-x11-drv-nvidia-cuda-libs
 xorg-x11-drv-nvidia-power
