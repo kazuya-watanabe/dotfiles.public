@@ -26,6 +26,12 @@ Import-Module PSFzf
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
 Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
 
+$env:EDITOR = 'vim'
+$env:VISUAL = 'vim'
+$env:PAGER = 'less'
+$env:LESS = '-iFJMRX'
+$env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
+
 Remove-Item alias:curl
 Remove-Item alias:diff -Force
 Remove-Item alias:tee -Force
@@ -40,51 +46,34 @@ if (Get-Command -Name bat.exe -ErrorAction SilentlyContinue) {
     $env:FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse'
 }
 
-if (Get-Command diff.exe -ErrorAction SilentlyContinue) {
-    function diff {
-        &diff.exe -u @args
-    }
-}
+function fd { &fd.exe --follow --hidden @args }
+function rg { &rg.exe --follow --hidden @args }
 
-if (Get-Command fd.exe -ErrorAction SilentlyContinue) {
-    function fd {
-        &fd.exe --follow --hidden @args
-    }
-
-    $env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-}
-
-if (Get-Command git.exe -ErrorAction SilentlyContinue) {
-    Set-Alias g git.exe
-
-    function gf {
-        &git.exe flow @args
-    }
-}
+Set-Alias g git.exe
+function gC { &git.exe commit @args }
+function gP { &git.exe push @args }
+function gR { &git.exe rebase @args }
+function gS { &git.exe stash @args }
+function ga { &git.exe add @args }
+function gb { &git.exe branch @args }
+function gc { &git.exe checkout @args }
+function gd { &git.exe diff @args }
+function gf { &git.exe flow @args }
+function gl { &git.exe log @args }
+function gm { &git.exe merge @args }
+function gp { &git.exe pull @args }
+function gr { &git.exe reset @args }
+function gs { &git.exe status @args }
+function gt { &git.exe tag @args }
 
 if (Get-Command lsd.exe -ErrorAction SilentlyContinue) {
   Remove-Item alias:ls
 
-  function ls {
-    &lsd.exe --group-directories-first @args
-  }
-
-
-  function ll {
-    ls -Al @args
-  }
+  function ls { &lsd.exe --group-directories-first @args }
+  function la { &lsd.exe --group-directories-first -A @args }
+  function ll { &lsd.exe --group-directories-first -Al @args }
 } else {
   Set-Alias ll ls
-}
-
-if (Get-Command less.exe -ErrorAction SilentlyContinue) {
-    $env:PAGER = 'less'
-    $env:LESS = '-iFJMRX'
-}
-
-if (Get-Command vim.exe -ErrorAction SilentlyContinue) {
-    $env:VISUAL = 'vim'
-    $env:EDITOR = 'vim'
 }
 
 function which() {
