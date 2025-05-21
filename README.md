@@ -33,7 +33,6 @@ New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\windows\powershell
 New-Item -Force -ItemType HardLink -Value "$(Get-Location)\.textlintrc" -Path "$env:USERPROFILE\.textlintrc"
 New-Item -Force -ItemType HardLink -Value "$(Get-Location)\.config\vim\vimrc" -Path "$env:USERPROFILE\.config\vim\init.vim"
 
-[System.Environment]::SetEnvironmentVariable('RIPGREP_CONFIG_PATH', "$env:USERPROFILE\.config\rg\ripgreprc", [System.EnvironmentVariableTarget]::User)
 $CurrentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
 [System.Environment]::SetEnvironmentVariable('PATH', "$(Join-Path -Path "$(python -m site --user-site)" -ChildPath "..\Scripts" -Resolve);" + "$([System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User))", [System.EnvironmentVariableTarget]::User)
 ```
