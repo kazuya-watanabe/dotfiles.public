@@ -23,6 +23,7 @@ test -x /home/linuxbrew/.linuxbrew/bin/brew && eval $(/home/linuxbrew/.linuxbrew
 test -x /opt/homebrew/bin/brew && eval $(/opt/homebrew/bin/brew shellenv)
 
 type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
+type gh >/dev/null 2>&1 && eval "$(gh copilot alias -- zsh)"
 type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
 type fzf >/dev/null 2>&1 && source <(fzf --zsh)
 type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
@@ -100,6 +101,10 @@ bindkey -M viins '^N' history-substring-search-down
 bindkey -M viins '^P' history-substring-search-up
 bindkey -M viins '^U' backward-kill-line
 bindkey -M viins '^W' backward-kill-word
+
+function lf() {
+    cd "$(command lf --print-last-dir "$@")"
+}
 
 if [[ "${ZDOTDIR}/.zshrc" -nt "${ZDOTDIR}/.zshrc.zwc" ]]; then
     zcompile "${ZDOTDIR}/.zshrc"
