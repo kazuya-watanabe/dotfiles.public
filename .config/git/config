@@ -1,36 +1,52 @@
 [alias]
+	a = add
+
 	b = branch
-	ba = branch --remotes
-	bc = checkout -b
+	bl = branch --verbose
+	br = branch --remote
 	bd = branch -d
+
 	c = checkout
 	cb = checkout -b
+	bc = checkout -b
 	co = checkout
-	cm = commit --verbose
-	cma = commit --ammend --verbose
-	cmr = revert
+
+	C = commit --verbose
+	Ca = commit --ammend --verbose
+	Cr = revert
+
 	d = diff
 	ds = diff --name-status
+
 	f = fetch
+
 	l = log --graph --oneline
 	ll = log --graph --abbrev-commit
+
 	ls = ls-files
 	lso = ls-files --others --exclude-standard
+
 	m = merge
-	pl = pull
-	ps = push
-	rb = rebase
-	rbi = rebase --interactive --auto-squash
-	rs = reset
-	rss = reset --soft
-	rsh = reset --hard
+
+	p = pull
+	P = push
+
+	R = rebase
+	Ri = rebase --interactive --auto-squash
+
+	r = reset
+	rs = reset --soft
+	rh = reset --hard
+
 	s = status --branch --short
 	sl = status --branch
-	st = stash list
-	std = stash drop
-	stl = stash list
-	stp = stash pop
-	sts = stash save
+	st = status --branch --short
+
+	Sd = stash drop
+	Sl = stash list
+	Sp = stash pop
+	Ss = stash save
+
 	t = tag
 	tl = tag --list
 	td = tag --delete
