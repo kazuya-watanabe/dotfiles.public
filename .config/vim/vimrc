@@ -156,9 +156,11 @@ let g:loaded_vimballPlugin = 1
 function! s:LoadPlugins(timer)
     let l:vimplug_path = has('win32')
                 \   ? expand('$HOME/vimfiles/autoload/plug.vim')
-                \   : exists('$XDG_DATA_HOME')
-                \       ? expand('$XDG_DATA_HOME/vim/autoload/plug.vim')
-                \       : expand('$HOME/.vim/autoload/plug.vim')
+                \   : has('nvim')
+                \       ? expand(stdpath('config') .. '/autoload/plug.vim')
+                \       : exists('$MYVIMDIR')
+                \           ? expand('$MYVIMDIR/autoload/plug.vim')
+                \           : expand('$HOME/.vim/autoload/plug.vim')
 
     if !filereadable(l:vimplug_path)
         if executable('curl')
@@ -171,34 +173,16 @@ function! s:LoadPlugins(timer)
         endif
     endif
 
-    let s:vimplug_data_dir = has('win32')
-                \   ? expand('$LOCALAPPDATA/vim-plug')
-                \   : exists('$XDG_DATA_HOME')
-                \       ? expand('$XDG_DATA_HOME/vim-plug')
-                \       : expand('$HOME/.vim/vim-plug')
-
-    if executable('git') && plug#begin(s:vimplug_data_dir)
+    if executable('git') && plug#begin()
         " coc.nvim
         let g:coc_global_extensions = [
                     \   'coc-snippets',
-                    \   'coc-markdown-preview-enhanced', 'coc-webview',
                     \   'coc-vimlsp',
-                    \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
-                    \   'coc-html', 'coc-css',
                     \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
-                    \   'coc-prisma', '@yaegassy/coc-volar',
                     \   ]
 
         if executable('clangd')
             call add(g:coc_global_extensions, 'coc-clangd')
-        endif
-
-        if executable('cmake')
-            call add(g:coc_global_extensions, 'coc-cmake')
-        endif
-
-        if executable('docker')
-            call add(g:coc_global_extensions, 'coc-docker')
         endif
 
         if executable('dotnet')
@@ -217,23 +201,14 @@ function! s:LoadPlugins(timer)
             call add(g:coc_global_extensions, 'coc-lua')
         endif
 
-        if executable('perl')
-            call add(g:coc_global_extensions, 'coc-perl')
-        endif
-
         if executable('php')
             call extend(g:coc_global_extensions, [
                         \   'coc-phpls', 'coc-phpactor', 'coc-php-cs-fixer', '@yaegassy/coc-phpstan',
-                        \   '@yaegassy/coc-laravel', 'coc-blade',
                         \   ])
         endif
 
         if executable('python3') || executable('python')
             call extend(g:coc_global_extensions, [ 'coc-pyright', 'coc-pydocstring' ])
-        endif
-
-        if executable('ruby')
-            call add(g:coc_global_extensions, 'coc-solargraph')
         endif
 
         if executable('rustc')
@@ -249,11 +224,6 @@ function! s:LoadPlugins(timer)
         let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
         " nerdtree
-        let g:NERDTreeBookmarksFile = has('win32')
-                    \   ? expand('$LOCALAPPDATA/vim/NERDTreeBookmarks')
-                    \   : exists('$XDG_DATA_HOME')
-                    \       ? expand('$XDG_DATA_HOME/vim/NERDTreeBookmarks')
-                    \       : expand('$HOME/.vim/NERDTreeBookmarks')
         let g:NERDTreeGitStatusUseNerdFonts = 1
         let g:NERDTreeGitStatusIndicatorMapCustom = {
                     \   'Renamed': '󰁕',
@@ -286,9 +256,11 @@ function! s:LoadPlugins(timer)
                     \   : expand('$HOME/.config/openai.token')
         let g:vim_ai_roles_config_file = has('win32')
                     \   ? expand('$HOME/vimfiles/roles.ini')
-                    \   : exists('$XDG_CONFIG_HOME')
-                    \       ? expand('$XDG_CONFIG_HOME/vim/roles.ini')
-                    \       : expand('$HOME/.vim/roles.ini')
+                    \   : has('nvim')
+                    \       ? expand(stdpath('config') .. '/roles.ini')
+                    \       : exists('$MYVIMDIR')
+                    \           ? expand('$MYVIMDIR/roles.ini')
+                    \           : expand('$HOME/.vim/roles.ini')
 
         " vim-airline
         let g:airline_experimental = 1
