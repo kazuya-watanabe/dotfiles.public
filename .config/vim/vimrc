@@ -220,8 +220,17 @@ function! s:LoadPlugins(timer)
         endif
 
         " fzf
-        let g:fzf_action = { 'Ctrl-t': 'tab split', 'Ctrl-i': 'split', 'Ctrl-s': 'vsplit' }
-        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+        let g:fzf_action = {
+                    \   'Ctrl-t': 'tab split',
+                    \   'Ctrl-i': 'split',
+                    \   'Ctrl-s': 'vsplit'
+                    \   }
+        let g:fzf_layout = {
+                    \   'window': { 'width': 0.9, 'height': 0.6 },
+                    \   }
+        let g:fzf_vim = {
+                    \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
+                    \   }
 
         " nerdtree
         let g:NERDTreeGitStatusUseNerdFonts = 1
@@ -425,6 +434,8 @@ function! s:LoadPlugins(timer)
         nmap <silent> <Leader>b :<C-u>Buffers<CR>
         nmap <silent> <Leader>f :<C-u>Files<CR>
         nmap <silent> <Leader>g :<C-u>GFiles<CR>
+
+        command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
     endif
 
     " nerdtree
