@@ -175,6 +175,13 @@ function! s:LoadPlugins(timer)
 
     if executable('git') && plug#begin()
         " coc.nvim
+        let $NVIM_COC_LOG_FILE = exists('$TMPDIR')
+                    \   ? expand('$TMPDIR/coc.log')
+                    \   : exists('$TEMP')
+                    \       ? expand('$TEMP/coc.log')
+                    \       : expand('$HOME/.coc.log')
+        let $NVIM_COC_LOG_LEVEL = 'warn'
+
         let g:coc_global_extensions = [
                     \   'coc-snippets',
                     \   'coc-vimlsp',
