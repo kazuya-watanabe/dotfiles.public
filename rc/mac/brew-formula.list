@@ -25,7 +25,6 @@ libsixel
 lima
 lsd
 mysql@8.4
-neovim
 openjdk@21
 p7zip
 pandoc

@@ -32,6 +32,7 @@ $env:PAGER = 'less'
 $env:LESS = '-iFJMRX'
 $env:FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow'
 $env:FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
+$env:PATH = "$(Join-Path -Path "$(python -m site --user-site)" -ChildPath "..\Scripts" -Resolve);$env:PATH"
 
 Remove-Item alias:curl
 Remove-Item alias:diff -Force
