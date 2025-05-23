@@ -3,5 +3,4 @@ httpie
 openai
 pipenv
 pptx2md
-pynvim
 xlsx2csv
