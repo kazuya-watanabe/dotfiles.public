@@ -26,7 +26,7 @@ New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\fd" -Path "$e
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lazygit" -Path "$env:LOCALAPPDATA\lazygit"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lf" -Path "$env:LOCALAPPDATA\lf"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\vim" -Path "$env:USERPROFILE\vimfiles"
-New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\windows\powershell" -Path "$env:USERPROFILE\Documents\WindowsPowerShell"
+New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\powershell" -Path "$env:USERPROFILE\Documents\WindowsPowerShell"
 Copy-Item -Force -Path "$(Get-Location)\.textlintrc" -Destination "$env:USERPROFILE\.textlintrc"
 ```
 
@@ -38,26 +38,28 @@ Copy-Item -Force -Path "$(Get-Location)\.textlintrc" -Destination "$env:USERPROF
 
 - Homebrew [^1]
 
+[^1]: [Homebrew](https://brew.sh/)
+
 ```sh
-cat rc/mac/brew-cask.list | xargs brew install --cask
-cat rc/mac/brew-formula.list | xargs brew install --formula
+bash rc/mac-brew.sh
 ```
 
 ### Windows
 
 - Scoop [^2]
 
+[^2]: [Scoop](https://scoop.sh/)
+
 ```powershell
-Get-Content .\rc\windows\scoop-buckets.list | %{ scoop bucket add $_ }
-Get-Content .\rc\windows\scoop-apps.list | %{ scoop install $_ }
+Get-Content .\rc\windows-scoop.list | %{ if ($_ -ne "") { scoop $_ } }
+Get-Content .\rc\powershell-modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
 ```
 
 ### Fedora
 
 ```sh
-cat rc/fedora/dnf.list | xargs sudo dnf install --allowerasing -y
-ulimit -n 10000
-cat rc/brew-formula.list | xargs brew install --formula
+bash rc/fedora-dnf.sh
+bash rc/linux-brew.sh
 ```
 
 ### Node.js
@@ -71,13 +73,3 @@ cat rc/npm-global.list | xargs npm --global install
 ```sh
 pip install --user --requirement rc/pip-requirements.txt
 ```
-
-### PowerShell
-
-```powershell
-Get-Content .\rc\windows\powershell-modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
-```
-
-[^1]: [Homebrew](https://brew.sh/)
-
-[^2]: [Scoop](https://scoop.sh/)
