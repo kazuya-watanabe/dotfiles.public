@@ -1,0 +1,36 @@
+install bat
+install composer
+install delta
+install fd
+install ffmpeg-shared
+install fnm
+install fzf
+install gh
+install git
+install imagemagick
+install jq
+install less
+install lf
+install lsd
+install mysql-lts
+install postgresql
+install python
+install ripgrep
+install starship
+install watchman
+install wget
+install zenhan
+install zoxide
+
+bucket add extras
+install lazygit
+install universal-ctags
+
+bucket add java
+install oraclejdk-lts
+
+bucket add php
+install php8.2
+
+bucket add versions
+install vim-nightly
