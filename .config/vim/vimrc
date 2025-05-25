@@ -11,7 +11,7 @@ set autoindent
 set autoread
 set belloff=all
 set clipboard^=unnamed
-set completeopt=longest,menuone,popup
+set completeopt=longest,menuone,noselect,popup
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -109,10 +109,10 @@ augroup vimrc
     autocmd FileType html,markdown,txt setlocal spell
     autocmd FileType qf setlocal nobuflisted
 
-    if has('mac') && executable('im-select')
-        autocmd CmdlineLeave,InsertLeave * :silent execute '!im-select com.apple.keylayout.ABC'
-    elseif has('win32') && executable('zenhan.exe')
-        autocmd CmdlineLeave,InsertLeave * :silent execute '!zenhan.exe 0'
+    if executable('im-select')
+        autocmd InsertLeave * :silent execute '!im-select com.apple.keylayout.ABC'
+    elseif executable('zenhan.exe')
+        autocmd InsertLeave * :silent execute '!zenhan.exe 0'
     endif
 augroup END
 
@@ -125,6 +125,8 @@ command! Note silent execute 'edit ' .. strftime('~/Documents/Notes/%Y-%m/%Y-%m-
 let g:mapleader = ','
 let g:maplocalleader = ' '
 
+map j gj
+map k gk
 map n nzz
 map N Nzz
 map Y y$
@@ -193,7 +195,7 @@ function! s:LoadPlugins(timer)
         let $NVIM_COC_LOG_LEVEL = 'warn'
 
         let g:coc_global_extensions = [
-                    \   'coc-snippets',
+                    \   'coc-highlight', 'coc-snippets',
                     \   'coc-vimlsp',
                     \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
                     \   ]
@@ -399,7 +401,7 @@ function! s:LoadPlugins(timer)
         inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-        "nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+        nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
 
         nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
         nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
