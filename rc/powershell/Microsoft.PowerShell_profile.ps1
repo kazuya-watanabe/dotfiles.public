@@ -20,17 +20,11 @@ Set-PSReadLineKeyHandler -Key Ctrl+m -Function ValidateAndAcceptLine
 Set-PSReadLineKeyHandler -Key Ctrl+l -Function ClearScreen
 Set-PSReadLineKeyHandler -Key Ctrl+[ -Function ViCommandMode
 
-Import-Module posh-git
-
-Import-Module PSFzf
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
-Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
-
 $env:EDITOR = 'vim'
 $env:VISUAL = 'vim'
 $env:PAGER = 'less'
 $env:LESS = '-iFJMRX'
-$env:FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow'
+$env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow'
 $env:FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
 $env:PATH = "$(Join-Path -Path "$(python -m site --user-site)" -ChildPath "..\Scripts" -Resolve);$env:PATH"
 
@@ -38,6 +32,8 @@ Remove-Item alias:curl
 Remove-Item alias:diff -Force
 Remove-Item alias:tee -Force
 Remove-Item alias:wget
+
+Set-Alias g git.exe
 
 if (Get-Command lsd.exe -ErrorAction SilentlyContinue) {
   Remove-Item alias:ls
@@ -52,13 +48,9 @@ if (Get-Command lsd.exe -ErrorAction SilentlyContinue) {
 
 function bat { &bat.exe --style=plain --color=always @args }
 function fd { &fd.exe --follow --hidden @args }
-Set-Alias g git.exe
 function rg { &rg.exe --follow --hidden @args }
 
-function which() {
-  param(
-    [string]$command
-  )
+function which([string]$command) {
   Get-Command $command -ErrorAction SilentlyContinue
 }
 
