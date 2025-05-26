@@ -2,10 +2,7 @@
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 Import-Module PSReadLine
-Set-PSReadLineOption -BellStyle None
-Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -HistorySearchCursorMovesToEnd:$True
-Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -BellStyle None -EditMode Vi -HistorySearchCursorMovesToEnd:$True -PredictionSource History
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Key Ctrl+a -Function BeginningOfLine
 Set-PSReadLineKeyHandler -Key Ctrl+e -Function EndOfLine
@@ -30,38 +27,20 @@ $env:PATH = "$(Join-Path -Path "$(python -m site --user-site)" -ChildPath "..\Sc
 
 Remove-Item alias:curl
 Remove-Item alias:diff -Force
+Remove-Item alias:ls
 Remove-Item alias:tee -Force
 Remove-Item alias:wget
 
 Set-Alias g git.exe
 
-if (Get-Command lsd.exe -ErrorAction SilentlyContinue) {
-  Remove-Item alias:ls
-
-  function ls { &lsd.exe --group-directories-first @args }
-  function la { &lsd.exe --group-directories-first -A @args }
-  function ll { &lsd.exe --group-directories-first -Al @args }
-} else {
-  Set-Alias la ls
-  Set-Alias ll ls
-}
-
 function bat { &bat.exe --style=plain --color=always @args }
 function fd { &fd.exe --follow --hidden @args }
+function la { &lsd.exe --group-directories-first -A @args }
+function ll { &lsd.exe --group-directories-first -Al @args }
+function ls { &lsd.exe --group-directories-first @args }
 function rg { &rg.exe --follow --hidden @args }
+function which([string]$command) { Get-Command $command -ErrorAction SilentlyContinue }
 
-function which([string]$command) {
-  Get-Command $command -ErrorAction SilentlyContinue
-}
-
-If (Get-Command fnm.exe -ErrorAction SilentlyContinue) {
-  fnm env --use-on-cd | Out-String | Invoke-Expression
-}
-
-If (Get-Command starship -ErrorAction SilentlyContinue) {
-  Invoke-Expression (&starship init powershell)
-}
-
-If (Get-Command -Name zoxide.exe -ErrorAction SilentlyContinue) {
-  Invoke-Expression (& { (zoxide init powershell | Out-String) })
-}
+&fnm.exe env | Out-String | Invoke-Expression
+&starship.exe init powershell --print-full-init | Out-String | Invoke-Expression
+&zoxide.exe init powershell | Out-String | Invoke-Expression
