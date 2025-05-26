@@ -432,6 +432,8 @@ function! s:LoadPlugins(timer)
             vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
         endif
 
+        autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
+
         let g:coc_snippet_next = '<C-j>'
         let g:coc_snippet_prev = '<C-k>'
 
