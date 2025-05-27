@@ -47,6 +47,7 @@ brew install --formula poppler
 brew install --formula postgresql@17
 brew install --formula redis
 brew install --formula ripgrep
+brew install --formula starship
 brew install --formula svg2png
 brew install --formula tmux
 brew install --formula universal-ctags

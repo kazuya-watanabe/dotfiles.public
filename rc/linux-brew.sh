@@ -27,6 +27,7 @@ install --formula poppler
 install --formula postgresql@17
 install --formula redis
 install --formula ripgrep
+install --formula starship
 install --formula svg2png
 install --formula tmux
 install --formula universal-ctags
