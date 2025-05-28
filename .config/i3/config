@@ -138,23 +138,20 @@ mode --pango_markup "$mode_layout" {
 
 # launcher
 set $mode_launcher \
-    <b>Launcher:</b> <b><u>D</u></b>ia / <b><u>F</u></b>irefox / <b><u>G</u></b>imp / <b><u>I</u></b>nkscape / libre<b><u>O</u></b>ffice / <b><u>S</u></b>team / <b><u>T</u></b>hunderbird / <b><u>V</u></b>lc / <b><u>b</u></b>top / <b><u>l</u></b>f / <b><u>v</u></b>im \
+    <b>Launcher:</b> <b><u>d</u></b>ia / <b><u>f</u></b>irefox / <b><u>g</u></b>imp / <b><u>i</u></b>nkscape / libre<b><u>o</u></b>ffice / <b><u>s</u></b>team / <b><u>t</u></b>hunderbird / <b><u>v</u></b>lc \
     <b>Back:</b> <b><u>Enter</u></b> / <b><u>Esc</u></b>
 
 bindsym $mod+space mode "$mode_launcher"
 
 mode --pango_markup "$mode_launcher" {
-    bindsym Shift+d exec dia; mode "default"
-    bindsym Shift+f exec firefox; mode "default"
-    bindsym Shift+g exec gimp; mode "default"
-    bindsym Shift+i exec inkscape; mode "default"
-    bindsym Shift+o exec libreoffice; mode "default"
-    bindsym Shift+s exec steam; mode "default"
-    bindsym Shift+t exec thunderbird; mode "default"
-    bindsym Shift+v exec vlc; mode "default"
-    bindsym b exec "kitty -e btop"; mode "default"
-    bindsym l exec "kitty -e lf"; mode "default"
-    bindsym v exec "kitty -e vim"; mode "default"
+    bindsym d exec dia; mode "default"
+    bindsym f exec firefox; mode "default"
+    bindsym g exec gimp; mode "default"
+    bindsym i exec inkscape; mode "default"
+    bindsym o exec libreoffice; mode "default"
+    bindsym s exec steam; mode "default"
+    bindsym t exec thunderbird; mode "default"
+    bindsym v exec vlc; mode "default"
 
     # back to normal: Enter or Escape or $mod+r
     bindsym Return mode "default"
