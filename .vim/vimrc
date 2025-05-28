@@ -110,9 +110,9 @@ augroup vimrc
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
-        autocmd InsertLeave * :silent execute '!im-select com.apple.keylayout.ABC'
+        autocmd InsertLeave * :silent !im-select com.apple.keylayout.ABC
     elseif executable('zenhan.exe')
-        autocmd InsertLeave * :silent execute '!zenhan.exe 0'
+        autocmd InsertLeave * :silent !start /b zenhan.exe 0
     endif
 augroup END
 
