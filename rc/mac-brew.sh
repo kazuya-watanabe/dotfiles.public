@@ -1,43 +1,47 @@
-brew install --cask adguard-vpn
-brew install --cask alfred
-brew install --cask appcleaner
-brew install --cask firefox
-brew install --cask font-hack-nerd-font
-brew install --cask iterm2
-brew install --cask microsoft-office
-brew install --cask thunderbird
+#!/usr/bin/env bash
 
-brew install --formula bat
-brew install --formula btop
-brew install --formula coreutils
-brew install --formula fd
-brew install --formula fnm
-brew install --formula fzf
-brew install --formula gawk
-brew install --formula gh
-brew install --formula git-delta
-brew install --formula git-flow-avh
-brew install --formula gnu-tar
-brew install --formula jq
-brew install --formula lazygit
-brew install --formula lesspipe
-brew install --formula lf
-brew install --formula libsixel
-brew install --formula lsd
-brew install --formula p7zip
-brew install --formula pandoc
-brew install --formula poppler
-brew install --formula ripgrep
-brew install --formula starship
-brew install --formula svg2png
-brew install --formula tmux
-brew install --formula universal-ctags
-brew install --formula vim
-brew install --formula w3m
-brew install --formula watchman
-brew install --formula wget2
-brew install --formula xz
-brew install --formula zoxide
+cat <<EOF | xargs brew install --cask
+adguard-vpn
+alfred
+appcleaner
+firefox
+font-hack-nerd-font
+iterm2
+microsoft-office
+thunderbird
+EOF
+
+cat <<EOF | xargs brew install --formula
+bat
+btop
+coreutils
+fd
+fnm
+fzf
+gh
+git-delta
+git-flow-avh
+jq
+lazygit
+lesspipe
+lf
+libsixel
+lsd
+p7zip
+pandoc
+poppler
+ripgrep
+starship
+svg2png
+universal-ctags
+unzip
+vim
+w3m
+watchman
+wget2
+xz
+zoxide
+EOF
 
 brew tap daipeihust/tap
 brew install --formula im-select

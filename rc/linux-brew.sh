@@ -1,41 +1,31 @@
-install --formula bat
-install --formula btop
-install --formula cmake
-install --formula composer
-install --formula docker
-install --formula docker-compose
-install --formula fd
-install --formula ffmpeg
-install --formula fnm
-install --formula fzf
-install --formula gh
-install --formula git-delta
-install --formula git-flow-avh
-install --formula gnu-tar
-install --formula golang
-install --formula imagemagick
-install --formula jq
-install --formula lazygit
-install --formula lesspipe
-install --formula lf
-install --formula lsd
-install --formula mysql@8.4
-install --formula p7zip
-install --formula pandoc
-install --formula php@8.2
-install --formula poppler
-install --formula postgresql@17
-install --formula redis
-install --formula ripgrep
-install --formula starship
-install --formula svg2png
-install --formula tmux
-install --formula universal-ctags
-install --formula unzip
-install --formula vim
-install --formula w3m
-install --formula watchman
-install --formula wget2
-install --formula xclip
-install --formula xz
-install --formula zoxide
+#!/usr/bin/env bash
+
+cat <<EOF | xargs brew install --formula
+bat
+btop
+fd
+fnm
+fzf
+gh
+git-delta
+git-flow-avh
+jq
+lazygit
+lf
+lsd
+p7zip
+pandoc
+poppler
+ripgrep
+starship
+svg2png
+universal-ctags
+unzip
+vim
+w3m
+watchman
+wget2
+xclip
+xz
+zoxide
+EOF
