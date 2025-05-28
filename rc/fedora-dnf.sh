@@ -9,8 +9,6 @@ gimp
 gimp-help-ja
 inkscape
 inkscape-docs
-java-21-openjdk
-java-21-openjdk-devel
 kitty
 libreoffice
 libreoffice-help-ja

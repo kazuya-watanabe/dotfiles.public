@@ -15,6 +15,7 @@ cat <<EOF | xargs brew install --formula
 bat
 btop
 coreutils
+efm-langserver
 fd
 fnm
 fzf

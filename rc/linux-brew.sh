@@ -3,6 +3,7 @@
 cat <<EOF | xargs brew install --formula
 bat
 btop
+efm-langserver
 fd
 fnm
 fzf
