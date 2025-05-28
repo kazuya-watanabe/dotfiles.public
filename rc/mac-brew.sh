@@ -3,11 +3,9 @@ brew install --cask adguard-vpn
 brew install --cask alfred
 brew install --cask apidog
 brew install --cask appcleaner
-brew install --cask bitwarden
 brew install --cask firefox
 brew install --cask font-hack-nerd-font
 brew install --cask iterm2
-brew install --cask logitech-g-hub
 brew install --cask microsoft-office
 brew install --cask sequel-ace
 brew install --cask thunderbird
