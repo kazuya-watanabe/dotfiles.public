@@ -1,0 +1,6 @@
+[submodule ".config/textlint/prh-rules"]
+	path = .config/textlint/prh-rules
+	url = https://github.com/prh/rules
+[submodule ".config/textlint/icsmedia"]
+	path = .config/textlint/icsmedia
+	url = https://github.com/ics-creative/textlint-rule-preset-icsmedia
