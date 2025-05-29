@@ -60,7 +60,9 @@ set nowritebackup
 
 if has('balloon_eval')
     set ballooneval
-elseif has('balloon_eval_term')
+endif
+
+if has('balloon_eval_term')
     set balloonevalterm
 endif
 
