@@ -6,8 +6,7 @@
             "rulePaths": [
                 "~/.config/textlint/icsmedia/dict/prh.yml",
                 "~/.config/textlint/prh-rules/media/WEB+DB_PRESS.yml",
-                "~/.config/textlint/prh-rules/media/techbooster.yml",
-
+                "~/.config/textlint/prh-rules/media/techbooster.yml"
             ]
         }
     }

@@ -7,7 +7,7 @@ lint-debounce: 1s
 
 tools:
   textlint: &textlint
-    lint-command: 'textlint --stdin --stdin-filename ${INPUT}'
+    lint-command: 'textlint --config ~/.config/textlint/textlintrc --stdin --stdin-filename ${INPUT}'
     lint-ignore-exit-code: true
     lint-stdin: true
     lint-formats:
