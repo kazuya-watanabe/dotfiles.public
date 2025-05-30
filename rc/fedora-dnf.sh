@@ -4,7 +4,6 @@ sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
 sudo dnf update -y
 
 cat <<EOF | xargs sudo dnf install -y
-cascadia-mono-nf-fonts
 gimp
 gimp-help-ja
 inkscape
