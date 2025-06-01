@@ -37,6 +37,7 @@ set showcmd
 set showmatch
 set sidescroll=1
 set sidescrolloff=16
+set signcolumn=yes
 set smartcase
 set smartindent
 set smarttab
@@ -199,60 +200,38 @@ function! s:LoadPlugins(timer)
 
         let g:coc_global_extensions = [
                     \   'coc-highlight', 'coc-snippets',
-                    \   'coc-vimlsp',
-                    \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
                     \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
+                    \   'coc-markdown-preview-enhanced', 'coc-markdownlint', 'coc-webview',
+                    \   'coc-html', 'coc-class-css', 'coc-css',
+                    \   'coc-vimlsp',
                     \   ]
 
-        if executable('bash')
-            call add(g:coc_global_extensions, 'coc-sh')
-        endif
+        function! s:AddCocExtensionIfExecutable(executables, extensions)
+            for executable in a:executables
+                if executable(executable)
+                    call extend(g:coc_global_extensions, a:extensions)
+                    break
+                endif
+            endfor
+        endfunction
 
-        if executable('clangd')
-            call add(g:coc_global_extensions, 'coc-clangd')
-        endif
-
-        if executable('dotnet')
-            call add(g:coc_global_extensions, 'coc-omnisharp')
-        endif
-
-        if executable('go')
-            call add(g:coc_global_extensions, 'coc-go')
-        endif
-
-        if executable('javac')
-            call add(g:coc_global_extensions, 'coc-java')
-        endif
-
-        if executable('lua') || executable('luajit')
-            call add(g:coc_global_extensions, 'coc-lua')
-        endif
-
-        if executable('perl')
-            call add(g:coc_global_extensions, 'coc-perl')
-        endif
-
-        if executable('php')
-            call extend(g:coc_global_extensions, [
-                        \   'coc-phpls', 'coc-phpactor', 'coc-php-cs-fixer', '@yaegassy/coc-phpstan',
-                        \   ])
-        endif
-
-        if executable('python3') || executable('python')
-            call extend(g:coc_global_extensions, [ 'coc-pyright', 'coc-pydocstring' ])
-        endif
-
-        if executable('ruby')
-            call add(g:coc_global_extensions, 'coc-solargraph')
-        endif
-
-        if executable('rustc')
-            call add(g:coc_global_extensions, 'coc-rust-analyzer')
-        endif
-
-        if executable('sqlite3') || executable('psql') || executable('mysql')
-            call add(g:coc_global_extensions, 'coc-sql')
-        endif
+        call s:AddCocExtensionIfExecutable([ 'bash' ], [ 'coc-sh' ])
+        call s:AddCocExtensionIfExecutable([ 'clangd' ], [ 'coc-clangd', 'coc-clang-format-style-options' ])
+        call s:AddCocExtensionIfExecutable([ 'cmake' ], [ 'coc-cmake' ])
+        call s:AddCocExtensionIfExecutable([ 'gopls' ], [ 'coc-go', 'coc-golines' ])
+        call s:AddCocExtensionIfExecutable([ 'javac' ], [ 'coc-java' ])
+        call s:AddCocExtensionIfExecutable([ 'laravel' ], [ 'coc-blade', '@yaegassy/coc-laravel' ])
+        call s:AddCocExtensionIfExecutable([ 'lua', 'luajit' ], [ 'coc-lua' ])
+        call s:AddCocExtensionIfExecutable([ 'ng' ], [ 'coc-angular' ])
+        call s:AddCocExtensionIfExecutable([ 'node' ], [ 'coc-tsserver', 'coc-eslint', 'coc-prettier' ])
+        call s:AddCocExtensionIfExecutable([ 'perl' ], [ 'coc-perl' ])
+        call s:AddCocExtensionIfExecutable([ 'php' ], [ 'coc-phpls', '@yaegassy/coc-phpstan', 'coc-php-cs-fixer' ])
+        call s:AddCocExtensionIfExecutable([ 'phpactor' ], [ 'coc-phpactor' ])
+        call s:AddCocExtensionIfExecutable([ 'python3', 'python' ], [ 'coc-pyright', 'coc-pydocstring' ])
+        call s:AddCocExtensionIfExecutable([ 'ruby' ], [ 'coc-solargraph' ])
+        call s:AddCocExtensionIfExecutable([ 'rustc' ], [ 'coc-rust-analyzer' ])
+        call s:AddCocExtensionIfExecutable([ 'sqlite3', 'psql', 'mysql' ], [ 'coc-sql' ])
+        call s:AddCocExtensionIfExecutable([ 'vue' ], [ '@yaegassy/coc-volar' ])
 
         " fzf
         if !exists('$FZF_DEFAULT_COMMAND')
