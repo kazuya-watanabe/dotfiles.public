@@ -18,7 +18,7 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=vert:│,fold:─,foldopen:󰍝,foldclose:󰍟,foldsep:│,diff:─,eob:󰜥,lastline:
+set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:󰧟,lastline:,trunc:󰥭,truncrl:󰥼
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -27,15 +27,16 @@ set ignorecase
 set incsearch
 set laststatus=2
 set list
-set listchars=tab:󰅂─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰄾,precedes:󰄽,conceal:,nbsp:󱓼
+set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:,nbsp:󱓼
 set nrformats-=octal
 set ruler
-set scrolloff=5
+set scrolloff=8
 set shiftwidth=4
 set showbreak=󱞪\ \ \ 
 set showcmd
 set showmatch
-set sidescrolloff=5
+set sidescroll=1
+set sidescrolloff=16
 set smartcase
 set smartindent
 set smarttab
@@ -44,7 +45,7 @@ set spelllang=en,cjk
 set spelloptions=camel
 set splitbelow
 set splitright
-set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [Ln:%l/%L\ Cl:%v]
+set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
 set ttimeout
@@ -66,14 +67,14 @@ if has('balloon_eval_term')
     set balloonevalterm
 endif
 
-if has('win32')
-    set completeslash=slash
-endif
-
 try
     set completeopt+=fuzzy
 catch
 endtry
+
+if has('win32')
+    set completeslash=slash
+endif
 
 if executable('rg')
     set grepformat=%f:%l:%c:%m
@@ -200,7 +201,12 @@ function! s:LoadPlugins(timer)
                     \   'coc-highlight', 'coc-snippets',
                     \   'coc-vimlsp',
                     \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
+                    \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
                     \   ]
+
+        if executable('bash')
+            call add(g:coc_global_extensions, 'coc-sh')
+        endif
 
         if executable('clangd')
             call add(g:coc_global_extensions, 'coc-clangd')
@@ -222,6 +228,10 @@ function! s:LoadPlugins(timer)
             call add(g:coc_global_extensions, 'coc-lua')
         endif
 
+        if executable('perl')
+            call add(g:coc_global_extensions, 'coc-perl')
+        endif
+
         if executable('php')
             call extend(g:coc_global_extensions, [
                         \   'coc-phpls', 'coc-phpactor', 'coc-php-cs-fixer', '@yaegassy/coc-phpstan',
@@ -230,6 +240,10 @@ function! s:LoadPlugins(timer)
 
         if executable('python3') || executable('python')
             call extend(g:coc_global_extensions, [ 'coc-pyright', 'coc-pydocstring' ])
+        endif
+
+        if executable('ruby')
+            call add(g:coc_global_extensions, 'coc-solargraph')
         endif
 
         if executable('rustc')
@@ -262,6 +276,8 @@ function! s:LoadPlugins(timer)
                     \   }
 
         " nerdtree
+        let g:NERDTreeDirArrowExpandable = ''
+        let g:NERDTreeDirArrowCollapsible = ''
         let g:NERDTreeGitStatusUseNerdFonts = 1
         let g:NERDTreeGitStatusIndicatorMapCustom = {
                     \   'Renamed': '󰁕',
