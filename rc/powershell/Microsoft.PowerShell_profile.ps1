@@ -21,7 +21,7 @@ $env:EDITOR = 'vim'
 $env:VISUAL = 'vim'
 $env:PAGER = 'less'
 $env:LESS = '-iFJMRX'
-$env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow'
+$env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
 $env:FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
 $env:PATH = "$(Join-Path -Path "$(python -m site --user-site)" -ChildPath "..\Scripts" -Resolve);$env:PATH"
 
@@ -39,7 +39,7 @@ function la { &lsd.exe --group-directories-first -A @args }
 function ll { &lsd.exe --group-directories-first -Al @args }
 function ls { &lsd.exe --group-directories-first @args }
 function rg { &rg.exe --follow --hidden @args }
-function which([string]$command) { Get-Command $command -ErrorAction SilentlyContinue }
+function which ([string]$command) { Get-Command $command -ErrorAction SilentlyContinue }
 
 &fnm.exe env | Out-String | Invoke-Expression
 &starship.exe init powershell --print-full-init | Out-String | Invoke-Expression

@@ -1,8 +1,0 @@
-if has('win32')
-    set guifont=Hack_Nerd_Font_Mono:h10,Consolas:h10
-    set guifontwide=MS_Gothic:h10
-    set renderoptions=type:directx
-endif
-
-set columns=200
-set lines=50

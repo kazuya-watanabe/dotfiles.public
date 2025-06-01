@@ -25,7 +25,7 @@ New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\bat" -Path "$
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\fd" -Path "$env:APPDATA\fd"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lazygit" -Path "$env:LOCALAPPDATA\lazygit"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lf" -Path "$env:LOCALAPPDATA\lf"
-New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\vim" -Path "$env:USERPROFILE\vimfiles"
+New-Item -Force -ItemType Junction -Value "$(Get-Location)\.vim" -Path "$env:USERPROFILE\vimfiles"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\powershell" -Path "$env:USERPROFILE\Documents\WindowsPowerShell"
 Copy-Item -Force -Path "$(Get-Location)\.textlintrc" -Destination "$env:USERPROFILE\.textlintrc"
 ```

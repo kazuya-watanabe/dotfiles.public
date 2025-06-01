@@ -3,7 +3,6 @@ export ZPLUG_HOME=${ZPLUG_HOME:=~/.local/share/zplug}
 test ! -r "${ZPLUG_HOME}/init.zsh" && curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 
 if source "${ZPLUG_HOME}/init.zsh" 2>/dev/null; then
-    zplug 'spaceship-prompt/spaceship-prompt', use:spaceship.zsh, as:theme
     zplug 'zsh-users/zsh-autosuggestions'
     zplug 'zsh-users/zsh-completions'
     zplug 'zsh-users/zsh-history-substring-search'
@@ -26,6 +25,7 @@ type gdircolors >/dev/null 2>&1 && eval "$(gdircolors -b)"
 type gh >/dev/null 2>&1 && eval "$(gh copilot alias -- zsh)"
 type fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd)"
 type fzf >/dev/null 2>&1 && source <(fzf --zsh)
+type starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 type zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
 test -r "${ZDOTDIR}/.aliases" && source "${ZDOTDIR}/.aliases"
