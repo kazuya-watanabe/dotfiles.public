@@ -18,7 +18,7 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=vert:│,fold:─,foldopen:󰍝,foldclose:󰍟,foldsep:│,diff:─,eob:󰜥,lastline:
+set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:󰧟,lastline:,trunc:󰥭,truncrl:󰥼
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -27,15 +27,16 @@ set ignorecase
 set incsearch
 set laststatus=2
 set list
-set listchars=tab:󰅂─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰄾,precedes:󰄽,conceal:,nbsp:󱓼
+set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:,nbsp:󱓼
 set nrformats-=octal
 set ruler
-set scrolloff=5
+set scrolloff=8
 set shiftwidth=4
 set showbreak=󱞪\ \ \ 
 set showcmd
 set showmatch
-set sidescrolloff=5
+set sidescroll=1
+set sidescrolloff=16
 set smartcase
 set smartindent
 set smarttab
@@ -44,7 +45,7 @@ set spelllang=en,cjk
 set spelloptions=camel
 set splitbelow
 set splitright
-set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [Ln:%l/%L\ Cl:%v]
+set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
 set ttimeout
@@ -60,18 +61,20 @@ set nowritebackup
 
 if has('balloon_eval')
     set ballooneval
-elseif has('balloon_eval_term')
-    set balloonevalterm
 endif
 
-if has('win32')
-    set completeslash=slash
+if has('balloon_eval_term')
+    set balloonevalterm
 endif
 
 try
     set completeopt+=fuzzy
 catch
 endtry
+
+if has('win32')
+    set completeslash=slash
+endif
 
 if executable('rg')
     set grepformat=%f:%l:%c:%m
@@ -110,9 +113,9 @@ augroup vimrc
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
-        autocmd InsertLeave * :silent execute '!im-select com.apple.keylayout.ABC'
+        autocmd InsertLeave * :silent !im-select com.apple.keylayout.ABC
     elseif executable('zenhan.exe')
-        autocmd InsertLeave * :silent execute '!zenhan.exe 0'
+        autocmd InsertLeave * :silent !start /b zenhan.exe 0
     endif
 augroup END
 
@@ -198,7 +201,12 @@ function! s:LoadPlugins(timer)
                     \   'coc-highlight', 'coc-snippets',
                     \   'coc-vimlsp',
                     \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
+                    \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
                     \   ]
+
+        if executable('bash')
+            call add(g:coc_global_extensions, 'coc-sh')
+        endif
 
         if executable('clangd')
             call add(g:coc_global_extensions, 'coc-clangd')
@@ -220,6 +228,10 @@ function! s:LoadPlugins(timer)
             call add(g:coc_global_extensions, 'coc-lua')
         endif
 
+        if executable('perl')
+            call add(g:coc_global_extensions, 'coc-perl')
+        endif
+
         if executable('php')
             call extend(g:coc_global_extensions, [
                         \   'coc-phpls', 'coc-phpactor', 'coc-php-cs-fixer', '@yaegassy/coc-phpstan',
@@ -228,6 +240,10 @@ function! s:LoadPlugins(timer)
 
         if executable('python3') || executable('python')
             call extend(g:coc_global_extensions, [ 'coc-pyright', 'coc-pydocstring' ])
+        endif
+
+        if executable('ruby')
+            call add(g:coc_global_extensions, 'coc-solargraph')
         endif
 
         if executable('rustc')
@@ -239,6 +255,14 @@ function! s:LoadPlugins(timer)
         endif
 
         " fzf
+        if !exists('$FZF_DEFAULT_COMMAND')
+            let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
+        endif
+
+        if !exists('$FZF_DEFAULT_OPTS')
+            let $FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
+        endif
+
         let g:fzf_action = {
                     \   'Ctrl-t': 'tab split',
                     \   'Ctrl-i': 'split',
@@ -252,6 +276,8 @@ function! s:LoadPlugins(timer)
                     \   }
 
         " nerdtree
+        let g:NERDTreeDirArrowExpandable = ''
+        let g:NERDTreeDirArrowCollapsible = ''
         let g:NERDTreeGitStatusUseNerdFonts = 1
         let g:NERDTreeGitStatusIndicatorMapCustom = {
                     \   'Renamed': '󰁕',
@@ -450,6 +476,7 @@ function! s:LoadPlugins(timer)
         nmap <silent> <Leader>g :<C-u>GFiles<CR>
 
         command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+        command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
     endif
 
     " nerdtree

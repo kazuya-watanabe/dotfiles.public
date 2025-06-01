@@ -31,5 +31,13 @@
     "typeParameter": "󰦂 TypeParameter",
     "default": "󱓼 ?"
   },
-  "suggest.noselect": true
+  "suggest.noselect": true,
+
+  "languageserver": {
+      "efm": {
+          "command": "efm-langserver",
+          "args": [],
+          "filetypes": [ "markdown", "text" ]
+      }
+  }
 }

@@ -1,61 +1,48 @@
-brew install --cask adguard
-brew install --cask adguard-vpn
-brew install --cask alfred
-brew install --cask apidog
-brew install --cask appcleaner
-brew install --cask bitwarden
-brew install --cask firefox
-brew install --cask font-hack-nerd-font
-brew install --cask iterm2
-brew install --cask logitech-g-hub
-brew install --cask microsoft-office
-brew install --cask sequel-ace
-brew install --cask thunderbird
+#!/usr/bin/env bash
 
-brew install --formula bat
-brew install --formula btop
-brew install --formula cmake
-brew install --formula composer
-brew install --formula coreutils
-brew install --formula docker
-brew install --formula docker-compose
-brew install --formula fd
-brew install --formula ffmpeg
-brew install --formula fnm
-brew install --formula fzf
-brew install --formula gawk
-brew install --formula gh
-brew install --formula git
-brew install --formula git-delta
-brew install --formula git-flow-avh
-brew install --formula gnu-tar
-brew install --formula golang
-brew install --formula imagemagick
-brew install --formula jq
-brew install --formula lazygit
-brew install --formula lesspipe
-brew install --formula lf
-brew install --formula libsixel
-brew install --formula lima
-brew install --formula lsd
-brew install --formula mysql@8.4
-brew install --formula openjdk@21
-brew install --formula p7zip
-brew install --formula pandoc
-brew install --formula php@8.2
-brew install --formula poppler
-brew install --formula postgresql@17
-brew install --formula redis
-brew install --formula ripgrep
-brew install --formula svg2png
-brew install --formula tmux
-brew install --formula universal-ctags
-brew install --formula vim
-brew install --formula w3m
-brew install --formula watchman
-brew install --formula wget2
-brew install --formula xz
-brew install --formula zoxide
+cat <<EOF | xargs brew install --cask
+adguard-vpn
+alfred
+appcleaner
+firefox
+font-hack-nerd-font
+iterm2
+microsoft-office
+thunderbird
+EOF
+
+cat <<EOF | xargs brew install --formula
+bat
+btop
+coreutils
+efm-langserver
+fd
+fnm
+fzf
+gh
+git-delta
+git-flow-avh
+jq
+lazygit
+lesspipe
+lf
+libsixel
+lsd
+p7zip
+pandoc
+poppler
+ripgrep
+starship
+svg2png
+universal-ctags
+unzip
+vim
+w3m
+watchman
+wget2
+xz
+zoxide
+EOF
 
 brew tap daipeihust/tap
 brew install --formula im-select
