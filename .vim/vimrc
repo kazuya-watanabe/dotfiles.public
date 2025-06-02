@@ -18,7 +18,7 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:󰧟,lastline:,trunc:󰥭,truncrl:󰥼
+set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:_,lastline:󰅀,trunc:󰥭,truncrl:󰥼
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -27,7 +27,7 @@ set ignorecase
 set incsearch
 set laststatus=2
 set list
-set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:,nbsp:󱓼
+set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:󱗽,nbsp:󱓼
 set nrformats-=octal
 set ruler
 set scrolloff=8
@@ -490,3 +490,4 @@ if has('gui_running')
 else
     call timer_start(10, function('s:LoadPlugins'))
 endif
+" ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

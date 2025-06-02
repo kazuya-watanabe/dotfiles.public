@@ -20,7 +20,6 @@
 	autocrlf = false
 	editor = vim
 	ignoreCase = false
-	pager = delta
 	quotePath = false
 	symlinks = true
 
@@ -31,6 +30,12 @@
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !gh auth git-credential
+
+[diff]
+	tool = vimdiff
+
+[difftool "vimdiff"]
+	prompt = false
 
 [delta]
 	keep-plus-minus-markers = true
@@ -46,17 +51,12 @@
 [fetch]
 	prune = true
 
-[interactive]
-	diffFilter = delta --color-only
-
 [merge]
 	conflictstyle = diff3
+	tool = vimdiff
 
-[pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+[mergetool "vimdiff"]
+	prompt = false
 
 [pull]
 	ff = only

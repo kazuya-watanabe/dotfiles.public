@@ -3,10 +3,6 @@ gui:
   shortTimeFormat: 15:04
   nerdFontsVersion: "3"
 
-git:
-  paging:
-    pager: "delta --dark --paging=never"
-
 os:
   editInTerminal: true
   edit: "vim {{filename}}"
