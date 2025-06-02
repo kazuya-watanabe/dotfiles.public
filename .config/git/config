@@ -32,21 +32,12 @@
 	helper = !gh auth git-credential
 
 [diff]
+	algorithm = histogram
+	colorMoved = default
 	tool = vimdiff
 
 [difftool "vimdiff"]
 	prompt = false
-
-[delta]
-	keep-plus-minus-markers = true
-	line-numbers = true
-	navigate = true
-	side-by-side = true
-	syntax-theme = OneHalfDark
-
-[diff]
-	algorithm = histogram
-	colorMoved = default
 
 [fetch]
 	prune = true
