@@ -9,6 +9,7 @@ filetype plugin indent on
 " options
 set autoindent
 set autoread
+set background=dark
 set belloff=all
 set clipboard^=unnamed
 set completeopt=longest,menuone,noselect,popup
@@ -341,16 +342,13 @@ function! s:LoadPlugins(timer)
         let g:table_mode_disable_tableize_mappings = 1
 
         " Plugs
+        Plug 'NLKNguyen/papercolor-theme'
         Plug 'airblade/vim-gitgutter'
         Plug 'dhruvasagar/vim-table-mode'
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin'
-                    \ | if !has('win32')
-                    \ |     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-                    \ | endif
-        Plug 'joshdick/onedark.vim'
+        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
         Plug 'junegunn/vim-peekaboo'
         Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
@@ -372,7 +370,7 @@ function! s:LoadPlugins(timer)
             Plug 'madox2/vim-ai'
         endif
 
-        Plug 'vim-airline/vim-airline'
+        Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
         Plug 'ryanoasis/vim-devicons'
 
         call plug#end()
@@ -463,17 +461,6 @@ function! s:LoadPlugins(timer)
         nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
     endif
 
-    " onedark
-    let l:colors_name = 'onedark'
-
-    if !empty(getcompletion(l:colors_name, 'color'))
-        set background=dark
-
-        execute 'colorscheme ' .. l:colors_name
-
-        let g:airline_theme = l:colors_name
-    endif
-
     " vim-ai
     if exists(':AINewChat')
         delcommand AINewChat
@@ -482,6 +469,12 @@ function! s:LoadPlugins(timer)
     " vim-devicons
     if !exists('*WebDevIconsGetFileTypeSymbol')
         let g:NERDTreeGitStatusConcealBrackets = 1
+    endif
+
+    " colorscheme
+    if !empty(getcompletion('PaperColor', 'color'))
+        colorscheme PaperColor
+        let g:airline_theme = 'papercolor'
     endif
 endfunction
 
