@@ -111,7 +111,7 @@ augroup vimrc
     autocmd CursorHold,InsertEnter * call s:Nohlsearch()
     autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
     autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
-    autocmd FileType html,markdown,txt setlocal spell
+    autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
@@ -122,9 +122,29 @@ augroup vimrc
 augroup END
 
 " commands
+let s:note_directory = '~/Documents/Notes'
+let s:note_filename = s:note_directory .. '/%Y-%m/%Y-%m-%d.md'
+let s:note_template = s:note_directory .. '/.template.md'
+
+function! s:Note(filename = '')
+    if a:filename == ''
+        let l:filename = strftime(s:note_filename)
+    else
+        let l:filename = a:filename
+    endif
+
+    execute 'edit ' .. expand(l:filename)
+
+    call mkdir(expand('%:h'), 'p')
+
+    if !filereadable(l:filename) && filereadable(expand(s:note_template))
+        execute '0read ' .. expand(s:note_template)
+    endif
+endfunction
+
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 
-command! Note silent execute 'edit ' .. strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md')
+command! -nargs=? -complete=file Note silent call s:Note(<q-args>)
 
 " keymaps
 let g:mapleader = ','
