@@ -31,13 +31,13 @@ set list
 set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:󱗽,nbsp:󱓼
 set nrformats-=octal
 set ruler
-set scrolloff=8
+set scrolloff=4
 set shiftwidth=4
 set showbreak=󱞪\ \ \ 
 set showcmd
 set showmatch
 set sidescroll=1
-set sidescrolloff=16
+set sidescrolloff=8
 set signcolumn=yes
 set smartcase
 set smartindent
@@ -222,7 +222,7 @@ function! s:LoadPlugins(timer)
         let g:coc_global_extensions = [
                     \   'coc-highlight', 'coc-snippets',
                     \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
-                    \   'coc-markdown-preview-enhanced', 'coc-markdownlint', 'coc-webview',
+                    \   'coc-markdown-preview-enhanced', 'coc-webview',
                     \   'coc-html', 'coc-class-css', 'coc-css',
                     \   'coc-vimlsp',
                     \   ]
