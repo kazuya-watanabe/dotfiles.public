@@ -137,8 +137,28 @@ function! s:Note(filename = '')
 
     call mkdir(expand('%:h'), 'p')
 
-    if !filereadable(l:filename) && filereadable(expand(s:note_template))
+    if !filereadable(expand(l:filename)) && filereadable(expand(s:note_template))
         execute '0read ' .. expand(s:note_template)
+
+        let l:date = strftime("%Y-%m-%d")
+        let l:time = strftime("%H:%M")
+        let l:user = trim(system('git config user.name'))
+
+        if v:shell_error > 0
+            let l:user = ''
+        endif
+
+        let l:email = trim(system('git config user.email'))
+
+        if v:shell_error > 0
+            let l:email = ''
+        endif
+
+        execute '%s/{{\s*date\s*}}/' .. l:date .. '/ge'
+        execute '%s/{{\s*time\s*}}/' .. l:time .. '/ge'
+        execute '%s/{{\s*datetime\s*}}/' .. l:date .. ' ' .. l:time .. '/ge'
+        execute '%s/{{\s*user\s*}}/' .. l:user .. '/ge'
+        execute '%s/{{\s*email\s*}}/' .. l:email .. '/ge'
     endif
 endfunction
 
@@ -176,9 +196,9 @@ nmap <silent> tn :<C-u>bnext<CR>
 nmap <silent> tp :<C-u>bprevious<CR>
 
 if has('win32') && executable('powershell')
-    nmap <silent> <Leader>sh :<C-u>vertical terminal powershell<CR>
+    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close powershell<CR>
 else
-    nmap <silent> <Leader>sh :<C-u>vertical terminal<CR>
+    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
 endif
 
 " plugins
