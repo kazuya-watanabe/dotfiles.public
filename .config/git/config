@@ -20,7 +20,6 @@
 	autocrlf = false
 	editor = vim
 	ignoreCase = false
-	pager = delta
 	quotePath = false
 	symlinks = true
 
@@ -32,31 +31,23 @@
 	helper = 
 	helper = !gh auth git-credential
 
-[delta]
-	keep-plus-minus-markers = true
-	line-numbers = true
-	navigate = true
-	side-by-side = true
-	syntax-theme = OneHalfDark
-
 [diff]
 	algorithm = histogram
 	colorMoved = default
+	tool = vimdiff
+
+[difftool]
+	prompt = false
 
 [fetch]
 	prune = true
 
-[interactive]
-	diffFilter = delta --color-only
-
 [merge]
 	conflictstyle = diff3
+	tool = vimdiff
 
-[pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+[mergetool]
+	prompt = false
 
 [pull]
 	ff = only

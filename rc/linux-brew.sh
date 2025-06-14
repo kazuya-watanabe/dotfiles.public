@@ -8,7 +8,6 @@ fd
 fnm
 fzf
 gh
-git-delta
 git-flow-avh
 jq
 lazygit

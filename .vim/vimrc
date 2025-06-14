@@ -9,6 +9,7 @@ filetype plugin indent on
 " options
 set autoindent
 set autoread
+set background=dark
 set belloff=all
 set clipboard^=unnamed
 set completeopt=longest,menuone,noselect,popup
@@ -18,7 +19,7 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:󰧟,lastline:,trunc:󰥭,truncrl:󰥼
+set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:_,lastline:󰅀,trunc:󰥭,truncrl:󰥼
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -27,16 +28,17 @@ set ignorecase
 set incsearch
 set laststatus=2
 set list
-set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:,nbsp:󱓼
+set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:󱗽,nbsp:󱓼
 set nrformats-=octal
 set ruler
-set scrolloff=8
+set scrolloff=4
 set shiftwidth=4
 set showbreak=󱞪\ \ \ 
 set showcmd
 set showmatch
 set sidescroll=1
-set sidescrolloff=16
+set sidescrolloff=8
+set signcolumn=yes
 set smartcase
 set smartindent
 set smarttab
@@ -109,7 +111,7 @@ augroup vimrc
     autocmd CursorHold,InsertEnter * call s:Nohlsearch()
     autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
     autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
-    autocmd FileType html,markdown,txt setlocal spell
+    autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
@@ -120,9 +122,49 @@ augroup vimrc
 augroup END
 
 " commands
+let s:note_directory = '~/Documents/Notes'
+let s:note_filename = s:note_directory .. '/%Y-%m/%Y-%m-%d.md'
+let s:note_template = s:note_directory .. '/.template.md'
+
+function! s:Note(filename = '')
+    if a:filename == ''
+        let l:filename = strftime(s:note_filename)
+    else
+        let l:filename = a:filename
+    endif
+
+    execute 'edit ' .. expand(l:filename)
+
+    call mkdir(expand('%:h'), 'p')
+
+    if !filereadable(expand(l:filename)) && filereadable(expand(s:note_template))
+        execute '0read ' .. expand(s:note_template)
+
+        let l:date = strftime("%Y-%m-%d")
+        let l:time = strftime("%H:%M")
+        let l:user = trim(system('git config user.name'))
+
+        if v:shell_error > 0
+            let l:user = ''
+        endif
+
+        let l:email = trim(system('git config user.email'))
+
+        if v:shell_error > 0
+            let l:email = ''
+        endif
+
+        execute '%s/{{\s*date\s*}}/' .. l:date .. '/ge'
+        execute '%s/{{\s*time\s*}}/' .. l:time .. '/ge'
+        execute '%s/{{\s*datetime\s*}}/' .. l:date .. ' ' .. l:time .. '/ge'
+        execute '%s/{{\s*user\s*}}/' .. l:user .. '/ge'
+        execute '%s/{{\s*email\s*}}/' .. l:email .. '/ge'
+    endif
+endfunction
+
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 
-command! Note silent execute 'edit ' .. strftime('~/Documents/Notes/%Y-%m/%Y-%m-%d.md')
+command! -nargs=? -complete=file Note silent call s:Note(<q-args>)
 
 " keymaps
 let g:mapleader = ','
@@ -154,9 +196,9 @@ nmap <silent> tn :<C-u>bnext<CR>
 nmap <silent> tp :<C-u>bprevious<CR>
 
 if has('win32') && executable('powershell')
-    nmap <silent> <Leader>sh :<C-u>vertical terminal powershell<CR>
+    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close powershell<CR>
 else
-    nmap <silent> <Leader>sh :<C-u>vertical terminal<CR>
+    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
 endif
 
 " plugins
@@ -199,60 +241,38 @@ function! s:LoadPlugins(timer)
 
         let g:coc_global_extensions = [
                     \   'coc-highlight', 'coc-snippets',
-                    \   'coc-vimlsp',
-                    \   'coc-tsserver', 'coc-eslint', 'coc-prettier',
                     \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
+                    \   'coc-markdown-preview-enhanced', 'coc-webview',
+                    \   'coc-html', 'coc-class-css', 'coc-css',
+                    \   'coc-vimlsp',
                     \   ]
 
-        if executable('bash')
-            call add(g:coc_global_extensions, 'coc-sh')
-        endif
+        function! s:AddCocExtensionIfExecutable(executables, extensions)
+            for executable in a:executables
+                if executable(executable)
+                    call extend(g:coc_global_extensions, a:extensions)
+                    break
+                endif
+            endfor
+        endfunction
 
-        if executable('clangd')
-            call add(g:coc_global_extensions, 'coc-clangd')
-        endif
-
-        if executable('dotnet')
-            call add(g:coc_global_extensions, 'coc-omnisharp')
-        endif
-
-        if executable('go')
-            call add(g:coc_global_extensions, 'coc-go')
-        endif
-
-        if executable('javac')
-            call add(g:coc_global_extensions, 'coc-java')
-        endif
-
-        if executable('lua') || executable('luajit')
-            call add(g:coc_global_extensions, 'coc-lua')
-        endif
-
-        if executable('perl')
-            call add(g:coc_global_extensions, 'coc-perl')
-        endif
-
-        if executable('php')
-            call extend(g:coc_global_extensions, [
-                        \   'coc-phpls', 'coc-phpactor', 'coc-php-cs-fixer', '@yaegassy/coc-phpstan',
-                        \   ])
-        endif
-
-        if executable('python3') || executable('python')
-            call extend(g:coc_global_extensions, [ 'coc-pyright', 'coc-pydocstring' ])
-        endif
-
-        if executable('ruby')
-            call add(g:coc_global_extensions, 'coc-solargraph')
-        endif
-
-        if executable('rustc')
-            call add(g:coc_global_extensions, 'coc-rust-analyzer')
-        endif
-
-        if executable('sqlite3') || executable('psql') || executable('mysql')
-            call add(g:coc_global_extensions, 'coc-sql')
-        endif
+        call s:AddCocExtensionIfExecutable([ 'bash' ], [ 'coc-sh' ])
+        call s:AddCocExtensionIfExecutable([ 'clangd' ], [ 'coc-clangd', 'coc-clang-format-style-options' ])
+        call s:AddCocExtensionIfExecutable([ 'cmake' ], [ 'coc-cmake' ])
+        call s:AddCocExtensionIfExecutable([ 'gopls' ], [ 'coc-go', 'coc-golines' ])
+        call s:AddCocExtensionIfExecutable([ 'javac' ], [ 'coc-java' ])
+        call s:AddCocExtensionIfExecutable([ 'laravel' ], [ 'coc-blade', '@yaegassy/coc-laravel' ])
+        call s:AddCocExtensionIfExecutable([ 'lua', 'luajit' ], [ 'coc-lua' ])
+        call s:AddCocExtensionIfExecutable([ 'ng' ], [ 'coc-angular' ])
+        call s:AddCocExtensionIfExecutable([ 'node' ], [ 'coc-tsserver', 'coc-eslint', 'coc-prettier' ])
+        call s:AddCocExtensionIfExecutable([ 'perl' ], [ 'coc-perl' ])
+        call s:AddCocExtensionIfExecutable([ 'php' ], [ 'coc-phpls', '@yaegassy/coc-phpstan', 'coc-php-cs-fixer' ])
+        call s:AddCocExtensionIfExecutable([ 'phpactor' ], [ 'coc-phpactor' ])
+        call s:AddCocExtensionIfExecutable([ 'python3', 'python' ], [ 'coc-pyright', 'coc-pydocstring' ])
+        call s:AddCocExtensionIfExecutable([ 'ruby' ], [ 'coc-solargraph' ])
+        call s:AddCocExtensionIfExecutable([ 'rustc' ], [ 'coc-rust-analyzer' ])
+        call s:AddCocExtensionIfExecutable([ 'sqlite3', 'psql', 'mysql' ], [ 'coc-sql' ])
+        call s:AddCocExtensionIfExecutable([ 'vue' ], [ '@yaegassy/coc-volar' ])
 
         " fzf
         if !exists('$FZF_DEFAULT_COMMAND')
@@ -362,16 +382,13 @@ function! s:LoadPlugins(timer)
         let g:table_mode_disable_tableize_mappings = 1
 
         " Plugs
+        Plug 'NLKNguyen/papercolor-theme'
         Plug 'airblade/vim-gitgutter'
         Plug 'dhruvasagar/vim-table-mode'
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin'
-                    \ | if !has('win32')
-                    \ |     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-                    \ | endif
-        Plug 'joshdick/onedark.vim'
+        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
         Plug 'junegunn/vim-peekaboo'
         Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
@@ -393,7 +410,7 @@ function! s:LoadPlugins(timer)
             Plug 'madox2/vim-ai'
         endif
 
-        Plug 'vim-airline/vim-airline'
+        Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
         Plug 'ryanoasis/vim-devicons'
 
         call plug#end()
@@ -484,17 +501,6 @@ function! s:LoadPlugins(timer)
         nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
     endif
 
-    " onedark
-    let l:colors_name = 'onedark'
-
-    if !empty(getcompletion(l:colors_name, 'color'))
-        set background=dark
-
-        execute 'colorscheme ' .. l:colors_name
-
-        let g:airline_theme = l:colors_name
-    endif
-
     " vim-ai
     if exists(':AINewChat')
         delcommand AINewChat
@@ -503,6 +509,12 @@ function! s:LoadPlugins(timer)
     " vim-devicons
     if !exists('*WebDevIconsGetFileTypeSymbol')
         let g:NERDTreeGitStatusConcealBrackets = 1
+    endif
+
+    " colorscheme
+    if !empty(getcompletion('PaperColor', 'color'))
+        colorscheme PaperColor
+        let g:airline_theme = 'papercolor'
     endif
 endfunction
 
