@@ -1,5 +1,4 @@
 scoop install bat
-scoop install delta
 scoop install fd
 scoop install fnm
 scoop install fzf

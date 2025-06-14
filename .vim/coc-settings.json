@@ -1,5 +1,5 @@
 {
-  "extensions.updateCheck": "weekly",
+  "extensions.updateCheck": "daily",
 
   "colors.enable": true,
 

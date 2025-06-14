@@ -1,6 +1,5 @@
 autopep8
 httpie
 openai
-pipenv
 pptx2md
 xlsx2csv
