@@ -209,7 +209,7 @@ bar {
 }
 
 exec --no-startup-id setxkbmap -option ctrl:nocaps
-exec --no-startup-id feh --no-fehbg --bg-max --randomize ~/Pictures/Wallpapers/*
+exec --no-startup-id feh --bg-fill "https://www.bing.com$(curl "https://www.bing.com/HPImageArchive.aspx?format=rss&idx=0&n=1&mkt=en-US" | xmllint --xpath "/rss/channel/item/link/text()" - | sed 's/1366x768/1920x1080/g')"
 
 for_window [class="Dia"] floating enable
 for_window [class="steam"] floating enable
