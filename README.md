@@ -51,7 +51,7 @@ bash rc/mac-brew.sh
 [^2]: [Scoop](https://scoop.sh/)
 
 ```powershell
-Get-Content .\rc\windows-scoop.list | %{ if ($_ -ne "") { scoop $_ } }
+Get-Content .\rc\windows-scoop.list | %{ scoop $_ } }
 Get-Content .\rc\powershell-modules.list | %{ Install-Module -Force -Name $_ -Scope CurrentUser }
 ```
 
