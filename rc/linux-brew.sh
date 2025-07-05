@@ -5,10 +5,12 @@ bat
 btop
 efm-langserver
 fd
+ffmpeg
 fnm
 fzf
 gh
 git-flow-avh
+imagemagick
 jq
 lazygit
 lf

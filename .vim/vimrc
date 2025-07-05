@@ -314,6 +314,7 @@ function! s:LoadPlugins(timer)
                     \   'Deleted': '󰆴',
                     \   }
         let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
+        let g:NERDTreeQuitOnOpen = 3
         let g:NERDTreeShowHidden = 1
         let g:NERDTreeWinSize = 30
 
@@ -398,11 +399,7 @@ function! s:LoadPlugins(timer)
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree'
-                    \ | if !has('win32')
-                    \ |     Plug 'Xuyuanp/nerdtree-git-plugin'
-                    \ |     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-                    \ | endif
+        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
         Plug 'junegunn/vim-peekaboo'
         Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
@@ -513,6 +510,8 @@ function! s:LoadPlugins(timer)
     " nerdtree
     if exists(':NERDTree')
         nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
+
+        autocmd vimrc BufLeave * if &filetype == 'nerdtree' | NERDTreeClose | endif
     endif
 
     " vim-ai

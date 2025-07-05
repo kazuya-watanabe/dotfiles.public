@@ -17,10 +17,12 @@ btop
 coreutils
 efm-langserver
 fd
+ffmpeg
 fnm
 fzf
 gh
 git-flow-avh
+imagemagick
 jq
 lazygit
 lesspipe

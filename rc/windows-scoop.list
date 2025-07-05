@@ -1,9 +1,11 @@
 install bat
 install fd
+install ffmpeg
 install fnm
 install fzf
 install gh
 install git
+install imagemagick
 install jq
 install less
 install lf
