@@ -19,7 +19,7 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=stl:\ ,stlnc:\ ,vert:│,fold:─,foldopen:,foldclose:,foldsep:│,diff:─,eob:_,lastline:󰅀,trunc:󰥭,truncrl:󰥼
+set fillchars=stl:\ ,stlnc:\ ,vert:\|,fold:-,foldopen:-,foldclose:+,foldsep:│,diff:-,eob:_,lastline:_,trunc:>,truncrl:<
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -28,12 +28,12 @@ set ignorecase
 set incsearch
 set laststatus=2
 set list
-set listchars=tab:󰥭─,leadmultispace:\ \ \ │,trail:󱓼,extends:󰥭,precedes:󰥼,conceal:󱗽,nbsp:󱓼
+set listchars=tab:>-,leadmultispace:\ \ \ \|,trail:_,extends:>,precedes:<,conceal:*,nbsp:_
 set nrformats-=octal
 set ruler
 set scrolloff=4
 set shiftwidth=4
-set showbreak=󱞪\ \ \ 
+set showbreak=-->\ 
 set showcmd
 set showmatch
 set sidescroll=1
@@ -213,11 +213,9 @@ let g:loaded_vimballPlugin = 1
 function! s:LoadPlugins(timer)
     let l:vimplug_path = has('win32')
                 \   ? expand('$HOME/vimfiles/autoload/plug.vim')
-                \   : has('nvim')
-                \       ? expand(stdpath('config') .. '/autoload/plug.vim')
-                \       : exists('$MYVIMDIR')
-                \           ? expand('$MYVIMDIR/autoload/plug.vim')
-                \           : expand('$HOME/.vim/autoload/plug.vim')
+                \   : exists('$MYVIMDIR')
+                \       ? expand('$MYVIMDIR/autoload/plug.vim')
+                \       : expand('$HOME/.vim/autoload/plug.vim')
 
     if !filereadable(l:vimplug_path)
         if executable('curl')
@@ -306,13 +304,6 @@ function! s:LoadPlugins(timer)
                     \   }
 
         " nerdtree
-        let g:NERDTreeDirArrowExpandable = ''
-        let g:NERDTreeDirArrowCollapsible = ''
-        let g:NERDTreeGitStatusUseNerdFonts = 1
-        let g:NERDTreeGitStatusIndicatorMapCustom = {
-                    \   'Renamed': '󰁕',
-                    \   'Deleted': '󰆴',
-                    \   }
         let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
         let g:NERDTreeQuitOnOpen = 3
         let g:NERDTreeShowHidden = 1
@@ -341,11 +332,9 @@ function! s:LoadPlugins(timer)
                     \   : expand('$HOME/.config/openai.token')
         let g:vim_ai_roles_config_file = has('win32')
                     \   ? expand('$HOME/vimfiles/roles.ini')
-                    \   : has('nvim')
-                    \       ? expand(stdpath('config') .. '/roles.ini')
-                    \       : exists('$MYVIMDIR')
-                    \           ? expand('$MYVIMDIR/roles.ini')
-                    \           : expand('$HOME/.vim/roles.ini')
+                    \   : exists('$MYVIMDIR')
+                    \       ? expand('$MYVIMDIR/roles.ini')
+                    \       : expand('$HOME/.vim/roles.ini')
 
         " vim-airline
         let g:airline_experimental = 1
@@ -356,37 +345,7 @@ function! s:LoadPlugins(timer)
                     \   'tabline',
                     \   ]
         let g:airline_highlighting_cache = 1
-        let g:airline_powerline_fonts = 1
         let g:airline_skip_empty_sections = 1
-        let g:airline_symbols = {
-                    \   'linenr': ' ',
-                    \   'maxlinenr': '',
-                    \   'colnr': ':',
-                    \   'branch': '󰘬',
-                    \   'paste': '󰆒 Paste',
-                    \   'readonly': '󰑇 Readonly',
-                    \   'spell': '󰓆 Spell',
-                    \   'crypt': '󰌾 Crypt',
-                    \   'dirty': ' 󱐋',
-                    \   'notexists': ' 󱥸',
-                    \   'whitespace': '󱗽󱞥',
-                    \   }
-
-        let g:airline#extensions#coc#error_symbol = '󰅖 Error:'
-        let g:airline#extensions#coc#warning_symbol = '󰈅 Warning:'
-        let g:airline#extensions#obsession#indicator_text = ' Session'
-
-        " vim-devicons
-        let g:webdevicons_enable_unite = 0
-        let g:webdevicons_enable_vimfiler = 0
-        let g:webdevicons_enable_ctrlp = 0
-        let g:webdevicons_enable_startify = 0
-        let g:webdevicons_enable_flagship_statusline = 0
-        let g:webdevicons_enable_denite = 0
-
-        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {
-                    \   'vue': '󰡄'
-                    \   }
 
         " vim-table-mode
         let g:table_mode_disable_mappings = 1
@@ -399,7 +358,7 @@ function! s:LoadPlugins(timer)
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree' | Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+        Plug 'preservim/nerdtree'
         Plug 'junegunn/vim-peekaboo'
         Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
@@ -422,7 +381,6 @@ function! s:LoadPlugins(timer)
         endif
 
         Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-        Plug 'ryanoasis/vim-devicons'
 
         call plug#end()
 
@@ -517,11 +475,6 @@ function! s:LoadPlugins(timer)
     " vim-ai
     if exists(':AINewChat')
         delcommand AINewChat
-    endif
-
-    " vim-devicons
-    if !exists('*WebDevIconsGetFileTypeSymbol')
-        let g:NERDTreeGitStatusConcealBrackets = 1
     endif
 
     " colorscheme
