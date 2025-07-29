@@ -19,7 +19,6 @@ set display=truncate
 set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
-set fillchars=stl:\ ,stlnc:\ ,vert:\|,fold:-,foldopen:-,foldclose:+,foldsep:│,diff:-,eob:_,lastline:_,trunc:>,truncrl:<
 set formatoptions+=mM
 set hidden
 set history=10000
@@ -238,7 +237,7 @@ function! s:LoadPlugins(timer)
         let $NVIM_COC_LOG_LEVEL = 'warn'
 
         let g:coc_global_extensions = [
-                    \   'coc-highlight', 'coc-snippets',
+                    \   'coc-highlight',
                     \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
                     \   'coc-markdown-preview-enhanced', 'coc-webview',
                     \   'coc-html', 'coc-class-css', 'coc-css',
@@ -354,26 +353,21 @@ function! s:LoadPlugins(timer)
         " Plugs
         Plug 'NLKNguyen/papercolor-theme'
         Plug 'airblade/vim-gitgutter'
-        Plug 'dhruvasagar/vim-table-mode'
         Plug 'easymotion/vim-easymotion'
         Plug 'editorconfig/editorconfig-vim'
         Plug 'github/copilot.vim'
         Plug 'preservim/nerdtree'
-        Plug 'junegunn/vim-peekaboo'
-        Plug 'markonm/hlyank.vim'
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-fugitive'
-        Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-repeat'
         Plug 'tpope/vim-surround'
-        Plug 'vim-jp/vimdoc-ja'
 
         if executable('fzf')
             Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
         endif
 
         if executable('node')
-            Plug 'neoclide/coc.nvim', { 'branch': 'release' } | Plug 'honza/vim-snippets'
+            Plug 'neoclide/coc.nvim', { 'branch': 'release' }
         endif
 
         if has('python3')
@@ -445,14 +439,6 @@ function! s:LoadPlugins(timer)
         endif
 
         autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
-
-        let g:coc_snippet_next = '<C-j>'
-        let g:coc_snippet_prev = '<C-k>'
-
-        imap <C-l> <Plug>(coc-snippets-expand)
-        vmap <C-j> <Plug>(coc-snippets-select)
-        imap <C-j> <Plug>(coc-snippets-expand-jump)
-        xmap <leader>x  <Plug>(coc-convert-snippet)
     endif
 
     " fzf
