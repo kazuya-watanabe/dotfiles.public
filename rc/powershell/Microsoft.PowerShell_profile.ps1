@@ -31,8 +31,6 @@ Remove-Item alias:ls
 Remove-Item alias:tee -Force
 Remove-Item alias:wget
 
-Set-Alias g git.exe
-
 function bat { &bat.exe --style=plain --color=always @args }
 function fd { &fd.exe --follow --hidden @args }
 function la { &lsd.exe --group-directories-first -A @args }

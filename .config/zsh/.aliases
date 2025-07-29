@@ -18,11 +18,8 @@ else
     esac
 fi
 
-alias G='gh dash'
-alias L='lazygit'
 alias bat='bat --style=plain --color=always'
 alias fd='fd --follow --hidden'
-alias g='git'
 alias ga='git add'
 alias gb='git branch'
 alias gc='git checkout'
