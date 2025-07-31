@@ -38,6 +38,3 @@ function ll { &lsd.exe --group-directories-first -Al @args }
 function ls { &lsd.exe --group-directories-first @args }
 function rg { &rg.exe --follow --hidden @args }
 function which ([string]$command) { Get-Command $command -ErrorAction SilentlyContinue }
-
-&starship.exe init powershell --print-full-init | Out-String | Invoke-Expression
-&zoxide.exe init powershell | Out-String | Invoke-Expression

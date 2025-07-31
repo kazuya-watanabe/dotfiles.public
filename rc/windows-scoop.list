@@ -12,11 +12,9 @@ install lf
 install lsd
 install python
 install ripgrep
-install starship
 install watchman
 install wget
 install zenhan
-install zoxide
 bucket add extras
 install lazygit
 install universal-ctags
