@@ -209,269 +209,205 @@ let g:loaded_netrw = 1 | let g:loaded_netrwPlugin = 1
 let g:loaded_tutor_mode_plugin = 1
 let g:loaded_vimballPlugin = 1
 
-function! s:LoadPlugins(timer)
-    let l:vimplug_path = has('win32')
-                \   ? expand('$HOME/vimfiles/autoload/plug.vim')
-                \   : exists('$MYVIMDIR')
-                \       ? expand('$MYVIMDIR/autoload/plug.vim')
-                \       : expand('$HOME/.vim/autoload/plug.vim')
+let s:vimplug_path = has('win32')
+            \   ? expand('$HOME/vimfiles/autoload/plug.vim')
+            \   : exists('$MYVIMDIR')
+            \       ? expand('$MYVIMDIR/autoload/plug.vim')
+            \       : expand('$HOME/.vim/autoload/plug.vim')
 
-    if !filereadable(l:vimplug_path)
-        if executable('curl')
-            call system('curl -fLo ' .. shellescape(l:vimplug_path) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
-        endif
-
-        if !filereadable(l:vimplug_path)
-            echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. l:vimplug_path
-            finish
-        endif
+if !filereadable(s:vimplug_path)
+    if executable('curl')
+        call system('curl -fLo ' .. shellescape(s:vimplug_path) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
     endif
 
-    if executable('git') && plug#begin()
-        " coc.nvim
-        let $NVIM_COC_LOG_FILE = exists('$TMPDIR')
-                    \   ? expand('$TMPDIR/coc.log')
-                    \   : exists('$TEMP')
-                    \       ? expand('$TEMP/coc.log')
-                    \       : expand('$HOME/.coc.log')
-        let $NVIM_COC_LOG_LEVEL = 'warn'
-
-        let g:coc_global_extensions = [
-                    \   'coc-highlight',
-                    \   'coc-json', 'coc-toml', 'coc-xml', 'coc-yaml',
-                    \   'coc-markdown-preview-enhanced', 'coc-webview',
-                    \   'coc-html', 'coc-class-css', 'coc-css',
-                    \   'coc-vimlsp',
-                    \   ]
-
-        function! s:AddCocExtensionIfExecutable(executables, extensions)
-            for executable in a:executables
-                if executable(executable)
-                    call extend(g:coc_global_extensions, a:extensions)
-                    break
-                endif
-            endfor
-        endfunction
-
-        call s:AddCocExtensionIfExecutable([ 'bash' ], [ 'coc-sh' ])
-        call s:AddCocExtensionIfExecutable([ 'clangd' ], [ 'coc-clangd', 'coc-clang-format-style-options' ])
-        call s:AddCocExtensionIfExecutable([ 'cmake' ], [ 'coc-cmake' ])
-        call s:AddCocExtensionIfExecutable([ 'gopls' ], [ 'coc-go', 'coc-golines' ])
-        call s:AddCocExtensionIfExecutable([ 'javac' ], [ 'coc-java' ])
-        call s:AddCocExtensionIfExecutable([ 'laravel' ], [ 'coc-blade', '@yaegassy/coc-laravel' ])
-        call s:AddCocExtensionIfExecutable([ 'lua', 'luajit' ], [ 'coc-lua' ])
-        call s:AddCocExtensionIfExecutable([ 'ng' ], [ 'coc-angular' ])
-        call s:AddCocExtensionIfExecutable([ 'node' ], [ 'coc-tsserver', 'coc-eslint', 'coc-prettier' ])
-        call s:AddCocExtensionIfExecutable([ 'perl' ], [ 'coc-perl' ])
-        call s:AddCocExtensionIfExecutable([ 'php' ], [ 'coc-phpls' ])
-        call s:AddCocExtensionIfExecutable([ 'phpactor' ], [ 'coc-phpactor' ])
-        call s:AddCocExtensionIfExecutable([ 'python3', 'python' ], [ 'coc-pyright', 'coc-pydocstring' ])
-        call s:AddCocExtensionIfExecutable([ 'ruby' ], [ 'coc-solargraph' ])
-        call s:AddCocExtensionIfExecutable([ 'rustc' ], [ 'coc-rust-analyzer' ])
-        call s:AddCocExtensionIfExecutable([ 'sqlite3', 'psql', 'mysql' ], [ 'coc-sql' ])
-        call s:AddCocExtensionIfExecutable([ 'vue' ], [ '@yaegassy/coc-volar' ])
-
-        if has('win32')
-            for s:extension in [ 'coc-sh', 'coc-xml' ]
-                let s:index = index(g:coc_global_extensions, s:extension)
-
-                if s:index > -1
-                    call remove(g:coc_global_extensions, s:index)
-                endif
-            endfor
-        endif
-
-        " fzf
-        if !exists('$FZF_DEFAULT_COMMAND')
-            let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-        endif
-
-        if !exists('$FZF_DEFAULT_OPTS')
-            let $FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
-        endif
-
-        let g:fzf_action = {
-                    \   'Ctrl-t': 'tab split',
-                    \   'Ctrl-i': 'split',
-                    \   'Ctrl-s': 'vsplit'
-                    \   }
-        let g:fzf_layout = {
-                    \   'window': { 'width': 0.9, 'height': 0.6 },
-                    \   }
-        let g:fzf_vim = {
-                    \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
-                    \   }
-
-        " nerdtree
-        let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
-        let g:NERDTreeQuitOnOpen = 3
-        let g:NERDTreeShowHidden = 1
-        let g:NERDTreeWinSize = 30
-
-        " vim-ai
-        let g:vim_ai_chat = {
-                    \   'options': {
-                    \       'model': 'gpt-4.1-mini',
-                    \       'selection_boundary': '```',
-                    \       },
-                    \   }
-        let g:vim_ai_complete = {
-                    \   'options': {
-                    \       'model': 'gpt-4.1-mini',
-                    \       },
-                    \   }
-        let g:vim_ai_edit = {
-                    \   'options': {
-                    \       'model': 'gpt-4.1-mini',
-                    \       },
-                    \   }
-        let g:vim_ai_chat_markdown = 1
-        let g:vim_ai_token_file_path = exists('$XDG_CONFIG_HOME')
-                    \   ? expand('$XDG_CONFIG_HOME/openai.token')
-                    \   : expand('$HOME/.config/openai.token')
-        let g:vim_ai_roles_config_file = has('win32')
-                    \   ? expand('$HOME/vimfiles/roles.ini')
-                    \   : exists('$MYVIMDIR')
-                    \       ? expand('$MYVIMDIR/roles.ini')
-                    \       : expand('$HOME/.vim/roles.ini')
-
-        " vim-airline
-        let g:airline_experimental = 1
-        let g:airline_extensions = [
-                    \   'branch',
-                    \   'coc',
-                    \   'obsession',
-                    \   'tabline',
-                    \   ]
-        let g:airline_highlighting_cache = 1
-        let g:airline_skip_empty_sections = 1
-
-        " vim-table-mode
-        let g:table_mode_disable_mappings = 1
-        let g:table_mode_disable_tableize_mappings = 1
-
-        " Plugs
-        Plug 'NLKNguyen/papercolor-theme'
-        Plug 'airblade/vim-gitgutter'
-        Plug 'easymotion/vim-easymotion'
-        Plug 'editorconfig/editorconfig-vim'
-        Plug 'github/copilot.vim'
-        Plug 'preservim/nerdtree'
-        Plug 'tpope/vim-commentary'
-        Plug 'tpope/vim-fugitive'
-        Plug 'tpope/vim-repeat'
-        Plug 'tpope/vim-surround'
-
-        if executable('fzf')
-            Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
-        endif
-
-        if executable('node')
-            Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-        endif
-
-        if has('python3')
-            Plug 'madox2/vim-ai'
-        endif
-
-        Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-
-        call plug#end()
-
-        if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-            echomsg 'Please wait for a while to complete the installation.'
-            PlugInstall --sync
-        endif
+    if !filereadable(s:vimplug_path)
+        echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. s:vimplug_path
+        finish
     endif
+endif
 
+if executable('git') && plug#begin()
     " coc.nvim
-    if exists(':CocStart')
-        CocStart
+    let $NVIM_COC_LOG_FILE = exists('$TMPDIR')
+                \   ? expand('$TMPDIR/coc.log')
+                \   : exists('$TEMP')
+                \       ? expand('$TEMP/coc.log')
+                \       : expand('$HOME/.coc.log')
+    let $NVIM_COC_LOG_LEVEL = 'warn'
 
-        autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
-
-        command! -nargs=0 Format :call CocActionAsync('format')
-        command! -nargs=? Fold :call CocAction('fold', <f-args>)
-        command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
-        command! -nargs=0 OpenLink :call CocAction('openLink')
-        command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
-
-        function! s:ShowDocumentation()
-            if CocAction('hasProvider', 'hover')
-                call CocActionAsync('doHover')
-            else
-                call feedkeys('K', 'in')
-            endif
-        endfunction
-
-        inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                    \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-        nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
-
-        nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-        nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
-
-        nmap <silent><nowait> gd <Plug>(coc-definition)
-        nmap <silent><nowait> gy <Plug>(coc-type-definition)
-        nmap <silent><nowait> gi <Plug>(coc-implementation)
-        nmap <silent><nowait> gr <Plug>(coc-references)
-
-        nmap <Leader>rn <Plug>(coc-rename)
-
-        xmap <Leader>f <Plug>(coc-format-selected)
-
-        nmap <Leader>a <Plug>(coc-codeaction-selected)
-        xmap <Leader>a <Plug>(coc-codeaction-selected)
-
-        nmap <Leader>qf <Plug>(coc-fix-current)
-
-        nmap <silent> <leader>r <Plug>(coc-codeaction-refactor)
-        xmap <silent> <leader>r <Plug>(coc-codeaction-refactor-selected)
-
-        if has('nvim-0.4.0') || has('patch-8.2.0750')
-            nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-            nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-            inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-            inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-            vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-            vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-        endif
-
-        autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
-    endif
+    let g:coc_global_extensions = [
+                \   'coc-highlight',
+                \   'coc-markdown-preview-enhanced', 'coc-webview',
+                \   ]
 
     " fzf
-    if exists(':Files')
-        nmap <silent> <Leader>b :<C-u>Buffers<CR>
-        nmap <silent> <Leader>f :<C-u>Files<CR>
-        nmap <silent> <Leader>g :<C-u>GFiles<CR>
-
-        command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
-        command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
+    if !exists('$FZF_DEFAULT_COMMAND')
+        let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
     endif
+
+    if !exists('$FZF_DEFAULT_OPTS')
+        let $FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
+    endif
+
+    let g:fzf_action = {
+                \   'Ctrl-t': 'tab split',
+                \   'Ctrl-i': 'split',
+                \   'Ctrl-s': 'vsplit'
+                \   }
+    let g:fzf_layout = {
+                \   'window': { 'width': 0.9, 'height': 0.6 },
+                \   }
+    let g:fzf_vim = {
+                \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
+                \   }
 
     " nerdtree
-    if exists(':NERDTree')
-        nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
-
-        autocmd vimrc BufLeave * if &filetype == 'nerdtree' | NERDTreeClose | endif
-    endif
+    let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
+    let g:NERDTreeQuitOnOpen = 3
+    let g:NERDTreeShowHidden = 1
+    let g:NERDTreeWinSize = 30
 
     " vim-ai
-    if exists(':AINewChat')
-        delcommand AINewChat
+    let g:vim_ai_chat = {
+                \   'options': {
+                \       'model': 'gpt-4.1-mini',
+                \       'selection_boundary': '```',
+                \       },
+                \   }
+    let g:vim_ai_complete = {
+                \   'options': {
+                \       'model': 'gpt-4.1-mini',
+                \       },
+                \   }
+    let g:vim_ai_edit = {
+                \   'options': {
+                \       'model': 'gpt-4.1-mini',
+                \       },
+                \   }
+    let g:vim_ai_chat_markdown = 1
+    let g:vim_ai_token_file_path = exists('$XDG_CONFIG_HOME')
+                \   ? expand('$XDG_CONFIG_HOME/openai.token')
+                \   : expand('$HOME/.config/openai.token')
+    let g:vim_ai_roles_config_file = has('win32')
+                \   ? expand('$HOME/vimfiles/roles.ini')
+                \   : exists('$MYVIMDIR')
+                \       ? expand('$MYVIMDIR/roles.ini')
+                \       : expand('$HOME/.vim/roles.ini')
+
+    " vim-airline
+    let g:airline_experimental = 1
+    let g:airline_extensions = [
+                \   'branch',
+                \   'tabline',
+                \   ]
+    let g:airline_highlighting_cache = 1
+    let g:airline_powerline_fonts = 1
+    let g:airline_skip_empty_sections = 1
+
+    " vim-table-mode
+    let g:table_mode_disable_mappings = 1
+    let g:table_mode_disable_tableize_mappings = 1
+
+    " Plugs
+    Plug 'NLKNguyen/papercolor-theme'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'dhruvasagar/vim-table-mode'
+    Plug 'easymotion/vim-easymotion'
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'github/copilot.vim'
+    Plug 'preservim/nerdtree'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+
+    if executable('fzf')
+        Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
     endif
 
-    " colorscheme
-    if !empty(getcompletion('PaperColor', 'color'))
-        colorscheme PaperColor
-        let g:airline_theme = 'papercolor'
+    if executable('node')
+        Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+    endif
+
+    if has('python3')
+        Plug 'madox2/vim-ai'
+    endif
+
+    Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+
+    call plug#end()
+
+    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        echomsg 'Please wait for a while to complete the installation.'
+        PlugInstall --sync
+        finish
+    endif
+endif
+
+" coc.nvim
+autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
+
+command! -nargs=0 Format :call CocActionAsync('format')
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OpenLink :call CocAction('openLink')
+command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
+
+function! s:ShowDocumentation()
+    if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
+    else
+        call feedkeys('K', 'in')
     endif
 endfunction
 
-if has('gui_running')
-    autocmd vimrc GUIEnter * call timer_start(10, function('s:LoadPlugins'))
-else
-    call timer_start(10, function('s:LoadPlugins'))
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+
+nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
+nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+
+nmap <silent><nowait> gd <Plug>(coc-definition)
+nmap <silent><nowait> gy <Plug>(coc-type-definition)
+nmap <silent><nowait> gi <Plug>(coc-implementation)
+nmap <silent><nowait> gr <Plug>(coc-references)
+
+nmap <Leader>rn <Plug>(coc-rename)
+
+xmap <Leader>f <Plug>(coc-format-selected)
+
+nmap <Leader>a <Plug>(coc-codeaction-selected)
+xmap <Leader>a <Plug>(coc-codeaction-selected)
+
+nmap <Leader>qf <Plug>(coc-fix-current)
+
+nmap <silent> <leader>r <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r <Plug>(coc-codeaction-refactor-selected)
+
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+    nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+    inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+    vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
+
+autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
+
+" fzf
+nmap <silent> <Leader>b :<C-u>Buffers<CR>
+nmap <silent> <Leader>f :<C-u>Files<CR>
+nmap <silent> <Leader>g :<C-u>GFiles<CR>
+
+command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
+
+" nerdtree
+nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
+
+" colorscheme
+colorscheme PaperColor
+let g:airline_theme = 'papercolor'
