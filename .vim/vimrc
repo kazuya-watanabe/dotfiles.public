@@ -97,17 +97,10 @@ if has('vim_starting')
 endif
 
 " autocmds
-function! s:Nohlsearch()
-    if v:hlsearch
-        call feedkeys("\<cmd>nohlsearch\<cr>", 'm')
-    endif
-endfunction
-
 augroup vimrc
     autocmd!
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd CursorHold,InsertEnter * call s:Nohlsearch()
     autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
     autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
@@ -263,7 +256,6 @@ if executable('git') && plug#begin()
 
     " nerdtree
     let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
-    let g:NERDTreeQuitOnOpen = 3
     let g:NERDTreeShowHidden = 1
     let g:NERDTreeWinSize = 30
 
@@ -304,10 +296,6 @@ if executable('git') && plug#begin()
     let g:airline_powerline_fonts = 1
     let g:airline_skip_empty_sections = 1
 
-    " vim-table-mode
-    let g:table_mode_disable_mappings = 1
-    let g:table_mode_disable_tableize_mappings = 1
-
     " Plugs
     Plug 'NLKNguyen/papercolor-theme'
     Plug 'airblade/vim-gitgutter'
@@ -339,75 +327,92 @@ if executable('git') && plug#begin()
 
     if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
         echomsg 'Please wait for a while to complete the installation.'
+
         PlugInstall --sync
+
+        echomsg 'Installation completed. Please restart Vim.'
+
         finish
     endif
-endif
 
-" coc.nvim
-autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
+    " coc.nvim
+    autocmd CursorHold * silent call CocActionAsync('highlight')
 
-command! -nargs=0 Format :call CocActionAsync('format')
-command! -nargs=? Fold :call CocAction('fold', <f-args>)
-command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
-command! -nargs=0 OpenLink :call CocAction('openLink')
-command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
+    command! -nargs=0 Format :call CocActionAsync('format')
+    command! -nargs=? Fold :call CocAction('fold', <f-args>)
+    command! -nargs=0 OR   :call CocActionAsync('runCommand', 'editor.action.organizeImport')
+    command! -nargs=0 OpenLink :call CocAction('openLink')
+    command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
 
-function! s:ShowDocumentation()
-    if CocAction('hasProvider', 'hover')
-        call CocActionAsync('doHover')
-    else
-        call feedkeys('K', 'in')
+    nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+    nmap <silent><nowait> gd <Plug>(coc-definition)
+    nmap <silent><nowait> gy <Plug>(coc-type-definition)
+    nmap <silent><nowait> gi <Plug>(coc-implementation)
+    nmap <silent><nowait> gr <Plug>(coc-references)
+    nmap <leader>rn <Plug>(coc-rename)
+    xmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+    xmap <leader>a  <Plug>(coc-codeaction-selected)
+    nmap <leader>a  <Plug>(coc-codeaction-selected)
+    nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+    nmap <leader>as  <Plug>(coc-codeaction-source)
+    nmap <leader>qf  <Plug>(coc-fix-current)
+    nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+    xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+    nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+    nmap <leader>cl  <Plug>(coc-codelens-action)
+    xmap if <Plug>(coc-funcobj-i)
+    omap if <Plug>(coc-funcobj-i)
+    xmap af <Plug>(coc-funcobj-a)
+    omap af <Plug>(coc-funcobj-a)
+    xmap ic <Plug>(coc-classobj-i)
+    omap ic <Plug>(coc-classobj-i)
+    xmap ac <Plug>(coc-classobj-a)
+    omap ac <Plug>(coc-classobj-a)
+    nmap <silent> <C-s> <Plug>(coc-range-select)
+    xmap <silent> <C-s> <Plug>(coc-range-select)
+    nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+    nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+    nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+    nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+    nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+    nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+    nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+    nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+    if has('nvim-0.4.0') || has('patch-8.2.0750')
+        nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+        vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
     endif
-endfunction
 
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-            \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+    nnoremap <silent> K :call ShowDocumentation()<CR>
 
-nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+    function! ShowDocumentation()
+        if CocAction('hasProvider', 'hover')
+            call CocActionAsync('doHover')
+        else
+            call feedkeys('K', 'in')
+        endif
+    endfunction
 
-nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+    " fzf
+    nmap <silent> <LocalLeader>b :<C-u>Buffers<CR>
+    nmap <silent> <LocalLeader>f :<C-u>Files<CR>
+    nmap <silent> <LocalLeader>g :<C-u>GFiles<CR>
 
-nmap <silent><nowait> gd <Plug>(coc-definition)
-nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gi <Plug>(coc-implementation)
-nmap <silent><nowait> gr <Plug>(coc-references)
+    command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+    command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
 
-nmap <Leader>rn <Plug>(coc-rename)
+    " nerdtree
+    nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
 
-xmap <Leader>f <Plug>(coc-format-selected)
+    " colorscheme
+    colorscheme PaperColor
 
-nmap <Leader>a <Plug>(coc-codeaction-selected)
-xmap <Leader>a <Plug>(coc-codeaction-selected)
-
-nmap <Leader>qf <Plug>(coc-fix-current)
-
-nmap <silent> <leader>r <Plug>(coc-codeaction-refactor)
-xmap <silent> <leader>r <Plug>(coc-codeaction-refactor-selected)
-
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-    nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-    nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-    inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-    inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-    vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-    vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    let g:airline_theme = 'papercolor'
 endif
-
-autocmd vimrc CursorHold * silent call CocActionAsync('highlight')
-
-" fzf
-nmap <silent> <Leader>b :<C-u>Buffers<CR>
-nmap <silent> <Leader>f :<C-u>Files<CR>
-nmap <silent> <Leader>g :<C-u>GFiles<CR>
-
-command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
-command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
-
-" nerdtree
-nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
-
-" colorscheme
-colorscheme PaperColor
-let g:airline_theme = 'papercolor'
