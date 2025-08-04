@@ -3,3 +3,4 @@ httpie
 openai
 pptx2md
 xlsx2csv
+yt-dlp
