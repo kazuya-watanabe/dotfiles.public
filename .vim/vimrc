@@ -118,11 +118,11 @@ let s:note_directory = '~/Documents/Notes'
 let s:note_filename = s:note_directory .. '/%Y-%m/%Y-%m-%d.md'
 let s:note_template = s:note_directory .. '/.template.md'
 
-function! s:Note(filename = '')
-    if a:filename == ''
+function! s:Note(path = '')
+    let l:filename = a:path
+
+    if l:filename == ''
         let l:filename = strftime(s:note_filename)
-    else
-        let l:filename = a:filename
     endif
 
     execute 'edit ' .. expand(l:filename)
@@ -220,19 +220,6 @@ if !filereadable(s:vimplug_path)
 endif
 
 if executable('git') && plug#begin()
-    " coc.nvim
-    let $NVIM_COC_LOG_FILE = exists('$TMPDIR')
-                \   ? expand('$TMPDIR/coc.log')
-                \   : exists('$TEMP')
-                \       ? expand('$TEMP/coc.log')
-                \       : expand('$HOME/.coc.log')
-    let $NVIM_COC_LOG_LEVEL = 'warn'
-
-    let g:coc_global_extensions = [
-                \   'coc-highlight',
-                \   'coc-markdown-preview-enhanced', 'coc-webview',
-                \   ]
-
     " fzf
     if !exists('$FZF_DEFAULT_COMMAND')
         let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
@@ -253,6 +240,30 @@ if executable('git') && plug#begin()
     let g:fzf_vim = {
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
                 \   }
+
+    " lightline
+    let g:lightline = {
+                \   'tabline': {
+                \       'left': [ ['buffers'] ],
+                \       'right': [ ['close'] ]
+                \       },
+                \   'component_expand': {
+                \       'buffers': 'lightline#bufferline#buffers',
+                \       },
+                \   'component_type': {
+                \       'buffers': 'tabsel',
+                \       },
+                \   'separator': {
+                \       'left': '',
+                \       'right': ''
+                \       },
+                \   'subseparator': {
+                \       'left': '',
+                \       'right': ''
+                \       },
+                \   }
+
+    set showtabline=2
 
     " nerdtree
     let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
@@ -286,16 +297,6 @@ if executable('git') && plug#begin()
                 \       ? expand('$MYVIMDIR/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
-    " vim-airline
-    let g:airline_experimental = 1
-    let g:airline_extensions = [
-                \   'branch',
-                \   'tabline',
-                \   ]
-    let g:airline_highlighting_cache = 1
-    let g:airline_powerline_fonts = 1
-    let g:airline_skip_empty_sections = 1
-
     " Plugs
     Plug 'NLKNguyen/papercolor-theme'
     Plug 'airblade/vim-gitgutter'
@@ -303,6 +304,10 @@ if executable('git') && plug#begin()
     Plug 'easymotion/vim-easymotion'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'github/copilot.vim'
+    Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
+    Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'preservim/nerdtree'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-fugitive'
@@ -313,15 +318,9 @@ if executable('git') && plug#begin()
         Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
     endif
 
-    if executable('node')
-        Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-    endif
-
     if has('python3')
         Plug 'madox2/vim-ai'
     endif
-
-    Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
     call plug#end()
 
@@ -335,75 +334,10 @@ if executable('git') && plug#begin()
         finish
     endif
 
-    " coc.nvim
-    autocmd CursorHold * silent call CocActionAsync('highlight')
-
-    command! -nargs=0 Format :call CocActionAsync('format')
-    command! -nargs=? Fold :call CocAction('fold', <f-args>)
-    command! -nargs=0 OR   :call CocActionAsync('runCommand', 'editor.action.organizeImport')
-    command! -nargs=0 OpenLink :call CocAction('openLink')
-    command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
-
-    nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-    nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
-    nmap <silent><nowait> gd <Plug>(coc-definition)
-    nmap <silent><nowait> gy <Plug>(coc-type-definition)
-    nmap <silent><nowait> gi <Plug>(coc-implementation)
-    nmap <silent><nowait> gr <Plug>(coc-references)
-    nmap <leader>rn <Plug>(coc-rename)
-    xmap <leader>f  <Plug>(coc-format-selected)
-    nmap <leader>f  <Plug>(coc-format-selected)
-    xmap <leader>a  <Plug>(coc-codeaction-selected)
-    nmap <leader>a  <Plug>(coc-codeaction-selected)
-    nmap <leader>ac  <Plug>(coc-codeaction-cursor)
-    nmap <leader>as  <Plug>(coc-codeaction-source)
-    nmap <leader>qf  <Plug>(coc-fix-current)
-    nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-    xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-    nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-    nmap <leader>cl  <Plug>(coc-codelens-action)
-    xmap if <Plug>(coc-funcobj-i)
-    omap if <Plug>(coc-funcobj-i)
-    xmap af <Plug>(coc-funcobj-a)
-    omap af <Plug>(coc-funcobj-a)
-    xmap ic <Plug>(coc-classobj-i)
-    omap ic <Plug>(coc-classobj-i)
-    xmap ac <Plug>(coc-classobj-a)
-    omap ac <Plug>(coc-classobj-a)
-    nmap <silent> <C-s> <Plug>(coc-range-select)
-    xmap <silent> <C-s> <Plug>(coc-range-select)
-    nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-    nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-    nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-    nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-    nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-    nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-    nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-    nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-    if has('nvim-0.4.0') || has('patch-8.2.0750')
-        nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-        nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-        inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-        inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-        vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-        vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-    endif
-
-    nnoremap <silent> K :call ShowDocumentation()<CR>
-
-    function! ShowDocumentation()
-        if CocAction('hasProvider', 'hover')
-            call CocActionAsync('doHover')
-        else
-            call feedkeys('K', 'in')
-        endif
-    endfunction
-
     " fzf
-    nmap <silent> <LocalLeader>b :<C-u>Buffers<CR>
-    nmap <silent> <LocalLeader>f :<C-u>Files<CR>
-    nmap <silent> <LocalLeader>g :<C-u>GFiles<CR>
+    nmap <silent> <Leader>b :<C-u>Buffers<CR>
+    nmap <silent> <Leader>f :<C-u>Files<CR>
+    nmap <silent> <Leader>g :<C-u>GFiles<CR>
 
     command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
     command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
@@ -411,8 +345,33 @@ if executable('git') && plug#begin()
     " nerdtree
     nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
 
-    " colorscheme
+    " papercolor-theme
     colorscheme PaperColor
 
-    let g:airline_theme = 'papercolor'
+    " vim-lsp
+    nmap <Leader>ca <plug>(lsp-code-action)
+    nmap <Leader>cl <plug>(lsp-code-lens)
+    nmap gd         <plug>(lsp-definition)
+    nmap gs         <plug>(lsp-workspace-symbol-search)
+    nmap gr         <plug>(lsp-references)
+    nmap gi         <plug>(lsp-implementation)
+    nmap gt         <plug>(lsp-type-definition)
+    nmap [g         <plug>(lsp-previous-diagnostic)
+    nmap ]g         <plug>(lsp-next-diagnostic)
+    nmap <Leader>rn <plug>(lsp-rename)
+    nmap K          <plug>(lsp-hover)
+
+    " vim-vsinp
+    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    nmap        s   <Plug>(vsnip-select-text)
+    xmap        s   <Plug>(vsnip-select-text)
+    nmap        S   <Plug>(vsnip-cut-text)
+    xmap        S   <Plug>(vsnip-cut-text)
 endif
