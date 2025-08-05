@@ -243,10 +243,7 @@ if executable('git') && plug#begin()
 
     " lightline
     let g:lightline = {
-                \   'tabline': {
-                \       'left': [ ['buffers'] ],
-                \       'right': [ ['close'] ]
-                \       },
+                \   'colorscheme': 'sonokai',
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
@@ -260,6 +257,10 @@ if executable('git') && plug#begin()
                 \   'subseparator': {
                 \       'left': '',
                 \       'right': ''
+                \       },
+                \   'tabline': {
+                \       'left': [ ['buffers'] ],
+                \       'right': [ ['close'] ]
                 \       },
                 \   }
 
@@ -297,8 +298,13 @@ if executable('git') && plug#begin()
                 \       ? expand('$MYVIMDIR/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
+    " sonokai
+    let g:sonokai_better_performance = 1
+    let g:sonokai_dim_inactive_windows = 1
+    let g:sonokai_enable_italic = 1
+    let g:sonokai_style = 'default'
+
     " Plugs
-    Plug 'NLKNguyen/papercolor-theme'
     Plug 'airblade/vim-gitgutter'
     Plug 'dhruvasagar/vim-table-mode'
     Plug 'easymotion/vim-easymotion'
@@ -309,6 +315,7 @@ if executable('git') && plug#begin()
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'preservim/nerdtree'
+    Plug 'sainnhe/sonokai'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-repeat'
@@ -345,8 +352,8 @@ if executable('git') && plug#begin()
     " nerdtree
     nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
 
-    " papercolor-theme
-    colorscheme PaperColor
+    " sonikai
+    colorscheme sonokai
 
     " vim-lsp
     nmap <Leader>ca <plug>(lsp-code-action)
