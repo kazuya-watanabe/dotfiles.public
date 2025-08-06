@@ -102,7 +102,7 @@ augroup vimrc
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
     autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
-    autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
+    autocmd FileType dbout,fugitive,help,qf,fern nnoremap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
     autocmd FileType qf setlocal nobuflisted
 
