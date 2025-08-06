@@ -266,10 +266,11 @@ if executable('git') && plug#begin()
 
     set showtabline=2
 
-    " nerdtree
-    let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
-    let g:NERDTreeShowHidden = 1
-    let g:NERDTreeWinSize = 30
+    " sonokai
+    let g:sonokai_better_performance = 1
+    let g:sonokai_dim_inactive_windows = 1
+    let g:sonokai_enable_italic = 1
+    let g:sonokai_style = 'default'
 
     " vim-ai
     let g:vim_ai_chat = {
@@ -298,11 +299,9 @@ if executable('git') && plug#begin()
                 \       ? expand('$MYVIMDIR/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
-    " sonokai
-    let g:sonokai_better_performance = 1
-    let g:sonokai_dim_inactive_windows = 1
-    let g:sonokai_enable_italic = 1
-    let g:sonokai_style = 'default'
+    " vim-fern
+    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
+    let g:fern#default_hidden = 1
 
     " Plugs
     Plug 'airblade/vim-gitgutter'
@@ -312,9 +311,9 @@ if executable('git') && plug#begin()
     Plug 'github/copilot.vim'
     Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'lambdalisue/vim-fern'
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
-    Plug 'preservim/nerdtree'
     Plug 'sainnhe/sonokai'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-fugitive'
@@ -349,11 +348,11 @@ if executable('git') && plug#begin()
     command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
     command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
 
-    " nerdtree
-    nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
-
     " sonikai
     colorscheme sonokai
+
+    " vim-fern
+    nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
 
     " vim-lsp
     nmap <Leader>ca <plug>(lsp-code-action)
