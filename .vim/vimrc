@@ -49,9 +49,6 @@ set splitright
 set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
-set ttimeout
-set ttimeoutlen=100
-set updatetime=300
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
@@ -247,6 +244,11 @@ if executable('git') && plug#begin()
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
+                \   'component': {
+                \       'fileformat': '%{nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat}',
+                \       'filename': '%{nerdfont#find(expand("%")) .. " " .. expand("%:t")}',
+                \       'filetype': '%{nerdfont#find(expand("%")) .. " " .. &filetype}',
+                \       },
                 \   'component_type': {
                 \       'buffers': 'tabsel',
                 \       },
@@ -264,13 +266,15 @@ if executable('git') && plug#begin()
                 \       },
                 \   }
 
+    let g:lightline#bufferline#enable_nerdfont = 1
+    let g:lightline#bufferline#margin_left = 1
+    let g:lightline#bufferline#unicode_symbols = 1
+
     set showtabline=2
 
     " sonokai
     let g:sonokai_better_performance = 1
-    let g:sonokai_dim_inactive_windows = 1
     let g:sonokai_enable_italic = 1
-    let g:sonokai_style = 'default'
 
     " vim-ai
     let g:vim_ai_chat = {
@@ -302,6 +306,7 @@ if executable('git') && plug#begin()
     " vim-fern
     let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
     let g:fern#default_hidden = 1
+    let g:fern#renderer = 'nerdfont'
 
     " Plugs
     Plug 'airblade/vim-gitgutter'
@@ -311,7 +316,8 @@ if executable('git') && plug#begin()
     Plug 'github/copilot.vim'
     Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'lambdalisue/vim-fern'
+    Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
+    Plug 'lambdalisue/vim-fern' | Plug 'lambdalisue/vim-fern-renderer-nerdfont'
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'sainnhe/sonokai'
@@ -331,11 +337,11 @@ if executable('git') && plug#begin()
     call plug#end()
 
     if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-        echomsg 'Please wait for a while to complete the installation.'
+        echohl WarningMsg | echomsg 'Please wait for a while to complete the installation.' | echohl None
 
         PlugInstall --sync
 
-        echomsg 'Installation completed. Please restart Vim.'
+        echohl WarningMsg | echomsg 'Installation completed. Please restart Vim.' | echohl None
 
         finish
     endif
@@ -354,6 +360,11 @@ if executable('git') && plug#begin()
     " vim-fern
     nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
 
+    " vim-glyph-palette
+    augroup vimrc
+        autocmd FileType fern call glyph_palette#apply()
+    augroup END
+
     " vim-lsp
     nmap <Leader>ca <plug>(lsp-code-action)
     nmap <Leader>cl <plug>(lsp-code-lens)
@@ -367,7 +378,7 @@ if executable('git') && plug#begin()
     nmap <Leader>rn <plug>(lsp-rename)
     nmap K          <plug>(lsp-hover)
 
-    " vim-vsinp
+    " vim-vsnip
     imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
     smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
     imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
