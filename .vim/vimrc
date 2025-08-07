@@ -199,10 +199,10 @@ let g:loaded_netrw = 1 | let g:loaded_netrwPlugin = 1
 let g:loaded_tutor_mode_plugin = 1
 let g:loaded_vimballPlugin = 1
 
-let s:vimplug_path = has('win32')
-            \   ? expand('$HOME/vimfiles/autoload/plug.vim')
-            \   : exists('$MYVIMDIR')
-            \       ? expand('$MYVIMDIR/autoload/plug.vim')
+let s:vimplug_path = exists('$MYVIMDIR')
+            \   ? expand('$MYVIMDIR/autoload/plug.vim')
+            \   : has('win32')
+            \       ? expand('$HOME/vimfiles/autoload/plug.vim')
             \       : expand('$HOME/.vim/autoload/plug.vim')
 
 if !filereadable(s:vimplug_path)
@@ -217,6 +217,12 @@ if !filereadable(s:vimplug_path)
 endif
 
 if executable('git') && plug#begin()
+    " copilot.vim
+    let g:copilot_filetypes = {
+                \   '*': v:true,
+                \   'markdown': v:false,
+                \   }
+
     " fzf
     if !exists('$FZF_DEFAULT_COMMAND')
         let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
@@ -238,16 +244,20 @@ if executable('git') && plug#begin()
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
                 \   }
 
-    " lightline
+    " lightline.vim
     let g:lightline = {
                 \   'colorscheme': 'sonokai',
+                \   'component': {
+                \       'filename': '%{ nerdfont#find(expand("%")) .. " " .. expand("%:t") }',
+                \       'modified': '%{ &modified ? "󰏫" : "" }',
+                \       'paste': '%{ &paste ? "󰆒" : "" }',
+                \       'readonly': '%{ &readonly ? "󰌾" : "" }',
+                \       'fileformat': '%{ nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat }',
+                \       'filetype': '%{ nerdfont#find(expand("%")) .. " " .. &filetype }',
+                \       'spell': '%{ &spell ? "󰓆" : ""}',
+                \       },
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
-                \       },
-                \   'component': {
-                \       'fileformat': '%{nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat}',
-                \       'filename': '%{nerdfont#find(expand("%")) .. " " .. expand("%:t")}',
-                \       'filetype': '%{nerdfont#find(expand("%")) .. " " .. &filetype}',
                 \       },
                 \   'component_type': {
                 \       'buffers': 'tabsel',
@@ -268,7 +278,8 @@ if executable('git') && plug#begin()
 
     let g:lightline#bufferline#enable_nerdfont = 1
     let g:lightline#bufferline#margin_left = 1
-    let g:lightline#bufferline#unicode_symbols = 1
+ 	let g:lightline#bufferline#modified = ' 󰏫'
+	let g:lightline#bufferline#read_only = ' 󰌾'
 
     set showtabline=2
 
@@ -337,7 +348,7 @@ if executable('git') && plug#begin()
     call plug#end()
 
     if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-        echohl WarningMsg | echomsg 'Please wait for a while to complete the installation.' | echohl None
+        echomsg 'Please wait for a while to complete the installation.'
 
         PlugInstall --sync
 
@@ -350,9 +361,6 @@ if executable('git') && plug#begin()
     nmap <silent> <Leader>b :<C-u>Buffers<CR>
     nmap <silent> <Leader>f :<C-u>Files<CR>
     nmap <silent> <Leader>g :<C-u>GFiles<CR>
-
-    command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
-    command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
 
     " sonikai
     colorscheme sonokai
