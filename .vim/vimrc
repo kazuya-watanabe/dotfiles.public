@@ -26,6 +26,7 @@ set hlsearch
 set ignorecase
 set incsearch
 set laststatus=2
+set lazyredraw
 set list
 set listchars=tab:>-,leadmultispace:\ \ \ \|,trail:_,extends:>,precedes:<,conceal:*,nbsp:_
 set nrformats-=octal
@@ -98,8 +99,7 @@ augroup vimrc
     autocmd!
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
-    autocmd FileType dbout,fugitive,help,qf,fern nnoremap <silent><buffer> q :<C-u>quit<CR>
+    autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
     autocmd FileType qf setlocal nobuflisted
 
@@ -152,7 +152,6 @@ function! s:Note(path = '')
 endfunction
 
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
-
 command! -nargs=? -complete=file Note silent call s:Note(<q-args>)
 
 " keymaps
@@ -212,6 +211,7 @@ if !filereadable(s:vimplug_path)
 
     if !filereadable(s:vimplug_path)
         echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. s:vimplug_path
+
         finish
     endif
 endif
@@ -288,30 +288,14 @@ if executable('git') && plug#begin()
     let g:sonokai_enable_italic = 1
 
     " vim-ai
-    let g:vim_ai_chat = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       'selection_boundary': '```',
-                \       },
-                \   }
-    let g:vim_ai_complete = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       },
-                \   }
-    let g:vim_ai_edit = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       },
-                \   }
     let g:vim_ai_chat_markdown = 1
     let g:vim_ai_token_file_path = exists('$XDG_CONFIG_HOME')
                 \   ? expand('$XDG_CONFIG_HOME/openai.token')
                 \   : expand('$HOME/.config/openai.token')
-    let g:vim_ai_roles_config_file = has('win32')
-                \   ? expand('$HOME/vimfiles/roles.ini')
-                \   : exists('$MYVIMDIR')
-                \       ? expand('$MYVIMDIR/roles.ini')
+    let g:vim_ai_roles_config_file = exists('$MYVIMDIR')
+                \   ? expand('$MYVIMDIR/roles.ini')
+                \   : has('win32')
+                \       ? expand('$HOME/vimfiles/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
     " vim-fern
@@ -325,7 +309,6 @@ if executable('git') && plug#begin()
     Plug 'easymotion/vim-easymotion'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'github/copilot.vim'
-    Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
     Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
     Plug 'lambdalisue/vim-fern' | Plug 'lambdalisue/vim-fern-renderer-nerdfont'
@@ -357,6 +340,10 @@ if executable('git') && plug#begin()
         finish
     endif
 
+    " copilot.vim
+    imap <M-n> <Plug>(copilot-next)
+    imap <M-p> <Plug>(copilot-previous)
+
     " fzf
     nmap <silent> <Leader>b :<C-u>Buffers<CR>
     nmap <silent> <Leader>f :<C-u>Files<CR>
@@ -365,8 +352,15 @@ if executable('git') && plug#begin()
     " sonikai
     colorscheme sonokai
 
+    " vim-ai
+    autocmd FileType aichat setlocal wrap
+
+    map <silent> <Leader>c :<C-u>AIChat<CR>
+
     " vim-fern
     nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
+
+    autocmd FileType fern nmap <silent><buffer> q :<C-u>quit<CR>
 
     " vim-glyph-palette
     augroup vimrc
@@ -386,17 +380,13 @@ if executable('git') && plug#begin()
     nmap <Leader>rn <plug>(lsp-rename)
     nmap K          <plug>(lsp-hover)
 
-    " vim-vsnip
-    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-    imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-    nmap        s   <Plug>(vsnip-select-text)
-    xmap        s   <Plug>(vsnip-select-text)
-    nmap        S   <Plug>(vsnip-cut-text)
-    xmap        S   <Plug>(vsnip-cut-text)
+    function! s:FormatHandler(line1, line2) abort
+        if a:line1 == 1 && a:line2 == line('$')
+            execute 'LspDocumentFormat'
+        else
+            execute a:line1 .. ',' .. a:line2 .. 'LspDocumentRangeFormat'
+        endif
+    endfunction
+
+    command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
 endif
