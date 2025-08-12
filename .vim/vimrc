@@ -355,7 +355,7 @@ if executable('git') && plug#begin()
     " vim-ai
     autocmd FileType aichat setlocal wrap
 
-    map <silent> <Leader>c :<C-u>AIChat<CR>
+    map <silent> <Leader>a :<C-u>AIChat<CR>
 
     " vim-fern
     nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
