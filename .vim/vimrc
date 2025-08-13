@@ -1,8 +1,5 @@
 " initialization
-if has('vimscript-4')
-    scriptversion 4
-endif
-
+scriptversion 4
 syntax enable
 filetype plugin indent on
 
@@ -10,9 +7,11 @@ filetype plugin indent on
 set autoindent
 set autoread
 set background=dark
+set ballooneval
+set balloonevalterm
 set belloff=all
 set clipboard^=unnamed
-set completeopt=longest,menuone,noselect,popup
+set completeopt=fuzzy,menuone,longest,popup,noselect
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -50,6 +49,7 @@ set splitright
 set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
+set termguicolors
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
@@ -57,19 +57,6 @@ set wildmode=longest:full,full
 set wildoptions=fuzzy,pum,tagfile
 set nowrap
 set nowritebackup
-
-if has('balloon_eval')
-    set ballooneval
-endif
-
-if has('balloon_eval_term')
-    set balloonevalterm
-endif
-
-try
-    set completeopt+=fuzzy
-catch
-endtry
 
 if has('win32')
     set completeslash=slash
@@ -82,10 +69,6 @@ endif
 
 if has('gui_running')
     set guioptions+=chk guioptions-=T guioptions-=e guioptions-=m
-endif
-
-if exists('+termguicolors')
-    set termguicolors
 endif
 
 if has('vim_starting')
@@ -278,8 +261,8 @@ if executable('git') && plug#begin()
 
     let g:lightline#bufferline#enable_nerdfont = 1
     let g:lightline#bufferline#margin_left = 1
- 	let g:lightline#bufferline#modified = ' 󰏫'
-	let g:lightline#bufferline#read_only = ' 󰌾'
+    let g:lightline#bufferline#modified = ' 󰏫'
+    let g:lightline#bufferline#read_only = ' 󰌾'
 
     set showtabline=2
 
@@ -353,14 +336,17 @@ if executable('git') && plug#begin()
     colorscheme sonokai
 
     " vim-ai
-    autocmd FileType aichat setlocal wrap
+    autocmd FileType aichat setlocal nobuflisted wrap
 
-    map <silent> <Leader>a :<C-u>AIChat<CR>
+    map! <silent> <S-CR> <C-o>:<C-u>AIChat<CR>
 
     " vim-fern
     nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
 
     autocmd FileType fern nmap <silent><buffer> q :<C-u>quit<CR>
+
+    " vim-fugitive
+    autocmd FileType fugitive setlocal nobuflisted
 
     " vim-glyph-palette
     augroup vimrc
