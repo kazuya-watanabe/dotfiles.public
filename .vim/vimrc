@@ -336,22 +336,15 @@ if executable('git') && plug#begin()
     colorscheme sonokai
 
     " vim-ai
-    autocmd FileType aichat setlocal nobuflisted wrap
-
-    map! <silent> <S-CR> <C-o>:<C-u>AIChat<CR>
+    autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
     nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
 
-    autocmd FileType fern nmap <silent><buffer> q :<C-u>quit<CR>
+    autocmd vimrc FileType fern setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
 
     " vim-fugitive
-    autocmd FileType fugitive setlocal nobuflisted
-
-    " vim-glyph-palette
-    augroup vimrc
-        autocmd FileType fern call glyph_palette#apply()
-    augroup END
+    autocmd vimrc FileType fugitive setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR>
 
     " vim-lsp
     nmap <Leader>ca <plug>(lsp-code-action)
