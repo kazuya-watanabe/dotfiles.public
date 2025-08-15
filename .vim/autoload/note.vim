@@ -1,11 +1,11 @@
-function! note#note(path = '') abort
-    let s:default_note_directory = '~/Documents/Notes'
-    let s:default_note_filename = '%Y-%m/%Y-%m-%d.md'
-    let s:default_note_template = s:default_note_directory .. '/.template.md'
+let s:DEFAULT_NOTE_DIRECTORY = '~/Documents/Notes'
+let s:DEFAULT_NOTE_FILENAME = '%Y-%m/%Y-%m-%d.md'
+let s:DEFAULT_NOTE_TEMPLATE = s:DEFAULT_NOTE_DIRECTORY . '/.template.md'
 
-    let l:note_directory = get(g:, 'note_directory', s:default_note_directory)
-    let l:note_filename = get(g:, 'note_filename', s:default_note_filename)
-    let l:note_template = get(g:, 'note_template', s:default_note_template)
+function! s:get_settings(path) abort
+    let l:note_directory = get(g:, 'note_directory', s:DEFAULT_NOTE_DIRECTORY)
+    let l:note_filename = get(g:, 'note_filename', s:DEFAULT_NOTE_FILENAME)
+    let l:note_template = get(g:, 'note_template', s:DEFAULT_NOTE_TEMPLATE)
 
     if a:path !=# ''
         let l:filename = expand(a:path)
@@ -14,51 +14,50 @@ function! note#note(path = '') abort
     endif
 
     let l:dir = fnamemodify(l:filename, ':h')
-    if l:dir !=# ''
-        call mkdir(expand(l:dir), 'p')
+    return {'filename': l:filename, 'dir': l:dir, 'template': expand(l:note_template)}
+endfunction
+
+function! s:ensure_dir(dir) abort
+    if a:dir !=# ''
+        call mkdir(expand(a:dir), 'p')
+    endif
+endfunction
+
+function! s:open_file(path) abort
+    execute 'edit ' . fnameescape(a:path)
+endfunction
+
+function! s:apply_template_if_needed(filename, template) abort
+    if filereadable(expand(a:filename)) || !filereadable(a:template)
+        return
     endif
 
-    execute 'edit ' . fnameescape(l:filename)
-
-    let l:expanded_template = expand(l:note_template)
-    if !filereadable(expand(l:filename)) && filereadable(l:expanded_template)
-        let l:lines = readfile(l:expanded_template)
-        if !empty(l:lines)
-            call append(0, l:lines)
-
-            let l:date = strftime("%x")
-            let l:time = strftime("%X")
-            let l:user = ''
-            let l:email= ''
-
-            if executable('git')
-                let l:gitusername = systemlist('git config user.name')
-                if !empty(l:gitusername) && v:shell_error == 0
-                    let l:user = join(l:gitusername, "\n")
-                endif
-
-                let l:gituseremail = systemlist('git config user.email')
-                if !empty(l:gituseremail) && v:shell_error == 0
-                    let l:email = join(l:gituseremail, "\n")
-                endif
-            endif
-
-            let l:replacements = {
-                        \ '{{\s*date\s*}}': l:date,
-                        \ '{{\s*time\s*}}': l:time,
-                        \ '{{\s*user\s*}}': l:user,
-                        \ '{{\s*email\s*}}': l:email,
-                        \ }
-
-            let l:start = 1
-            let l:end = line('$')
-            for l:i in range(l:start, l:end)
-                let l:line = getline(l:i)
-                for [l:pat, l:rep] in items(l:replacements)
-                    let l:line = substitute(l:line, l:pat, l:rep, 'g')
-                endfor
-                call setline(l:i, l:line)
-            endfor
-        endif
+    let l:lines = readfile(a:template)
+    if empty(l:lines)
+        return
     endif
+
+    call append(0, l:lines)
+
+    let l:replacements = {
+                \ '{{\s*date\s*}}': strftime("%x"),
+                \ '{{\s*time\s*}}': strftime("%X"),
+                \ }
+
+    let l:start = 1
+    let l:end = line('$')
+    for l:i in range(l:start, l:end)
+        let l:line = getline(l:i)
+        for [l:pat, l:rep] in items(l:replacements)
+            let l:line = substitute(l:line, l:pat, l:rep, 'g')
+        endfor
+        call setline(l:i, l:line)
+    endfor
+endfunction
+
+function! note#note(path = '') abort
+    let l:opts = s:get_settings(a:path)
+    call s:ensure_dir(l:opts.dir)
+    call s:open_file(l:opts.filename)
+    call s:apply_template_if_needed(l:opts.filename, l:opts.template)
 endfunction

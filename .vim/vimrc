@@ -82,7 +82,6 @@ augroup vimrc
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
     autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
-    autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
@@ -254,7 +253,7 @@ if executable('git') && plug#begin()
     Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
     Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
     Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
-    Plug 'prabirshrestha/vim-lsp', { 'on': [], 'lazyload': v:true } | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
     Plug 'sainnhe/sonokai'
     Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
     Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
