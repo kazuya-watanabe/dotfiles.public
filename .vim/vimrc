@@ -245,28 +245,29 @@ if executable('git') && plug#begin()
     let g:fern#renderer = 'nerdfont'
 
     " Plugs
-    Plug 'airblade/vim-gitgutter'
-    Plug 'dhruvasagar/vim-table-mode'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'editorconfig/editorconfig-vim'
-    Plug 'github/copilot.vim'
+    Plug 'airblade/vim-gitgutter', { 'on': [], 'lazyload': v:true }
+    Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
+    Plug 'easymotion/vim-easymotion', { 'on': [], 'lazyload': v:true }
+    Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
+    Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
     Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
-    Plug 'lambdalisue/vim-fern' | Plug 'lambdalisue/vim-fern-renderer-nerdfont'
-    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
-    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
+    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
+    Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
+    Plug 'prabirshrestha/vim-lsp', { 'on': [], 'lazyload': v:true } | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
     Plug 'sainnhe/sonokai'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-repeat', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-surround', { 'on': [], 'lazyload': v:true }
 
     if executable('fzf')
-        Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
+        Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
+        Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
     endif
 
     if has('python3')
-        Plug 'madox2/vim-ai'
+        Plug 'madox2/vim-ai', { 'on': [ 'AI', 'AIChat', 'AIEdit', 'AIImage' ]}
     endif
 
     call plug#end()
@@ -280,6 +281,20 @@ if executable('git') && plug#begin()
 
         finish
     endif
+
+    function! s:LoadPlugs(timer)
+        let l:list = []
+
+        for l:name in keys(g:plugs)
+            if get(g:plugs[ l:name ], 'lazyload', v:false)
+                call add(l:list, l:name)
+            endif
+        endfor
+
+        call plug#load(l:list)
+    endfunction
+
+    call timer_start(100, function('s:LoadPlugs'))
 
     " copilot.vim
     imap <M-n> <Plug>(copilot-next)
@@ -297,7 +312,7 @@ if executable('git') && plug#begin()
     autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>Fern . -reveal=%<CR>
+    nmap <silent> <Leader>e :<C-u>Fern .<CR>
 
     autocmd vimrc FileType fern nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
 
