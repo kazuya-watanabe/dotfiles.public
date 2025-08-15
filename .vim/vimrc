@@ -1,18 +1,16 @@
 " initialization
-if has('vimscript-4')
-    scriptversion 4
-endif
-
-syntax enable
+scriptversion 4
 filetype plugin indent on
 
 " options
 set autoindent
 set autoread
 set background=dark
+set ballooneval
+set balloonevalterm
 set belloff=all
 set clipboard^=unnamed
-set completeopt=longest,menuone,noselect,popup
+set completeopt=fuzzy,menuone,longest,popup,noselect
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -26,6 +24,7 @@ set hlsearch
 set ignorecase
 set incsearch
 set laststatus=2
+set lazyredraw
 set list
 set listchars=tab:>-,leadmultispace:\ \ \ \|,trail:_,extends:>,precedes:<,conceal:*,nbsp:_
 set nrformats-=octal
@@ -49,9 +48,7 @@ set splitright
 set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
-set ttimeout
-set ttimeoutlen=100
-set updatetime=300
+set termguicolors
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
@@ -59,19 +56,6 @@ set wildmode=longest:full,full
 set wildoptions=fuzzy,pum,tagfile
 set nowrap
 set nowritebackup
-
-if has('balloon_eval')
-    set ballooneval
-endif
-
-if has('balloon_eval_term')
-    set balloonevalterm
-endif
-
-try
-    set completeopt+=fuzzy
-catch
-endtry
 
 if has('win32')
     set completeslash=slash
@@ -86,10 +70,6 @@ if has('gui_running')
     set guioptions+=chk guioptions-=T guioptions-=e guioptions-=m
 endif
 
-if exists('+termguicolors')
-    set termguicolors
-endif
-
 if has('vim_starting')
     let &t_SI ..= "\e[6 q"
     let &t_EI ..= "\e[2 q"
@@ -101,9 +81,7 @@ augroup vimrc
     autocmd!
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType aichat execute 'setlocal wrap | nnoremap <silent><buffer> <Leader>a :<C-u>AIChat<CR>'
-    autocmd FileType dbout,fugitive,help,qf nnoremap <silent><buffer> q :<C-u>quit<CR>
-    autocmd FileType html,markdown,txt setlocal spell shiftwidth=2
+    autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType qf setlocal nobuflisted
 
     if executable('im-select')
@@ -114,49 +92,7 @@ augroup vimrc
 augroup END
 
 " commands
-let s:note_directory = '~/Documents/Notes'
-let s:note_filename = s:note_directory .. '/%Y-%m/%Y-%m-%d.md'
-let s:note_template = s:note_directory .. '/.template.md'
-
-function! s:Note(filename = '')
-    if a:filename == ''
-        let l:filename = strftime(s:note_filename)
-    else
-        let l:filename = a:filename
-    endif
-
-    execute 'edit ' .. expand(l:filename)
-
-    call mkdir(expand('%:h'), 'p')
-
-    if !filereadable(expand(l:filename)) && filereadable(expand(s:note_template))
-        execute '0read ' .. expand(s:note_template)
-
-        let l:date = strftime("%Y-%m-%d")
-        let l:time = strftime("%H:%M")
-        let l:user = trim(system('git config user.name'))
-
-        if v:shell_error > 0
-            let l:user = ''
-        endif
-
-        let l:email = trim(system('git config user.email'))
-
-        if v:shell_error > 0
-            let l:email = ''
-        endif
-
-        execute '%s/{{\s*date\s*}}/' .. l:date .. '/ge'
-        execute '%s/{{\s*time\s*}}/' .. l:time .. '/ge'
-        execute '%s/{{\s*datetime\s*}}/' .. l:date .. ' ' .. l:time .. '/ge'
-        execute '%s/{{\s*user\s*}}/' .. l:user .. '/ge'
-        execute '%s/{{\s*email\s*}}/' .. l:email .. '/ge'
-    endif
-endfunction
-
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
-
-command! -nargs=? -complete=file Note silent call s:Note(<q-args>)
 
 " keymaps
 let g:mapleader = ','
@@ -202,10 +138,10 @@ let g:loaded_netrw = 1 | let g:loaded_netrwPlugin = 1
 let g:loaded_tutor_mode_plugin = 1
 let g:loaded_vimballPlugin = 1
 
-let s:vimplug_path = has('win32')
-            \   ? expand('$HOME/vimfiles/autoload/plug.vim')
-            \   : exists('$MYVIMDIR')
-            \       ? expand('$MYVIMDIR/autoload/plug.vim')
+let s:vimplug_path = exists('$MYVIMDIR')
+            \   ? expand('$MYVIMDIR/autoload/plug.vim')
+            \   : has('win32')
+            \       ? expand('$HOME/vimfiles/autoload/plug.vim')
             \       : expand('$HOME/.vim/autoload/plug.vim')
 
 if !filereadable(s:vimplug_path)
@@ -215,23 +151,17 @@ if !filereadable(s:vimplug_path)
 
     if !filereadable(s:vimplug_path)
         echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. s:vimplug_path
+
         finish
     endif
 endif
 
 if executable('git') && plug#begin()
-    " coc.nvim
-    let $NVIM_COC_LOG_FILE = exists('$TMPDIR')
-                \   ? expand('$TMPDIR/coc.log')
-                \   : exists('$TEMP')
-                \       ? expand('$TEMP/coc.log')
-                \       : expand('$HOME/.coc.log')
-    let $NVIM_COC_LOG_LEVEL = 'warn'
-
-    let g:coc_global_extensions = [
-                \   'coc-highlight',
-                \   'coc-markdown-preview-enhanced', 'coc-webview',
-                \   ]
+    " copilot.vim
+    let g:copilot_filetypes = {
+                \   '*': v:true,
+                \   'markdown': v:false,
+                \   }
 
     " fzf
     if !exists('$FZF_DEFAULT_COMMAND')
@@ -254,74 +184,90 @@ if executable('git') && plug#begin()
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
                 \   }
 
-    " nerdtree
-    let g:NERDTreeIgnore = [ '\~$', '\.git$' ]
-    let g:NERDTreeShowHidden = 1
-    let g:NERDTreeWinSize = 30
+    " lightline.vim
+    let g:lightline = {
+                \   'colorscheme': 'sonokai',
+                \   'component': {
+                \       'filename': '%{ nerdfont#find(expand("%")) .. " " .. expand("%:t") }',
+                \       'modified': '%{ &modified ? "󰏫" : "" }',
+                \       'paste': '%{ &paste ? "󰆒" : "" }',
+                \       'readonly': '%{ &readonly ? "󰌾" : "" }',
+                \       'fileformat': '%{ nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat }',
+                \       'filetype': '%{ nerdfont#find(expand("%")) .. " " .. &filetype }',
+                \       'spell': '%{ &spell ? "󰓆" : ""}',
+                \       },
+                \   'component_expand': {
+                \       'buffers': 'lightline#bufferline#buffers',
+                \       },
+                \   'component_type': {
+                \       'buffers': 'tabsel',
+                \       },
+                \   'separator': {
+                \       'left': '',
+                \       'right': ''
+                \       },
+                \   'subseparator': {
+                \       'left': '',
+                \       'right': ''
+                \       },
+                \   'tabline': {
+                \       'left': [ ['buffers'] ],
+                \       'right': [ ['close'] ]
+                \       },
+                \   }
+
+    let g:lightline#bufferline#enable_nerdfont = 1
+    let g:lightline#bufferline#margin_left = 1
+    let g:lightline#bufferline#modified = ' 󰏫'
+    let g:lightline#bufferline#read_only = ' 󰌾'
+
+    set showtabline=2
+
+    " sonokai
+    let g:sonokai_better_performance = 1
+    let g:sonokai_enable_italic = 1
 
     " vim-ai
-    let g:vim_ai_chat = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       'selection_boundary': '```',
-                \       },
-                \   }
-    let g:vim_ai_complete = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       },
-                \   }
-    let g:vim_ai_edit = {
-                \   'options': {
-                \       'model': 'gpt-4.1-mini',
-                \       },
-                \   }
     let g:vim_ai_chat_markdown = 1
     let g:vim_ai_token_file_path = exists('$XDG_CONFIG_HOME')
                 \   ? expand('$XDG_CONFIG_HOME/openai.token')
                 \   : expand('$HOME/.config/openai.token')
-    let g:vim_ai_roles_config_file = has('win32')
-                \   ? expand('$HOME/vimfiles/roles.ini')
-                \   : exists('$MYVIMDIR')
-                \       ? expand('$MYVIMDIR/roles.ini')
+    let g:vim_ai_roles_config_file = exists('$MYVIMDIR')
+                \   ? expand('$MYVIMDIR/roles.ini')
+                \   : has('win32')
+                \       ? expand('$HOME/vimfiles/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
-    " vim-airline
-    let g:airline_experimental = 1
-    let g:airline_extensions = [
-                \   'branch',
-                \   'tabline',
-                \   ]
-    let g:airline_highlighting_cache = 1
-    let g:airline_powerline_fonts = 1
-    let g:airline_skip_empty_sections = 1
+    " vim-fern
+    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
+    let g:fern#default_hidden = 1
+    let g:fern#renderer = 'nerdfont'
 
     " Plugs
-    Plug 'NLKNguyen/papercolor-theme'
-    Plug 'airblade/vim-gitgutter'
-    Plug 'dhruvasagar/vim-table-mode'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'editorconfig/editorconfig-vim'
-    Plug 'github/copilot.vim'
-    Plug 'preservim/nerdtree'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
+    Plug 'airblade/vim-gitgutter', { 'on': [], 'lazyload': v:true }
+    Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
+    Plug 'easymotion/vim-easymotion', { 'on': [], 'lazyload': v:true }
+    Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
+    Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
+    Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
+    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
+    Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
+    Plug 'sainnhe/sonokai'
+    Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-repeat', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-surround', { 'on': [], 'lazyload': v:true }
 
     if executable('fzf')
-        Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
-    endif
-
-    if executable('node')
-        Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+        Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
+        Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
     endif
 
     if has('python3')
-        Plug 'madox2/vim-ai'
+        Plug 'madox2/vim-ai', { 'on': [ 'AI', 'AIChat', 'AIEdit', 'AIImage' ]}
     endif
-
-    Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
     call plug#end()
 
@@ -330,89 +276,68 @@ if executable('git') && plug#begin()
 
         PlugInstall --sync
 
-        echomsg 'Installation completed. Please restart Vim.'
+        echohl WarningMsg | echomsg 'Installation completed. Please restart Vim.' | echohl None
 
         finish
     endif
 
-    " coc.nvim
-    autocmd CursorHold * silent call CocActionAsync('highlight')
+    function! s:LoadPlugs(timer)
+        let l:list = []
 
-    command! -nargs=0 Format :call CocActionAsync('format')
-    command! -nargs=? Fold :call CocAction('fold', <f-args>)
-    command! -nargs=0 OR   :call CocActionAsync('runCommand', 'editor.action.organizeImport')
-    command! -nargs=0 OpenLink :call CocAction('openLink')
-    command! -nargs=0 OpenPreview :call CocActionAsync('runCommand', 'markdown-preview-enhanced.openPreview')
+        for l:name in keys(g:plugs)
+            if get(g:plugs[ l:name ], 'lazyload', v:false)
+                call add(l:list, l:name)
+            endif
+        endfor
 
-    nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-    nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
-    nmap <silent><nowait> gd <Plug>(coc-definition)
-    nmap <silent><nowait> gy <Plug>(coc-type-definition)
-    nmap <silent><nowait> gi <Plug>(coc-implementation)
-    nmap <silent><nowait> gr <Plug>(coc-references)
-    nmap <leader>rn <Plug>(coc-rename)
-    xmap <leader>f  <Plug>(coc-format-selected)
-    nmap <leader>f  <Plug>(coc-format-selected)
-    xmap <leader>a  <Plug>(coc-codeaction-selected)
-    nmap <leader>a  <Plug>(coc-codeaction-selected)
-    nmap <leader>ac  <Plug>(coc-codeaction-cursor)
-    nmap <leader>as  <Plug>(coc-codeaction-source)
-    nmap <leader>qf  <Plug>(coc-fix-current)
-    nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-    xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-    nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-    nmap <leader>cl  <Plug>(coc-codelens-action)
-    xmap if <Plug>(coc-funcobj-i)
-    omap if <Plug>(coc-funcobj-i)
-    xmap af <Plug>(coc-funcobj-a)
-    omap af <Plug>(coc-funcobj-a)
-    xmap ic <Plug>(coc-classobj-i)
-    omap ic <Plug>(coc-classobj-i)
-    xmap ac <Plug>(coc-classobj-a)
-    omap ac <Plug>(coc-classobj-a)
-    nmap <silent> <C-s> <Plug>(coc-range-select)
-    xmap <silent> <C-s> <Plug>(coc-range-select)
-    nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-    nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-    nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-    nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-    nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-    nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-    nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-    nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+        call plug#load(l:list)
+    endfunction
 
-    if has('nvim-0.4.0') || has('patch-8.2.0750')
-        nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-        nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-        inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-        inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-        vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-        vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-    endif
+    call timer_start(100, function('s:LoadPlugs'))
 
-    nnoremap <silent> K :call ShowDocumentation()<CR>
+    " copilot.vim
+    imap <M-n> <Plug>(copilot-next)
+    imap <M-p> <Plug>(copilot-previous)
 
-    function! ShowDocumentation()
-        if CocAction('hasProvider', 'hover')
-            call CocActionAsync('doHover')
+    " fzf
+    nmap <silent> <Leader>b :<C-u>Buffers<CR>
+    nmap <silent> <Leader>f :<C-u>Files<CR>
+    nmap <silent> <Leader>g :<C-u>GFiles<CR>
+
+    " sonokai
+    colorscheme sonokai
+
+    " vim-ai
+    autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
+
+    " vim-fern
+    nmap <silent> <Leader>e :<C-u>Fern .<CR>
+
+    autocmd vimrc FileType fern nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
+
+    " vim-fugitive
+    autocmd vimrc FileType fugitive setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR>
+
+    " vim-lsp
+    nmap <Leader>ca <plug>(lsp-code-action)
+    nmap <Leader>cl <plug>(lsp-code-lens)
+    nmap gd         <plug>(lsp-definition)
+    nmap gs         <plug>(lsp-workspace-symbol-search)
+    nmap gr         <plug>(lsp-references)
+    nmap gi         <plug>(lsp-implementation)
+    nmap gt         <plug>(lsp-type-definition)
+    nmap [g         <plug>(lsp-previous-diagnostic)
+    nmap ]g         <plug>(lsp-next-diagnostic)
+    nmap <Leader>rn <plug>(lsp-rename)
+    nmap K          <plug>(lsp-hover)
+
+    function! s:FormatHandler(line1, line2) abort
+        if a:line1 == 1 && a:line2 == line('$')
+            execute 'LspDocumentFormat'
         else
-            call feedkeys('K', 'in')
+            execute a:line1 .. ',' .. a:line2 .. 'LspDocumentRangeFormat'
         endif
     endfunction
 
-    " fzf
-    nmap <silent> <LocalLeader>b :<C-u>Buffers<CR>
-    nmap <silent> <LocalLeader>f :<C-u>Files<CR>
-    nmap <silent> <LocalLeader>g :<C-u>GFiles<CR>
-
-    command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ' .. fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
-    command! -bang -nargs=* RG call fzf#vim#grep2('rg --column --line-number --no-heading --color=always --smart-case --hidden --follow -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
-
-    " nerdtree
-    nnoremap <silent> <Leader>e :<C-u>NERDTreeToggle<CR>
-
-    " colorscheme
-    colorscheme PaperColor
-
-    let g:airline_theme = 'papercolor'
+    command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
 endif
