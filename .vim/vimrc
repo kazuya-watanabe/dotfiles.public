@@ -1,6 +1,5 @@
 " initialization
 scriptversion 4
-syntax enable
 filetype plugin indent on
 
 " options
@@ -94,48 +93,7 @@ augroup vimrc
 augroup END
 
 " commands
-let s:note_directory = '~/Documents/Notes'
-let s:note_filename = s:note_directory .. '/%Y-%m/%Y-%m-%d.md'
-let s:note_template = s:note_directory .. '/.template.md'
-
-function! s:Note(path = '')
-    let l:filename = a:path
-
-    if l:filename == ''
-        let l:filename = strftime(s:note_filename)
-    endif
-
-    execute 'edit ' .. expand(l:filename)
-
-    call mkdir(expand('%:h'), 'p')
-
-    if !filereadable(expand(l:filename)) && filereadable(expand(s:note_template))
-        execute '0read ' .. expand(s:note_template)
-
-        let l:date = strftime("%Y-%m-%d")
-        let l:time = strftime("%H:%M")
-        let l:user = trim(system('git config user.name'))
-
-        if v:shell_error > 0
-            let l:user = ''
-        endif
-
-        let l:email = trim(system('git config user.email'))
-
-        if v:shell_error > 0
-            let l:email = ''
-        endif
-
-        execute '%s/{{\s*date\s*}}/' .. l:date .. '/ge'
-        execute '%s/{{\s*time\s*}}/' .. l:time .. '/ge'
-        execute '%s/{{\s*datetime\s*}}/' .. l:date .. ' ' .. l:time .. '/ge'
-        execute '%s/{{\s*user\s*}}/' .. l:user .. '/ge'
-        execute '%s/{{\s*email\s*}}/' .. l:email .. '/ge'
-    endif
-endfunction
-
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
-command! -nargs=? -complete=file Note silent call s:Note(<q-args>)
 
 " keymaps
 let g:mapleader = ','
@@ -332,16 +290,16 @@ if executable('git') && plug#begin()
     nmap <silent> <Leader>f :<C-u>Files<CR>
     nmap <silent> <Leader>g :<C-u>GFiles<CR>
 
-    " sonikai
+    " sonokai
     colorscheme sonokai
 
     " vim-ai
     autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>Fern . -reveal=% -drawer -toggle -width=30<CR>
+    nmap <silent> <Leader>e :<C-u>Fern . -reveal=%<CR>
 
-    autocmd vimrc FileType fern setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
+    autocmd vimrc FileType fern nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
 
     " vim-fugitive
     autocmd vimrc FileType fugitive setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR>
