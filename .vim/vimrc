@@ -10,7 +10,7 @@ set ballooneval
 set balloonevalterm
 set belloff=all
 set clipboard^=unnamed
-set completeopt=fuzzy,menuone,longest,popup,noselect
+set completeopt=fuzzy,menuone,noinsert,noselect,popup
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -54,7 +54,6 @@ set whichwrap+=<,>,~,[,]
 set wildignorecase
 set wildmode=longest:full,full
 set wildoptions=fuzzy,pum,tagfile
-set nowrap
 set nowritebackup
 
 if has('win32')
@@ -157,6 +156,9 @@ if !filereadable(s:vimplug_path)
 endif
 
 if executable('git') && plug#begin()
+    " asyncomplete.vim
+    let g:asyncomplete_auto_completeopt = 0
+
     " copilot.vim
     let g:copilot_filetypes = {
                 \   '*': v:true,
@@ -250,8 +252,8 @@ if executable('git') && plug#begin()
     Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
     Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
     Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
+    Plug 'lambdalisue/vim-nerdfont' | Plug 'lambdalisue/vim-glyph-palette'
     Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
     Plug 'sainnhe/sonokai'
@@ -284,9 +286,9 @@ if executable('git') && plug#begin()
     function! s:LoadPlugs(timer)
         let l:list = []
 
-        for l:name in keys(g:plugs)
-            if get(g:plugs[ l:name ], 'lazyload', v:false)
-                call add(l:list, l:name)
+        for l:key in keys(g:plugs)
+            if get(g:plugs[ l:key ], 'lazyload', v:false)
+                call add(l:list, l:key)
             endif
         endfor
 
@@ -308,15 +310,15 @@ if executable('git') && plug#begin()
     colorscheme sonokai
 
     " vim-ai
-    autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
+    autocmd vimrc FileType aichat setlocal nobuflisted | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>Fern .<CR>
+    nmap <silent> <Leader>e :<C-u>Fern . -reveal=%<CR>
 
-    autocmd vimrc FileType fern nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
+    autocmd vimrc FileType fern call glyph_palette#apply()
 
     " vim-fugitive
-    autocmd vimrc FileType fugitive setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR>
+    autocmd vimrc FileType fugitive setlocal nobuflisted
 
     " vim-lsp
     nmap <Leader>ca <plug>(lsp-code-action)
