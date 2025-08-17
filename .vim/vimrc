@@ -1,6 +1,5 @@
 " initialization
 scriptversion 4
-filetype plugin indent on
 
 " options
 set autoindent
@@ -115,10 +114,7 @@ nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
 
 nmap <silent> t$ :<C-u>blast<CR>
 nmap <silent> t0 :<C-u>brewind<CR>
-nmap <silent> tc :<C-u>bdelete<CR>
 nmap <silent> td :<C-u>bdelete<CR>
-nmap <silent> tf :<C-u>brewind<CR>
-nmap <silent> tl :<C-u>blast<CR>
 nmap <silent> tn :<C-u>bnext<CR>
 nmap <silent> tp :<C-u>bprevious<CR>
 
@@ -189,15 +185,6 @@ if executable('git') && plug#begin()
     " lightline.vim
     let g:lightline = {
                 \   'colorscheme': 'sonokai',
-                \   'component': {
-                \       'filename': '%{ nerdfont#find(expand("%")) .. " " .. expand("%:t") }',
-                \       'modified': '%{ &modified ? "󰏫" : "" }',
-                \       'paste': '%{ &paste ? "󰆒" : "" }',
-                \       'readonly': '%{ &readonly ? "󰌾" : "" }',
-                \       'fileformat': '%{ nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat }',
-                \       'filetype': '%{ nerdfont#find(expand("%")) .. " " .. &filetype }',
-                \       'spell': '%{ &spell ? "󰓆" : ""}',
-                \       },
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
@@ -217,13 +204,7 @@ if executable('git') && plug#begin()
                 \       'right': [ ['close'] ]
                 \       },
                 \   }
-
-    let g:lightline#bufferline#enable_nerdfont = 1
     let g:lightline#bufferline#margin_left = 1
-    let g:lightline#bufferline#modified = ' 󰏫'
-    let g:lightline#bufferline#read_only = ' 󰌾'
-
-    set showtabline=2
 
     " sonokai
     let g:sonokai_better_performance = 1
@@ -243,7 +224,6 @@ if executable('git') && plug#begin()
     " vim-fern
     let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
     let g:fern#default_hidden = 1
-    let g:fern#renderer = 'nerdfont'
 
     " Plugs
     Plug 'airblade/vim-gitgutter', { 'on': [], 'lazyload': v:true }
@@ -252,10 +232,9 @@ if executable('git') && plug#begin()
     Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
     Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
-    Plug 'lambdalisue/vim-nerdfont' | Plug 'lambdalisue/vim-glyph-palette'
-    Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
-    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
+    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
+    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'sainnhe/sonokai'
     Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
     Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
@@ -295,7 +274,7 @@ if executable('git') && plug#begin()
         call plug#load(l:list)
     endfunction
 
-    call timer_start(100, function('s:LoadPlugs'))
+    call timer_start(500, function('s:LoadPlugs'))
 
     " copilot.vim
     imap <M-n> <Plug>(copilot-next)
@@ -306,6 +285,12 @@ if executable('git') && plug#begin()
     nmap <silent> <Leader>f :<C-u>Files<CR>
     nmap <silent> <Leader>g :<C-u>GFiles<CR>
 
+    " lightline.vim
+    map <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
+    map <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
+
+    set showtabline=2
+
     " sonokai
     colorscheme sonokai
 
@@ -313,9 +298,7 @@ if executable('git') && plug#begin()
     autocmd vimrc FileType aichat setlocal nobuflisted | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>Fern . -reveal=%<CR>
-
-    autocmd vimrc FileType fern call glyph_palette#apply()
+    nmap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
 
     " vim-fugitive
     autocmd vimrc FileType fugitive setlocal nobuflisted
