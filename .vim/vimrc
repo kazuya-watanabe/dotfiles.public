@@ -9,7 +9,7 @@ set ballooneval
 set balloonevalterm
 set belloff=all
 set clipboard^=unnamed
-set completeopt=fuzzy,menuone,noinsert,noselect,popup
+set completeopt=menuone,noinsert,popup
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -51,7 +51,7 @@ set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
 set wildmode=longest:full,full
-set wildoptions=fuzzy,pum,tagfile
+set wildoptions=pum
 set nowritebackup
 
 if has('win32')
@@ -80,16 +80,10 @@ endif
 " autocmds
 augroup vimrc
     autocmd!
-    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
+    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=default completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
     autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
     autocmd FileType qf setlocal nobuflisted
-
-    if executable('im-select')
-        autocmd InsertLeave * :silent !im-select com.apple.keylayout.ABC
-    elseif executable('zenhan.exe')
-        autocmd InsertLeave * :silent !start /b zenhan.exe 0
-    endif
 augroup END
 
 " commands
@@ -121,10 +115,14 @@ nmap <silent> td :<C-u>bdelete<CR>
 nmap <silent> tn :<C-u>bnext<CR>
 nmap <silent> tp :<C-u>bprevious<CR>
 
-if has('win32') && executable('powershell')
-    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close powershell<CR>
-else
-    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
+nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
+
+if executable('im-select')
+    map! <silent> <Esc> <Esc>:<C-u>silent !im-select com.apple.keylayout.ABC<CR>
+    map! <silent> <C-[> <Esc>:<C-u>silent !im-select com.apple.keylayout.ABC<CR>
+elseif executable('zenhan.exe')
+    map! <silent> <Esc> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
+    map! <silent> <C-[> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
 endif
 
 " plugins
@@ -209,10 +207,6 @@ if executable('git') && plug#begin()
                 \   }
     let g:lightline#bufferline#margin_left = 1
 
-    " sonokai
-    let g:sonokai_better_performance = 1
-    let g:sonokai_enable_italic = 1
-
     " vim-ai
     let g:vim_ai_chat_markdown = 1
     let g:vim_ai_token_file_path = exists('$XDG_CONFIG_HOME')
@@ -225,7 +219,7 @@ if executable('git') && plug#begin()
                 \       : expand('$HOME/.vim/roles.ini')
 
     " vim-fern
-    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
+    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\)$'
     let g:fern#default_hidden = 1
 
     " Plugs
@@ -251,7 +245,7 @@ if executable('git') && plug#begin()
     endif
 
     if has('python3')
-        Plug 'madox2/vim-ai', { 'on': [ 'AI', 'AIChat', 'AIEdit', 'AIImage' ]}
+        Plug 'madox2/vim-ai', { 'on': [], 'lazyload': v:true }
     endif
 
     call plug#end()
@@ -308,6 +302,9 @@ if executable('git') && plug#begin()
     autocmd vimrc FileType fugitive setlocal nobuflisted
 
     " vim-lsp
+    let g:lsp_use_lua = has('lua')
+    let g:lsp_use_native_client = 1
+
     nmap <Leader>ca <plug>(lsp-code-action)
     nmap <Leader>cl <plug>(lsp-code-lens)
     nmap gd         <plug>(lsp-definition)
