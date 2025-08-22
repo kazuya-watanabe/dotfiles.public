@@ -82,7 +82,7 @@ augroup vimrc
     autocmd!
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=default completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
+    autocmd FileType help nnoremap <silent><buffer> q :<C-u>helpclose<CR>
     autocmd FileType qf setlocal nobuflisted
 augroup END
 
@@ -93,36 +93,34 @@ command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 let g:mapleader = ','
 let g:maplocalleader = ' '
 
-map j gj
-map k gk
-map n nzz
-map N Nzz
-map Y y$
+nnoremap j gj
+nnoremap k gk
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap Y y$
 
-map! <C-a> <Home>
-map! <C-b> <Left>
-map! <C-d> <Del>
-map! <C-e> <End>
-map! <C-f> <Right>
-map! <C-n> <Down>
-map! <C-p> <Up>
+noremap! <C-a> <Home>
+noremap! <C-b> <Left>
+noremap! <C-d> <Del>
+noremap! <C-e> <End>
+noremap! <C-f> <Right>
+noremap! <C-n> <Down>
+noremap! <C-p> <Up>
 
-nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
+nnoremap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
 
-nmap <silent> t$ :<C-u>blast<CR>
-nmap <silent> t0 :<C-u>brewind<CR>
-nmap <silent> td :<C-u>bdelete<CR>
-nmap <silent> tn :<C-u>bnext<CR>
-nmap <silent> tp :<C-u>bprevious<CR>
+nnoremap <silent> t$ :<C-u>blast<CR>
+nnoremap <silent> t0 :<C-u>brewind<CR>
+nnoremap <silent> td :<C-u>bdelete<CR>
+nnoremap <silent> tn :<C-u>bnext<CR>
+nnoremap <silent> tp :<C-u>bprevious<CR>
 
-nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
+nnoremap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
 
 if executable('im-select')
-    map! <silent> <Esc> <Esc>:<C-u>silent !im-select com.apple.keylayout.ABC<CR>
-    map! <silent> <C-[> <Esc>:<C-u>silent !im-select com.apple.keylayout.ABC<CR>
+    inoremap <silent> <Esc> <Esc>:<C-u>silent !im-select com.apple.keylayout.ABC<CR>
 elseif executable('zenhan.exe')
-    map! <silent> <Esc> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
-    map! <silent> <C-[> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
+    inoremap <silent> <Esc> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
 endif
 
 " plugins
@@ -279,13 +277,13 @@ if executable('git') && plug#begin()
     imap <M-p> <Plug>(copilot-previous)
 
     " fzf
-    nmap <silent> <Leader>b :<C-u>Buffers<CR>
-    nmap <silent> <Leader>f :<C-u>Files<CR>
-    nmap <silent> <Leader>g :<C-u>GFiles<CR>
+    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
+    nnoremap <silent> <Leader>f :<C-u>Files<CR>
+    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
 
     " lightline.vim
-    map <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
-    map <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
+    nnoremap <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
+    nnoremap <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
 
     set showtabline=2
 
@@ -296,13 +294,12 @@ if executable('git') && plug#begin()
     autocmd vimrc FileType aichat setlocal nobuflisted | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
+    nnoremap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
 
     " vim-fugitive
     autocmd vimrc FileType fugitive setlocal nobuflisted
 
     " vim-lsp
-    let g:lsp_use_lua = has('lua')
     let g:lsp_use_native_client = 1
 
     nmap <Leader>ca <plug>(lsp-code-action)
