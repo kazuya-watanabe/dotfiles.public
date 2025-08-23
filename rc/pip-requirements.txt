@@ -2,5 +2,6 @@ aider-install
 httpie
 openai
 pptx2md
+pytest-playwright
 xlsx2csv
 yt-dlp
