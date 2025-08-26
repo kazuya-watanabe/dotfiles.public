@@ -154,12 +154,6 @@ if executable('git') && plug#begin()
     " asyncomplete.vim
     let g:asyncomplete_auto_completeopt = 0
 
-    " copilot.vim
-    let g:copilot_filetypes = {
-                \   '*': v:true,
-                \   'markdown': v:false,
-                \   }
-
     " fzf
     if !exists('$FZF_DEFAULT_COMMAND')
         let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
@@ -221,21 +215,21 @@ if executable('git') && plug#begin()
     let g:fern#default_hidden = 1
 
     " Plugs
-    Plug 'airblade/vim-gitgutter', { 'on': [], 'lazyload': v:true }
+    Plug 'airblade/vim-gitgutter', { 'on': [] }
     Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
-    Plug 'easymotion/vim-easymotion', { 'on': [], 'lazyload': v:true }
-    Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
-    Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
+    Plug 'easymotion/vim-easymotion', { 'on': [] }
+    Plug 'editorconfig/editorconfig-vim', { 'on': [] }
+    Plug 'github/copilot.vim', { 'on': [] }
     Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
     Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'sainnhe/sonokai'
-    Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-repeat', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-surround', { 'on': [], 'lazyload': v:true }
+    Plug 'tpope/vim-commentary', { 'on': [] }
+    Plug 'tpope/vim-fugitive', { 'on': [] }
+    Plug 'tpope/vim-repeat', { 'on': [] }
+    Plug 'tpope/vim-surround', { 'on': [] }
 
     if executable('fzf')
         Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
@@ -243,7 +237,7 @@ if executable('git') && plug#begin()
     endif
 
     if has('python3')
-        Plug 'madox2/vim-ai', { 'on': [], 'lazyload': v:true }
+        Plug 'madox2/vim-ai', { 'on': [] }
     endif
 
     call plug#end()
@@ -262,7 +256,7 @@ if executable('git') && plug#begin()
         let l:list = []
 
         for l:key in keys(g:plugs)
-            if get(g:plugs[ l:key ], 'lazyload', v:false)
+            if len(get(g:plugs[ l:key ], 'on', [])) == 0
                 call add(l:list, l:key)
             endif
         endfor
