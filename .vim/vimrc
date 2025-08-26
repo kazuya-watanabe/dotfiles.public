@@ -118,9 +118,9 @@ nnoremap <silent> tp :<C-u>bprevious<CR>
 nnoremap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
 
 if executable('im-select')
-    autocmd vimrc InsertLeave,CmdlineLeave * :silent !im-select com.apple.keylayout.ABC
+    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('im-select com.apple.keylayout.ABC')<CR>
 elseif executable('zenhan.exe')
-    inoremap <silent> <Esc> <Esc>:<C-u>silent !start /b zenhan.exe 0<CR>
+    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('zenhan.exe 0')<CR>
 endif
 
 " plugins
