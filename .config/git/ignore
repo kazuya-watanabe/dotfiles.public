@@ -42,6 +42,8 @@ tmp/*
 Thumbs.db
 Desktop.ini
 
+.aider*
+
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
