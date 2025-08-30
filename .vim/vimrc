@@ -17,6 +17,8 @@ set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
 set formatoptions+=mM
+set grepformat=%f:%l:%c:%m
+set grepprg=rg\ --vimgrep\ --follow\ --hidden
 set hidden
 set history=10000
 set hlsearch
@@ -58,11 +60,6 @@ if has('win32')
     set completeslash=slash
 endif
 
-if executable('rg')
-    set grepformat=%f:%l:%c:%m
-    set grepprg=rg\ --vimgrep\ --follow\ --hidden
-endif
-
 if has('gui_running')
     set guioptions+=chk guioptions-=T guioptions-=e guioptions-=m
 endif
@@ -87,7 +84,9 @@ augroup vimrc
 augroup END
 
 " commands
+command! -nargs=0 Aider silent vertical terminal ++close aider
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
+command! -nargs=0 Lazygit silent vertical terminal ++close lazygit
 
 " keymaps
 let g:mapleader = ','
@@ -117,10 +116,10 @@ nnoremap <silent> tp :<C-u>bprevious<CR>
 
 nnoremap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
 
-if executable('im-select')
-    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('im-select com.apple.keylayout.ABC')<CR>
-elseif executable('zenhan.exe')
+if executable('zenhan.exe')
     inoremap <silent> <Esc> <Esc>:<C-u>silent call system('zenhan.exe 0')<CR>
+elseif executable('im-select')
+    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('im-select com.apple.keylayout.ABC')<CR>
 endif
 
 " plugins
@@ -139,18 +138,22 @@ let s:vimplug_path = exists('$MYVIMDIR')
             \       : expand('$HOME/.vim/autoload/plug.vim')
 
 if !filereadable(s:vimplug_path)
+    if !executable('git')
+        echoerr 'Please install git first.'
+        finish
+    endif
+
     if executable('curl')
         call system('curl -fLo ' .. shellescape(s:vimplug_path) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
     endif
 
     if !filereadable(s:vimplug_path)
         echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. s:vimplug_path
-
         finish
     endif
 endif
 
-if executable('git') && plug#begin()
+if plug#begin()
     " asyncomplete.vim
     let g:asyncomplete_auto_completeopt = 0
 
@@ -222,7 +225,10 @@ if executable('git') && plug#begin()
     Plug 'github/copilot.vim', { 'on': [] }
     Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
+    Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
     Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
+    Plug 'madox2/vim-ai', { 'on': [] }
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'sainnhe/sonokai'
@@ -230,15 +236,6 @@ if executable('git') && plug#begin()
     Plug 'tpope/vim-fugitive', { 'on': [] }
     Plug 'tpope/vim-repeat', { 'on': [] }
     Plug 'tpope/vim-surround', { 'on': [] }
-
-    if executable('fzf')
-        Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
-        Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
-    endif
-
-    if has('python3')
-        Plug 'madox2/vim-ai', { 'on': [] }
-    endif
 
     call plug#end()
 
