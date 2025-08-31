@@ -81,6 +81,7 @@ augroup vimrc
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
     autocmd FileType help nnoremap <silent><buffer> q :<C-u>helpclose<CR>
     autocmd FileType qf setlocal nobuflisted
+    autocmd TerminalOpen * setlocal nobuflisted
 augroup END
 
 " commands
