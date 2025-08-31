@@ -1,6 +1,5 @@
 " initialization
 scriptversion 4
-filetype plugin indent on
 
 " options
 set autoindent
@@ -10,7 +9,7 @@ set ballooneval
 set balloonevalterm
 set belloff=all
 set clipboard^=unnamed
-set completeopt=fuzzy,menuone,longest,popup,noselect
+set completeopt=menuone,noinsert,popup
 set cmdheight=2
 set diffopt+=vertical
 set display=truncate
@@ -18,6 +17,8 @@ set encoding=utf-8
 set expandtab
 set fileformats=unix,dos
 set formatoptions+=mM
+set grepformat=%f:%l:%c:%m
+set grepprg=rg\ --vimgrep\ --follow\ --hidden
 set hidden
 set history=10000
 set hlsearch
@@ -48,26 +49,23 @@ set splitright
 set statusline=%<%f\ %y%m%r%h%w%q%{'['.(&fileencoding!=''?&fileencoding:&encoding).']['.&fileformat.']'}%=%p%%\ [%l/%L\ %v]
 set noswapfile
 set tabstop=4
-set termguicolors
 set virtualedit=block
 set whichwrap+=<,>,~,[,]
 set wildignorecase
 set wildmode=longest:full,full
-set wildoptions=fuzzy,pum,tagfile
-set nowrap
+set wildoptions=pum
 set nowritebackup
 
 if has('win32')
     set completeslash=slash
 endif
 
-if executable('rg')
-    set grepformat=%f:%l:%c:%m
-    set grepprg=rg\ --vimgrep\ --follow\ --hidden
-endif
-
 if has('gui_running')
     set guioptions+=chk guioptions-=T guioptions-=e guioptions-=m
+endif
+
+if has('termguicolors')
+    set termguicolors
 endif
 
 if has('vim_starting')
@@ -79,54 +77,50 @@ endif
 " autocmds
 augroup vimrc
     autocmd!
-    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=cp932 completeslash=backslash
+    autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=default completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType help nmap <silent><buffer> q :<C-u>quit<CR>
+    autocmd FileType help nnoremap <silent><buffer> q :<C-u>helpclose<CR>
     autocmd FileType qf setlocal nobuflisted
-
-    if executable('im-select')
-        autocmd InsertLeave * :silent !im-select com.apple.keylayout.ABC
-    elseif executable('zenhan.exe')
-        autocmd InsertLeave * :silent !start /b zenhan.exe 0
-    endif
+    autocmd TerminalOpen * setlocal nobuflisted
 augroup END
 
 " commands
+command! -nargs=0 Aider silent vertical terminal ++close aider
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
+command! -nargs=0 Lazygit silent vertical terminal ++close lazygit
 
 " keymaps
 let g:mapleader = ','
 let g:maplocalleader = ' '
 
-map j gj
-map k gk
-map n nzz
-map N Nzz
-map Y y$
+nnoremap j gj
+nnoremap k gk
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap Y y$
 
-map! <C-a> <Home>
-map! <C-b> <Left>
-map! <C-d> <Del>
-map! <C-e> <End>
-map! <C-f> <Right>
-map! <C-n> <Down>
-map! <C-p> <Up>
+noremap! <C-a> <Home>
+noremap! <C-b> <Left>
+noremap! <C-d> <Del>
+noremap! <C-e> <End>
+noremap! <C-f> <Right>
+noremap! <C-n> <Down>
+noremap! <C-p> <Up>
 
-nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
+nnoremap <silent> <Esc><Esc> :<C-u>nohlsearch<CR>
 
-nmap <silent> t$ :<C-u>blast<CR>
-nmap <silent> t0 :<C-u>brewind<CR>
-nmap <silent> tc :<C-u>bdelete<CR>
-nmap <silent> td :<C-u>bdelete<CR>
-nmap <silent> tf :<C-u>brewind<CR>
-nmap <silent> tl :<C-u>blast<CR>
-nmap <silent> tn :<C-u>bnext<CR>
-nmap <silent> tp :<C-u>bprevious<CR>
+nnoremap <silent> t$ :<C-u>blast<CR>
+nnoremap <silent> t0 :<C-u>brewind<CR>
+nnoremap <silent> td :<C-u>bdelete<CR>
+nnoremap <silent> tn :<C-u>bnext<CR>
+nnoremap <silent> tp :<C-u>bprevious<CR>
 
-if has('win32') && executable('powershell')
-    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close powershell<CR>
-else
-    nmap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
+nnoremap <silent> <Leader>sh :<C-u>vertical terminal ++close<CR>
+
+if executable('zenhan.exe')
+    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('zenhan.exe 0')<CR>
+elseif executable('im-select')
+    inoremap <silent> <Esc> <Esc>:<C-u>silent call system('im-select com.apple.keylayout.ABC')<CR>
 endif
 
 " plugins
@@ -145,23 +139,24 @@ let s:vimplug_path = exists('$MYVIMDIR')
             \       : expand('$HOME/.vim/autoload/plug.vim')
 
 if !filereadable(s:vimplug_path)
+    if !executable('git')
+        echoerr 'Please install git first.'
+        finish
+    endif
+
     if executable('curl')
         call system('curl -fLo ' .. shellescape(s:vimplug_path) .. ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim')
     endif
 
     if !filereadable(s:vimplug_path)
         echoerr 'Please install the vim-plug manually. You can download it from https://github.com/junegunn/vim-plug and put it in ' .. s:vimplug_path
-
         finish
     endif
 endif
 
-if executable('git') && plug#begin()
-    " copilot.vim
-    let g:copilot_filetypes = {
-                \   '*': v:true,
-                \   'markdown': v:false,
-                \   }
+if plug#begin()
+    " asyncomplete.vim
+    let g:asyncomplete_auto_completeopt = 0
 
     " fzf
     if !exists('$FZF_DEFAULT_COMMAND')
@@ -187,15 +182,6 @@ if executable('git') && plug#begin()
     " lightline.vim
     let g:lightline = {
                 \   'colorscheme': 'sonokai',
-                \   'component': {
-                \       'filename': '%{ nerdfont#find(expand("%")) .. " " .. expand("%:t") }',
-                \       'modified': '%{ &modified ? "󰏫" : "" }',
-                \       'paste': '%{ &paste ? "󰆒" : "" }',
-                \       'readonly': '%{ &readonly ? "󰌾" : "" }',
-                \       'fileformat': '%{ nerdfont#fileformat#find(&fileformat) .. " " .. &fileformat }',
-                \       'filetype': '%{ nerdfont#find(expand("%")) .. " " .. &filetype }',
-                \       'spell': '%{ &spell ? "󰓆" : ""}',
-                \       },
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
@@ -215,17 +201,7 @@ if executable('git') && plug#begin()
                 \       'right': [ ['close'] ]
                 \       },
                 \   }
-
-    let g:lightline#bufferline#enable_nerdfont = 1
     let g:lightline#bufferline#margin_left = 1
-    let g:lightline#bufferline#modified = ' 󰏫'
-    let g:lightline#bufferline#read_only = ' 󰌾'
-
-    set showtabline=2
-
-    " sonokai
-    let g:sonokai_better_performance = 1
-    let g:sonokai_enable_italic = 1
 
     " vim-ai
     let g:vim_ai_chat_markdown = 1
@@ -239,35 +215,28 @@ if executable('git') && plug#begin()
                 \       : expand('$HOME/.vim/roles.ini')
 
     " vim-fern
-    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\|dist\|build\)$'
+    let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\)$'
     let g:fern#default_hidden = 1
-    let g:fern#renderer = 'nerdfont'
 
     " Plugs
-    Plug 'airblade/vim-gitgutter', { 'on': [], 'lazyload': v:true }
+    Plug 'airblade/vim-gitgutter', { 'on': [] }
     Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
-    Plug 'easymotion/vim-easymotion', { 'on': [], 'lazyload': v:true }
-    Plug 'editorconfig/editorconfig-vim', { 'on': [], 'lazyload': v:true }
-    Plug 'github/copilot.vim', { 'on': [], 'lazyload': v:true }
+    Plug 'easymotion/vim-easymotion', { 'on': [] }
+    Plug 'editorconfig/editorconfig-vim', { 'on': [] }
+    Plug 'github/copilot.vim', { 'on': [] }
+    Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'lambdalisue/nerdfont.vim' | Plug 'lambdalisue/vim-glyph-palette'
-    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'} | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': 'Fern' }
-    Plug 'prabirshrestha/asyncomplete.vim', { 'on': [], 'lazyload': v:true } | Plug 'prabirshrestha/asyncomplete-lsp.vim', { 'on': [], 'lazyload': v:true }
-    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings', { 'on': [], 'lazyload': v:true }
+    Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
+    Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
+    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
+    Plug 'madox2/vim-ai', { 'on': [] }
+    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
     Plug 'sainnhe/sonokai'
-    Plug 'tpope/vim-commentary', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-fugitive', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-repeat', { 'on': [], 'lazyload': v:true }
-    Plug 'tpope/vim-surround', { 'on': [], 'lazyload': v:true }
-
-    if executable('fzf')
-        Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
-        Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
-    endif
-
-    if has('python3')
-        Plug 'madox2/vim-ai', { 'on': [ 'AI', 'AIChat', 'AIEdit', 'AIImage' ]}
-    endif
+    Plug 'tpope/vim-commentary', { 'on': [] }
+    Plug 'tpope/vim-fugitive', { 'on': [] }
+    Plug 'tpope/vim-repeat', { 'on': [] }
+    Plug 'tpope/vim-surround', { 'on': [] }
 
     call plug#end()
 
@@ -284,41 +253,47 @@ if executable('git') && plug#begin()
     function! s:LoadPlugs(timer)
         let l:list = []
 
-        for l:name in keys(g:plugs)
-            if get(g:plugs[ l:name ], 'lazyload', v:false)
-                call add(l:list, l:name)
+        for l:key in keys(g:plugs)
+            if len(get(g:plugs[ l:key ], 'on', [])) == 0
+                call add(l:list, l:key)
             endif
         endfor
 
         call plug#load(l:list)
     endfunction
 
-    call timer_start(100, function('s:LoadPlugs'))
+    call timer_start(500, function('s:LoadPlugs'))
 
     " copilot.vim
     imap <M-n> <Plug>(copilot-next)
     imap <M-p> <Plug>(copilot-previous)
 
     " fzf
-    nmap <silent> <Leader>b :<C-u>Buffers<CR>
-    nmap <silent> <Leader>f :<C-u>Files<CR>
-    nmap <silent> <Leader>g :<C-u>GFiles<CR>
+    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
+    nnoremap <silent> <Leader>f :<C-u>Files<CR>
+    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
+
+    " lightline.vim
+    nnoremap <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
+    nnoremap <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
+
+    set showtabline=2
 
     " sonokai
     colorscheme sonokai
 
     " vim-ai
-    autocmd vimrc FileType aichat setlocal nobuflisted wrap | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
+    autocmd vimrc FileType aichat setlocal nobuflisted | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
 
     " vim-fern
-    nmap <silent> <Leader>e :<C-u>Fern .<CR>
-
-    autocmd vimrc FileType fern nmap <silent><buffer> q :<C-u>quit<CR> | call glyph_palette#apply()
+    nnoremap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
 
     " vim-fugitive
-    autocmd vimrc FileType fugitive setlocal nobuflisted | nmap <silent><buffer> q :<C-u>quit<CR>
+    autocmd vimrc FileType fugitive setlocal nobuflisted
 
     " vim-lsp
+    let g:lsp_use_native_client = 1
+
     nmap <Leader>ca <plug>(lsp-code-action)
     nmap <Leader>cl <plug>(lsp-code-lens)
     nmap gd         <plug>(lsp-definition)
@@ -340,4 +315,12 @@ if executable('git') && plug#begin()
     endfunction
 
     command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
+
+    " vim-vsnip
+    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    imap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+    smap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
 endif

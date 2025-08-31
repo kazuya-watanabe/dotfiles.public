@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 cat <<EOF | xargs brew install --cask
-adguard-vpn
-alfred
-appcleaner
 firefox
 font-hack-nerd-font
 iterm2
@@ -15,6 +12,7 @@ cat <<EOF | xargs brew install --formula
 bat
 btop
 coreutils
+docker
 efm-langserver
 fd
 ffmpeg
@@ -27,14 +25,14 @@ jq
 lazygit
 lesspipe
 lf
-libsixel
+lima
 lsd
 p7zip
 pandoc
 poppler
+portaudio
 ripgrep
 starship
-svg2png
 universal-ctags
 unzip
 vim

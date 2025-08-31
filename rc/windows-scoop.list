@@ -10,6 +10,7 @@ install jq
 install less
 install lf
 install lsd
+install lua
 install python
 install ripgrep
 install watchman

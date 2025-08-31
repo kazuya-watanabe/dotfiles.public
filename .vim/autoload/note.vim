@@ -1,20 +1,22 @@
 let s:DEFAULT_NOTE_DIRECTORY = '~/Documents/Notes'
-let s:DEFAULT_NOTE_FILENAME = '%Y-%m/%Y-%m-%d.md'
+let s:DEFAULT_NOTE_FILENAME = '%Y-%m/%d{{ title }}.md'
 let s:DEFAULT_NOTE_TEMPLATE = s:DEFAULT_NOTE_DIRECTORY . '/.template.md'
 
-function! s:get_settings(path) abort
+function! s:get_settings(title = '') abort
     let l:note_directory = get(g:, 'note_directory', s:DEFAULT_NOTE_DIRECTORY)
     let l:note_filename = get(g:, 'note_filename', s:DEFAULT_NOTE_FILENAME)
     let l:note_template = get(g:, 'note_template', s:DEFAULT_NOTE_TEMPLATE)
-
-    if a:path !=# ''
-        let l:filename = expand(a:path)
-    else
-        let l:filename = expand(l:note_directory . '/' . strftime(l:note_filename))
-    endif
-
+    let l:title = a:title
+    let l:ftitle = l:title ==# '' ? '' : '-' .. tolower(substitute(l:title, '\s', '-', 'g'))
+    let l:filename = expand(l:note_directory .. '/' .. strftime(substitute(l:note_filename, '{{\s*title\s*}}', l:ftitle, 'g')))
     let l:dir = fnamemodify(l:filename, ':h')
-    return {'filename': l:filename, 'dir': l:dir, 'template': expand(l:note_template)}
+
+    return {
+                \   'filename': l:filename,
+                \   'dir': l:dir,
+                \   'template': expand(l:note_template),
+                \   'title': l:title
+                \   }
 endfunction
 
 function! s:ensure_dir(dir) abort
@@ -27,7 +29,7 @@ function! s:open_file(path) abort
     execute 'edit ' . fnameescape(a:path)
 endfunction
 
-function! s:apply_template_if_needed(filename, template) abort
+function! s:apply_template_if_needed(filename, template, title) abort
     if filereadable(expand(a:filename)) || !filereadable(a:template)
         return
     endif
@@ -42,6 +44,7 @@ function! s:apply_template_if_needed(filename, template) abort
     let l:replacements = {
                 \ '{{\s*date\s*}}': strftime("%x"),
                 \ '{{\s*time\s*}}': strftime("%X"),
+                \ '{{\s*title\s*}}': a:title !=# '' ? ' ' .. a:title : '',
                 \ }
 
     let l:start = 1
@@ -55,9 +58,9 @@ function! s:apply_template_if_needed(filename, template) abort
     endfor
 endfunction
 
-function! note#note(path = '') abort
-    let l:opts = s:get_settings(a:path)
+function! note#note(title = '') abort
+    let l:opts = s:get_settings(a:title)
     call s:ensure_dir(l:opts.dir)
     call s:open_file(l:opts.filename)
-    call s:apply_template_if_needed(l:opts.filename, l:opts.template)
+    call s:apply_template_if_needed(l:opts.filename, l:opts.template, l:opts.title)
 endfunction
