@@ -158,10 +158,8 @@ if plug#begin()
     Plug 'easymotion/vim-easymotion', { 'on': [] }
     Plug 'editorconfig/editorconfig-vim', { 'on': [] }
     Plug 'github/copilot.vim', { 'on': [] }
-    Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
-    Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
+    Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]} | Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
     Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
     Plug 'madox2/vim-ai', { 'on': [] }
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -250,7 +248,8 @@ if plug#begin()
     let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\)$'
     let g:fern#default_hidden = 1
 
-    nnoremap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
+    " nnoremap <silent> <Leader>e :<C-u>Fern . -drawer -toggle<CR>
+    nnoremap <silent> <Leader>e :<C-u>Fern . -drawer -toggle<CR>
 
     " vim-lsp
     let g:lsp_use_native_client = 1
@@ -276,14 +275,6 @@ if plug#begin()
     endfunction
 
     command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
-
-    " vim-vsnip
-    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    imap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
-    smap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
 
     call plug#end()
 
