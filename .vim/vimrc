@@ -152,6 +152,7 @@ if !filereadable(s:vimplug_path)
     endif
 endif
 
+" vim-plug
 if plug#begin()
     Plug 'airblade/vim-gitgutter', { 'on': [] }
     Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
@@ -248,7 +249,6 @@ if plug#begin()
     let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\)$'
     let g:fern#default_hidden = 1
 
-    " nnoremap <silent> <Leader>e :<C-u>Fern . -drawer -toggle<CR>
     nnoremap <silent> <Leader>e :<C-u>Fern . -drawer -toggle<CR>
 
     " vim-lsp
@@ -276,6 +276,7 @@ if plug#begin()
 
     command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
 
+    " vim-plug end
     call plug#end()
 
     if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
