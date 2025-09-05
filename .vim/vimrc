@@ -83,9 +83,7 @@ augroup vimrc
 augroup END
 
 " commands
-command! -nargs=0 Aider silent vertical terminal ++close aider
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
-command! -nargs=0 Lazygit silent vertical terminal ++close lazygit
 
 " keymaps
 let g:mapleader = ','
