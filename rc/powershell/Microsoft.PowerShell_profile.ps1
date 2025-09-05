@@ -22,8 +22,6 @@ if ($Host.Name -eq 'ConsoleHost' -or $Host.Name -eq 'Visual Studio Code Host') {
     $env:VISUAL = 'vim'
     $env:PAGER = 'less'
     $env:LESS = '-iFJMRX'
-    $env:FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-    $env:FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
 
     Remove-Item alias:curl
     Remove-Item alias:diff -Force

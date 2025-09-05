@@ -154,6 +154,7 @@ endif
 
 " vim-plug
 if plug#begin()
+    Plug 'NLKNguyen/papercolor-theme'
     Plug 'airblade/vim-gitgutter', { 'on': [] }
     Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
     Plug 'easymotion/vim-easymotion', { 'on': [] }
@@ -165,7 +166,6 @@ if plug#begin()
     Plug 'madox2/vim-ai', { 'on': [] }
     Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
-    Plug 'sainnhe/sonokai'
     Plug 'tpope/vim-commentary', { 'on': [] }
     Plug 'tpope/vim-fugitive', { 'on': [] }
     Plug 'tpope/vim-repeat', { 'on': [] }
@@ -179,14 +179,6 @@ if plug#begin()
     imap <M-p> <Plug>(copilot-previous)
 
     " fzf
-    if !exists('$FZF_DEFAULT_COMMAND')
-        let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-    endif
-
-    if !exists('$FZF_DEFAULT_OPTS')
-        let $FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
-    endif
-
     let g:fzf_action = {
                 \   'Ctrl-t': 'tab split',
                 \   'Ctrl-i': 'split',
@@ -205,7 +197,7 @@ if plug#begin()
 
     " lightline.vim
     let g:lightline = {
-                \   'colorscheme': 'sonokai',
+                \   'colorscheme': 'PaperColor',
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
@@ -221,8 +213,8 @@ if plug#begin()
                 \       'right': ''
                 \       },
                 \   'tabline': {
-                \       'left': [ ['buffers'] ],
-                \       'right': [ ['close'] ]
+                \       'left': [ [ 'buffers' ] ],
+                \       'right': [ [ 'close' ] ]
                 \       },
                 \   }
     let g:lightline#bufferline#margin_left = 1
@@ -303,6 +295,6 @@ if plug#begin()
 
     call timer_start(500, function('s:LoadPlugs'))
 
-    " sonokai
-    colorscheme sonokai
+    " papercolor-theme
+    colorscheme PaperColor
 endif
