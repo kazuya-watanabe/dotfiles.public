@@ -120,7 +120,6 @@ elseif executable('im-select')
 endif
 
 " plugins
-let g:loaded_2html_plugin = 1
 let g:loaded_getscriptPlugin = 1
 let g:loaded_logiPat = 1
 let g:loaded_manpager_plugin = 1
