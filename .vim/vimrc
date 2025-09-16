@@ -32,6 +32,7 @@ set nrformats-=octal
 set ruler
 set scrolloff=4
 set shiftwidth=4
+set shortmess+=c
 set showbreak=-->\ 
 set showcmd
 set showmatch
@@ -79,15 +80,10 @@ augroup vimrc
     autocmd!
     autocmd BufNewFile,BufRead *.ahk,*.bat,*.cmd,*.ps1,*.reg,*.vb,*.vbs setlocal fileformat=dos fileencoding=default completeslash=backslash
     autocmd BufNewFile,BufRead gitconfig,.gitconfig,*/git/config,*/.git/config setlocal tabstop=4 noexpandtab
-    autocmd FileType help nnoremap <silent><buffer> q :<C-u>helpclose<CR>
-    autocmd FileType qf setlocal nobuflisted
-    autocmd TerminalOpen * setlocal nobuflisted
 augroup END
 
 " commands
-command! -nargs=0 Aider silent vertical terminal ++close aider
 command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
-command! -nargs=0 Lazygit silent vertical terminal ++close lazygit
 
 " keymaps
 let g:mapleader = ','
@@ -124,7 +120,6 @@ elseif executable('im-select')
 endif
 
 " plugins
-let g:loaded_2html_plugin = 1
 let g:loaded_getscriptPlugin = 1
 let g:loaded_logiPat = 1
 let g:loaded_manpager_plugin = 1
@@ -154,19 +149,39 @@ if !filereadable(s:vimplug_path)
     endif
 endif
 
+" vim-plug
 if plug#begin()
+    Plug 'NLKNguyen/papercolor-theme'
+    Plug 'airblade/vim-gitgutter', { 'on': [] }
+    Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
+    Plug 'easymotion/vim-easymotion', { 'on': [] }
+    Plug 'editorconfig/editorconfig-vim', { 'on': [] }
+    Plug 'github/copilot.vim', { 'on': [] }
+    Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
+    Plug 'junegunn/fzf', { 'on': [] } | Plug 'junegunn/fzf.vim', { 'on': [] }
+    Plug 'kazuya-watanabe/note.vim', { 'on': [] }
+    Plug 'kazuya-watanabe/automks.vim', { 'on': [] }
+    Plug 'lambdalisue/vim-fern', { 'on': [] } | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': [] }
+    Plug 'lambdalisue/vim-nerdfont' | Plug 'lambdalisue/vim-glyph-palette', { 'on': [] }
+    Plug 'madox2/vim-ai', { 'on': [] }
+    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
+    Plug 'tpope/vim-commentary', { 'on': [] }
+    Plug 'tpope/vim-fugitive', { 'on': [] }
+    Plug 'tpope/vim-repeat', { 'on': [] }
+    Plug 'tpope/vim-surround', { 'on': [] }
+
     " asyncomplete.vim
     let g:asyncomplete_auto_completeopt = 0
 
+    " copilot.vim
+    let g:copilot_no_tab_map = v:true
+
+    imap <silent><script><expr> <M-i> copilot#Accept("\<CR>")
+    imap <M-n> <Plug>(copilot-next)
+    imap <M-p> <Plug>(copilot-previous)
+
     " fzf
-    if !exists('$FZF_DEFAULT_COMMAND')
-        let $FZF_DEFAULT_COMMAND = 'fd --hidden --follow --type f'
-    endif
-
-    if !exists('$FZF_DEFAULT_OPTS')
-        let $FZF_DEFAULT_OPTS = '--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
-    endif
-
     let g:fzf_action = {
                 \   'Ctrl-t': 'tab split',
                 \   'Ctrl-i': 'split',
@@ -179,9 +194,16 @@ if plug#begin()
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
                 \   }
 
+    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
+    nnoremap <silent> <Leader>f :<C-u>Files<CR>
+    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
+
     " lightline.vim
     let g:lightline = {
-                \   'colorscheme': 'sonokai',
+                \   'colorscheme': 'PaperColor',
+                \   'component': {
+                \       'filename': '%{nerdfont#find()} %t',
+                \       },
                 \   'component_expand': {
                 \       'buffers': 'lightline#bufferline#buffers',
                 \       },
@@ -197,11 +219,18 @@ if plug#begin()
                 \       'right': ''
                 \       },
                 \   'tabline': {
-                \       'left': [ ['buffers'] ],
-                \       'right': [ ['close'] ]
+                \       'left': [ [ 'buffers' ] ],
+                \       'right': [ [ 'close' ] ]
                 \       },
                 \   }
+    let g:lightline#bufferline#enable_nerdfont = 1
     let g:lightline#bufferline#margin_left = 1
+    let g:lightline#bufferline#unicode_symbols = 1
+
+    nnoremap <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
+    nnoremap <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
+
+    set showtabline=2
 
     " vim-ai
     let g:vim_ai_chat_markdown = 1
@@ -214,82 +243,16 @@ if plug#begin()
                 \       ? expand('$HOME/vimfiles/roles.ini')
                 \       : expand('$HOME/.vim/roles.ini')
 
+    autocmd vimrc FileType aichat noremap! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
+
     " vim-fern
     let g:fern#default_exclude = '^\%(\.git\|\.svn\|\.hg\|node_modules\|vendor\)$'
     let g:fern#default_hidden = 1
+    let g:fern#renderer = 'nerdfont'
 
-    " Plugs
-    Plug 'airblade/vim-gitgutter', { 'on': [] }
-    Plug 'dhruvasagar/vim-table-mode', { 'for': 'markdown' }
-    Plug 'easymotion/vim-easymotion', { 'on': [] }
-    Plug 'editorconfig/editorconfig-vim', { 'on': [] }
-    Plug 'github/copilot.vim', { 'on': [] }
-    Plug 'hrsh7th/vim-vsnip' | Plug 'hrsh7th/vim-vsnip-integ'
-    Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
-    Plug 'junegunn/fzf', { 'on': [ 'FZF', 'Files', 'Buffers', 'GFiles' ]}
-    Plug 'junegunn/fzf.vim', { 'on': [ 'Files', 'Buffers', 'GFiles' ]}
-    Plug 'lambdalisue/vim-fern', { 'on': 'Fern'}
-    Plug 'madox2/vim-ai', { 'on': [] }
-    Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim'
-    Plug 'prabirshrestha/vim-lsp' | Plug 'mattn/vim-lsp-settings'
-    Plug 'sainnhe/sonokai'
-    Plug 'tpope/vim-commentary', { 'on': [] }
-    Plug 'tpope/vim-fugitive', { 'on': [] }
-    Plug 'tpope/vim-repeat', { 'on': [] }
-    Plug 'tpope/vim-surround', { 'on': [] }
+    autocmd FileType fern call glyph_palette#apply()
 
-    call plug#end()
-
-    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-        echomsg 'Please wait for a while to complete the installation.'
-
-        PlugInstall --sync
-
-        echohl WarningMsg | echomsg 'Installation completed. Please restart Vim.' | echohl None
-
-        finish
-    endif
-
-    function! s:LoadPlugs(timer)
-        let l:list = []
-
-        for l:key in keys(g:plugs)
-            if len(get(g:plugs[ l:key ], 'on', [])) == 0
-                call add(l:list, l:key)
-            endif
-        endfor
-
-        call plug#load(l:list)
-    endfunction
-
-    call timer_start(500, function('s:LoadPlugs'))
-
-    " copilot.vim
-    imap <M-n> <Plug>(copilot-next)
-    imap <M-p> <Plug>(copilot-previous)
-
-    " fzf
-    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
-    nnoremap <silent> <Leader>f :<C-u>Files<CR>
-    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
-
-    " lightline.vim
-    nnoremap <silent> t[ :<C-u>call lightline#bufferline#move_previous()<CR>
-    nnoremap <silent> t] :<C-u>call lightline#bufferline#move_next()<CR>
-
-    set showtabline=2
-
-    " sonokai
-    colorscheme sonokai
-
-    " vim-ai
-    autocmd vimrc FileType aichat setlocal nobuflisted | map! <silent><buffer> <S-CR> <Esc>:<C-u>AIChat<CR>
-
-    " vim-fern
-    nnoremap <silent> <Leader>e :<C-u>call execute(bufname() == '' ? 'Fern .' : 'Fern . -reveal=%')<CR>
-
-    " vim-fugitive
-    autocmd vimrc FileType fugitive setlocal nobuflisted
+    nnoremap <silent> <Leader>e :<C-u>Fern . -drawer -toggle<CR>
 
     " vim-lsp
     let g:lsp_use_native_client = 1
@@ -316,11 +279,33 @@ if plug#begin()
 
     command! -nargs=0 -range=% Format call s:FormatHandler(<line1>, <line2>)
 
-    " vim-vsnip
-    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-    imap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
-    smap <expr> <C-h>   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+    " vim-plug end
+    call plug#end()
+
+    if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        echomsg 'Please wait for a while to complete the installation.'
+
+        PlugInstall --sync
+
+        echohl WarningMsg | echomsg 'Installation completed. Please restart Vim.' | echohl None
+
+        finish
+    endif
+
+    function! s:LoadPlugs(timer)
+        let l:list = []
+
+        for l:key in keys(g:plugs)
+            if len(get(g:plugs[ l:key ], 'on', [])) == 0
+                call add(l:list, l:key)
+            endif
+        endfor
+
+        call plug#load(l:list)
+    endfunction
+
+    call timer_start(500, function('s:LoadPlugs'))
+
+    " papercolor-theme
+    colorscheme PaperColor
 endif

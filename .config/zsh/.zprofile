@@ -14,7 +14,7 @@ export LESS=-iFJMRX
 export LESSOPEN='| lesspipe.sh %s'
 export LESS_ADVANCED_PREPROCESSOR=1
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --type f'
-export FZF_DEFAULT_OPTS='--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:500 {}"'
+export FZF_DEFAULT_OPTS='--style full --height 40% --layout=reverse --preview "bat --color=always --style=plain --line-range=:80 {}"'
 export PYTHONUSERBASE="${HOME}/.local"
 
 export LANG=ja_JP.UTF-8
