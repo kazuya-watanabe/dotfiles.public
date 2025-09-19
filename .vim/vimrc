@@ -159,8 +159,8 @@ if plug#begin()
     Plug 'github/copilot.vim', { 'on': [] }
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
     Plug 'junegunn/fzf', { 'on': [] } | Plug 'junegunn/fzf.vim', { 'on': [] }
-    Plug 'kazuya-watanabe/note.vim', { 'on': [] }
     Plug 'kazuya-watanabe/automks.vim', { 'on': [] }
+    Plug 'kazuya-watanabe/note.vim', { 'on': [] }
     Plug 'lambdalisue/vim-fern', { 'on': [] } | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': [] }
     Plug 'lambdalisue/vim-nerdfont' | Plug 'lambdalisue/vim-glyph-palette', { 'on': [] }
     Plug 'madox2/vim-ai', { 'on': [] }
