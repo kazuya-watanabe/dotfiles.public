@@ -89,11 +89,11 @@ command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 let g:mapleader = ','
 let g:maplocalleader = ' '
 
-nnoremap j gj
-nnoremap k gk
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap Y y$
+noremap j gj
+noremap k gk
+noremap n nzz
+noremap N Nzz
+noremap Y y$
 
 noremap! <C-a> <Home>
 noremap! <C-b> <Left>
