@@ -87,7 +87,7 @@ command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 
 " keymaps
 let g:mapleader = ','
-let g:maplocalleader = ' '
+let g:maplocalleader = '\'
 
 noremap j gj
 noremap k gk
@@ -191,12 +191,14 @@ if plug#begin()
                 \   'window': { 'width': 0.9, 'height': 0.6 },
                 \   }
     let g:fzf_vim = {
+                \   'command_prefix': 'Fzf',
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
+                \   'listproc_rg': { list -> fzf#vim#listproc#location(list) },
                 \   }
 
-    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
-    nnoremap <silent> <Leader>f :<C-u>Files<CR>
-    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
+    nnoremap <silent> <Leader>b :<C-u>FzfBuffers<CR>
+    nnoremap <silent> <Leader>f :<C-u>FzfFiles<CR>
+    nnoremap <silent> <Leader>g :<C-u>FzfGFiles<CR>
 
     " lightline.vim
     let g:lightline = {
