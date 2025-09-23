@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 cat <<EOF | xargs brew install --cask
+acronis-true-image
 firefox
 font-hack-nerd-font
 iterm2
 microsoft-office
-thunderbird
+thunderbird@esr
 EOF
 
 cat <<EOF | xargs brew install --formula
 bat
-btop
 coreutils
 docker
-efm-langserver
+docker-compose
 fd
 ffmpeg
 fnm
@@ -30,14 +30,11 @@ lsd
 p7zip
 pandoc
 poppler
-portaudio
 ripgrep
 starship
-universal-ctags
 unzip
 vim
 w3m
-watchman
 wget2
 xz
 zoxide
