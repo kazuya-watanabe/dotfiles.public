@@ -1,4 +1,7 @@
+install 7zip
 install bat
+install composer
+install docker
 install fd
 install ffmpeg
 install fnm
@@ -11,13 +14,13 @@ install less
 install lf
 install lsd
 install lua
+install openjdk21
+install php
 install python
 install ripgrep
-install watchman
 install wget
 install zenhan
 bucket add extras
 install lazygit
-install universal-ctags
 bucket add versions
 install vim-nightly
