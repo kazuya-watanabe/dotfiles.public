@@ -170,6 +170,7 @@ if plug#begin()
     Plug 'tpope/vim-fugitive', { 'on': [] }
     Plug 'tpope/vim-repeat', { 'on': [] }
     Plug 'tpope/vim-surround', { 'on': [] }
+    Plug 'vim-jp/vimdoc-ja', { 'on': [] }
 
     " asyncomplete.vim
     let g:asyncomplete_auto_completeopt = 0
