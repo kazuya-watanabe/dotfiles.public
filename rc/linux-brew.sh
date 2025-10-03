@@ -2,8 +2,6 @@
 
 cat <<EOF | xargs brew install --formula
 bat
-btop
-efm-langserver
 fd
 ffmpeg
 fnm
@@ -21,11 +19,9 @@ poppler
 ripgrep
 starship
 svg2png
-universal-ctags
 unzip
 vim
 w3m
-watchman
 wget2
 xclip
 xz

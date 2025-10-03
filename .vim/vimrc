@@ -1,4 +1,4 @@
-" initialization
+" initialize
 scriptversion 4
 
 " options
@@ -87,13 +87,13 @@ command! -nargs=* -complete=dir Grep silent grep! <args> | cwindow
 
 " keymaps
 let g:mapleader = ','
-let g:maplocalleader = ' '
+let g:maplocalleader = '\'
 
-nnoremap j gj
-nnoremap k gk
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap Y y$
+noremap j gj
+noremap k gk
+noremap n nzz
+noremap N Nzz
+noremap Y y$
 
 noremap! <C-a> <Home>
 noremap! <C-b> <Left>
@@ -159,8 +159,8 @@ if plug#begin()
     Plug 'github/copilot.vim', { 'on': [] }
     Plug 'itchyny/lightline.vim' | Plug 'mengelbrecht/lightline-bufferline'
     Plug 'junegunn/fzf', { 'on': [] } | Plug 'junegunn/fzf.vim', { 'on': [] }
-    Plug 'kazuya-watanabe/note.vim', { 'on': [] }
     Plug 'kazuya-watanabe/automks.vim', { 'on': [] }
+    Plug 'kazuya-watanabe/note.vim', { 'on': [] }
     Plug 'lambdalisue/vim-fern', { 'on': [] } | Plug 'lambdalisue/vim-fern-renderer-nerdfont', { 'on': [] }
     Plug 'lambdalisue/vim-nerdfont' | Plug 'lambdalisue/vim-glyph-palette', { 'on': [] }
     Plug 'madox2/vim-ai', { 'on': [] }
@@ -170,6 +170,7 @@ if plug#begin()
     Plug 'tpope/vim-fugitive', { 'on': [] }
     Plug 'tpope/vim-repeat', { 'on': [] }
     Plug 'tpope/vim-surround', { 'on': [] }
+    Plug 'vim-jp/vimdoc-ja', { 'on': [] }
 
     " asyncomplete.vim
     let g:asyncomplete_auto_completeopt = 0
@@ -191,12 +192,14 @@ if plug#begin()
                 \   'window': { 'width': 0.9, 'height': 0.6 },
                 \   }
     let g:fzf_vim = {
+                \   'command_prefix': 'Fzf',
                 \   'listproc': { list -> fzf#vim#listproc#quickfix(list) },
+                \   'listproc_rg': { list -> fzf#vim#listproc#location(list) },
                 \   }
 
-    nnoremap <silent> <Leader>b :<C-u>Buffers<CR>
-    nnoremap <silent> <Leader>f :<C-u>Files<CR>
-    nnoremap <silent> <Leader>g :<C-u>GFiles<CR>
+    nnoremap <silent> <Leader>b :<C-u>FzfBuffers<CR>
+    nnoremap <silent> <Leader>f :<C-u>FzfFiles<CR>
+    nnoremap <silent> <Leader>g :<C-u>FzfGFiles<CR>
 
     " lightline.vim
     let g:lightline = {
