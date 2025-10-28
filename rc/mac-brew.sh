@@ -2,11 +2,14 @@
 
 cat <<EOF | xargs brew install --cask
 acronis-true-image
+adguard
+adguard-vpn
 firefox
 font-hack-nerd-font
 iterm2
 microsoft-office
 thunderbird@esr
+zed
 EOF
 
 cat <<EOF | xargs brew install --formula
