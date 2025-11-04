@@ -16,9 +16,9 @@ find $(pwd) -mindepth 1 -maxdepth 1 -name '.??*' | grep -v '.git*' | xargs -I % 
 (Get-Item -Path "$env:APPDATA\fd").Delete()
 (Get-Item -Path "$env:LOCALAPPDATA\lazygit").Delete()
 (Get-Item -Path "$env:LOCALAPPDATA\lf").Delete()
+(Get-Item -Path "$env:APPDATA\zed").Delete()
 (Get-Item -Path "$env:USERPROFILE\vimfiles").Delete()
 (Get-Item -Path "$env:USERPROFILE\Documents\WindowsPowerShell").Delete()
-(Get-Item -Path "$env:USERPROFILE\.textlintrc").Delete()
 
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config" -Path "$env:USERPROFILE\.config"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\bat" -Path "$env:APPDATA\bat"
@@ -28,7 +28,6 @@ New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\lf" -Path "$e
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.config\zed" -Path "$env:APPDATA\zed"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\.vim" -Path "$env:USERPROFILE\vimfiles"
 New-Item -Force -ItemType Junction -Value "$(Get-Location)\rc\powershell" -Path "$env:USERPROFILE\Documents\WindowsPowerShell"
-Copy-Item -Force -Path "$(Get-Location)\.textlintrc" -Destination "$env:USERPROFILE\.textlintrc"
 ```
 
 ---
