@@ -9,6 +9,3 @@ if has('win32')
         autocmd GUIEnter * simalt ~x
     augroup END
 endif
-
-set columns=160
-set lines=48
